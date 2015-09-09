@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "sensor.h"
 
-// Filter function declerations
+// Filter function declarations
 int lowPass(int x[], int y[]);
 int highPass(int x[], int y[]);
 int derivative(int x[], int y[]);
