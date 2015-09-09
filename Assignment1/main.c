@@ -2,6 +2,7 @@
 #include <math.h>
 #include "sensor.h"
 
+
 // Filter function declerations
 int lowPass();
 int highPass();
