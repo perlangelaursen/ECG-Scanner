@@ -1,0 +1,1539 @@
+14:21:25 **** Clean-only build of configuration Debug for project Assignment1 ****
+make clean 
+rm -rf  ./main.o ./sensor.o  ./main.d ./sensor.d  Assignment1
+ 
+14:21:25 **** Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../.metadata/.plugins/org.eclipse.cdt.make.core/specs.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF".metadata/.plugins/org.eclipse.cdt.make.core/specs.d" -MT".metadata/.plugins/org.eclipse.cdt.make.core/specs.d" -o ".metadata/.plugins/org.eclipse.cdt.make.core/specs.o" "../.metadata/.plugins/org.eclipse.cdt.make.core/specs.c"
+Finished building: ../.metadata/.plugins/org.eclipse.cdt.make.core/specs.c
+ 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c"
+../main.c: In function ‘increment’:
+../main.c:49:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+Finished building: ../main.c
+ 
+Building file: ../sensor.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"sensor.d" -MT"sensor.d" -o "sensor.o" "../sensor.c"
+Finished building: ../sensor.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o   
+Finished building target: Assignment1
+ 
+14:32:18 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c"
+../main.c: In function ‘main’:
+../main.c:20:4: warning: implicit declaration of function ‘lowpass’ [-Wimplicit-function-declaration]
+    lowpass();
+    ^
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:70:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+../main.c: In function ‘increment’:
+../main.c:46:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o   
+./main.o: In function `main':
+/home/feynman/ECG-Scanner/Assignment1/Debug/../main.c:20: undefined reference to `lowpass'
+collect2: error: ld returned 1 exit status
+makefile:30: recipe for target 'Assignment1' failed
+make: *** [Assignment1] Error 1
+14:32:52 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c"
+../main.c: In function ‘main’:
+../main.c:20:4: warning: implicit declaration of function ‘lowpass’ [-Wimplicit-function-declaration]
+    lowpass();
+    ^
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:65:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+../main.c: In function ‘increment’:
+../main.c:41:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o   
+./main.o: In function `main':
+/home/feynman/ECG-Scanner/Assignment1/Debug/../main.c:20: undefined reference to `lowpass'
+collect2: error: ld returned 1 exit status
+makefile:30: recipe for target 'Assignment1' failed
+make: *** [Assignment1] Error 1
+14:35:04 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c"
+../main.c: In function ‘main’:
+../main.c:20:3: warning: implicit declaration of function ‘lowpass’ [-Wimplicit-function-declaration]
+   lowpass();
+   ^
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:56:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+../main.c: In function ‘increment’:
+../main.c:32:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o   
+./main.o: In function `main':
+/home/feynman/ECG-Scanner/Assignment1/Debug/../main.c:20: undefined reference to `lowpass'
+collect2: error: ld returned 1 exit status
+makefile:30: recipe for target 'Assignment1' failed
+make: *** [Assignment1] Error 1
+14:35:26 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c"
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:56:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+../main.c: In function ‘increment’:
+../main.c:32:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o   
+Finished building target: Assignment1
+ 
+14:35:30 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+make: Nothing to be done for 'all'.
+14:35:56 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c"
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:56:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+../main.c: In function ‘increment’:
+../main.c:32:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o   
+Finished building target: Assignment1
+ 
+14:36:36 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c"
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:56:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+../main.c: In function ‘increment’:
+../main.c:32:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o   
+Finished building target: Assignment1
+ 
+14:38:26 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c"
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:56:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+../main.c: In function ‘increment’:
+../main.c:32:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o   
+Finished building target: Assignment1
+ 
+14:38:36 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c"
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:56:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+../main.c: In function ‘increment’:
+../main.c:32:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o   
+Finished building target: Assignment1
+ 
+14:39:16 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c"
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:56:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+../main.c: In function ‘increment’:
+../main.c:32:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o   
+Finished building target: Assignment1
+ 
+14:39:53 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c"
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:56:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+../main.c: In function ‘increment’:
+../main.c:32:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o   
+Finished building target: Assignment1
+ 
+14:40:16 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c"
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:56:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+../main.c: In function ‘increment’:
+../main.c:32:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o   
+Finished building target: Assignment1
+ 
+14:42:04 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c"
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:56:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+../main.c: In function ‘increment’:
+../main.c:32:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o   
+Finished building target: Assignment1
+ 
+14:44:03 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c"
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:56:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+../main.c: In function ‘increment’:
+../main.c:32:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o   
+Finished building target: Assignment1
+ 
+14:45:31 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c"
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:56:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+../main.c: In function ‘increment’:
+../main.c:32:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o   
+Finished building target: Assignment1
+ 
+14:51:02 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c"
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:56:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+../main.c: In function ‘increment’:
+../main.c:32:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o   
+Finished building target: Assignment1
+ 
+14:51:52 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c"
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:56:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+../main.c: In function ‘increment’:
+../main.c:32:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o   
+Finished building target: Assignment1
+ 
+14:52:04 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c"
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:56:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+../main.c: In function ‘increment’:
+../main.c:32:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o   
+Finished building target: Assignment1
+ 
+14:52:54 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c"
+../main.c: In function ‘lowPass’:
+../main.c:37:31: error: ‘Math’ undeclared (first use in this function)
+  y[n] = 2 * y[n-1] - y[n-2] + Math.round(1.0 / 32.0 * (x[n%33] - 2 * x[(n-6)%33] + x[(n-12)%33]));
+                               ^
+../main.c:37:31: note: each undeclared identifier is reported only once for each function it appears in
+subdir.mk:21: recipe for target 'main.o' failed
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:57:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+../main.c: In function ‘increment’:
+../main.c:33:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+make: *** [main.o] Error 1
+14:53:34 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c"
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:57:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+../main.c: In function ‘increment’:
+../main.c:33:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o   
+./main.o: In function `lowPass':
+/home/feynman/ECG-Scanner/Assignment1/Debug/../main.c:37: undefined reference to `round'
+collect2: error: ld returned 1 exit status
+make: *** [Assignment1] Error 1
+makefile:30: recipe for target 'Assignment1' failed
+14:55:32 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c"
+../main.c:2:19: fatal error: cmath.h: No such file or directory
+compilation terminated.
+subdir.mk:21: recipe for target 'main.o' failed
+make: *** [main.o] Error 1
+14:56:19 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c"
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:57:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+../main.c: In function ‘increment’:
+../main.c:33:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o   
+makefile:30: recipe for target 'Assignment1' failed
+./main.o: In function `lowPass':
+/home/feynman/ECG-Scanner/Assignment1/Debug/../main.c:37: undefined reference to `round'
+collect2: error: ld returned 1 exit status
+make: *** [Assignment1] Error 1
+14:56:56 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c"
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:57:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+../main.c: In function ‘increment’:
+../main.c:33:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o   
+Finished building target: Assignment1
+ 
+14:57:14 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c"
+../main.c: In function ‘main’:
+../main.c:18:9: warning: format ‘%d’ expects argument of type ‘int’, but argument 2 has type ‘double’ [-Wformat=]
+  printf("%d\n", round(13.6));
+         ^
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:57:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+../main.c: In function ‘increment’:
+../main.c:33:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o   
+Finished building target: Assignment1
+ 
+14:57:26 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+make: Nothing to be done for 'all'.
+14:57:34 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c"
+../main.c: In function ‘main’:
+../main.c:18:9: warning: format ‘%i’ expects argument of type ‘int’, but argument 2 has type ‘double’ [-Wformat=]
+  printf("%i\n", round(13.6));
+         ^
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:57:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+../main.c: In function ‘increment’:
+../main.c:33:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o   
+Finished building target: Assignment1
+ 
+14:58:40 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c"
+../main.c: In function ‘main’:
+../main.c:18:9: warning: format ‘%i’ expects argument of type ‘int’, but argument 2 has type ‘double’ [-Wformat=]
+  printf("%i\n", roundf(13.6));
+         ^
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:57:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+../main.c: In function ‘increment’:
+../main.c:33:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o   
+Finished building target: Assignment1
+ 
+14:59:29 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+make: Nothing to be done for 'all'.
+14:59:36 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c"
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:58:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+../main.c: In function ‘increment’:
+../main.c:34:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o   
+Finished building target: Assignment1
+ 
+14:59:55 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c"
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:58:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+../main.c: In function ‘increment’:
+../main.c:34:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o   
+./main.o: In function `lowPass':
+/home/feynman/ECG-Scanner/Assignment1/Debug/../main.c:38: undefined reference to `round'
+collect2: error: ld returned 1 exit status
+make: *** [Assignment1] Error 1
+makefile:30: recipe for target 'Assignment1' failed
+15:00:43 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c"
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:59:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+../main.c: In function ‘increment’:
+../main.c:34:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o   
+./main.o: In function `lowPass':
+/home/feynman/ECG-Scanner/Assignment1/Debug/../main.c:39: undefined reference to `round'
+collect2: error: ld returned 1 exit status
+makefile:30: recipe for target 'Assignment1' failed
+make: *** [Assignment1] Error 1
+15:00:55 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c"
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:59:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+../main.c: In function ‘increment’:
+../main.c:34:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o   
+./main.o: In function `lowPass':
+/home/feynman/ECG-Scanner/Assignment1/Debug/../main.c:39: undefined reference to `roundf'
+collect2: error: ld returned 1 exit status
+makefile:30: recipe for target 'Assignment1' failed
+make: *** [Assignment1] Error 1
+15:01:14 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o   
+./main.o: In function `lowPass':
+makefile:30: recipe for target 'Assignment1' failed
+/home/feynman/ECG-Scanner/Assignment1/Debug/../main.c:39: undefined reference to `roundf'
+collect2: error: ld returned 1 exit status
+make: *** [Assignment1] Error 1
+15:01:58 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c"
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:56:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o   
+./main.o: In function `lowPass':
+/home/feynman/ECG-Scanner/Assignment1/Debug/../main.c:35: undefined reference to `roundf'
+collect2: error: ld returned 1 exit status
+make: *** [Assignment1] Error 1
+makefile:30: recipe for target 'Assignment1' failed
+15:03:03 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c"
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:59:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o   
+./main.o: In function `main':
+/home/feynman/ECG-Scanner/Assignment1/Debug/../main.c:24: undefined reference to `roundf'
+./main.o: In function `lowPass':
+/home/feynman/ECG-Scanner/Assignment1/Debug/../main.c:38: undefined reference to `roundf'
+collect2: error: ld returned 1 exit status
+makefile:30: recipe for target 'Assignment1' failed
+make: *** [Assignment1] Error 1
+15:03:48 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c"
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:56:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o   
+./main.o: In function `lowPass':
+/home/feynman/ECG-Scanner/Assignment1/Debug/../main.c:35: undefined reference to `roundf'
+collect2: error: ld returned 1 exit status
+make: *** [Assignment1] Error 1
+makefile:30: recipe for target 'Assignment1' failed
+15:04:10 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c"
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:54:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o   
+Finished building target: Assignment1
+ 
+15:04:13 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+make: Nothing to be done for 'all'.
+15:04:23 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c"
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:54:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o   
+Finished building target: Assignment1
+ 
+15:04:50 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c"
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:54:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o   
+./main.o: In function `lowPass':
+/home/feynman/ECG-Scanner/Assignment1/Debug/../main.c:34: undefined reference to `round'
+collect2: error: ld returned 1 exit status
+makefile:30: recipe for target 'Assignment1' failed
+make: *** [Assignment1] Error 1
+15:10:12 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c"
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:54:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o   
+./main.o: In function `lowPass':
+/home/feynman/ECG-Scanner/Assignment1/Debug/../main.c:34: undefined reference to `round'
+collect2: error: ld returned 1 exit status
+make: *** [Assignment1] Error 1
+makefile:30: recipe for target 'Assignment1' failed
+15:12:18 **** Clean-only build of configuration Debug for project Assignment1 ****
+make clean 
+rm -rf  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.d  ./main.d ./sensor.d  Assignment1
+ 
+15:12:25 **** Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../.metadata/.plugins/org.eclipse.cdt.make.core/specs.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF".metadata/.plugins/org.eclipse.cdt.make.core/specs.d" -MT".metadata/.plugins/org.eclipse.cdt.make.core/specs.d" -o ".metadata/.plugins/org.eclipse.cdt.make.core/specs.o" "../.metadata/.plugins/org.eclipse.cdt.make.core/specs.c" -lm
+Finished building: ../.metadata/.plugins/org.eclipse.cdt.make.core/specs.c
+ 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c" -lm
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:54:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+Finished building: ../main.c
+ 
+Building file: ../sensor.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"sensor.d" -MT"sensor.d" -o "sensor.o" "../sensor.c" -lm
+Finished building: ../sensor.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o    -lm
+Finished building target: Assignment1
+ 
+15:12:32 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+make: Nothing to be done for 'all'.
+15:14:12 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c" -lm
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:51:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o    -lm
+Finished building target: Assignment1
+ 
+15:17:57 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c" -lm
+../main.c: In function ‘main’:
+../main.c:19:63: error: expected expression before ‘)’ token
+   printf("%7d%7d%7d%7d\n", n, x[n%33], lowPass(), highPass(), );
+                                                               ^
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:50:6: warning: unused variable ‘m’ [-Wunused-variable]
+subdir.mk:21: recipe for target 'main.o' failed
+  int m = n % 32;
+      ^
+make: *** [main.o] Error 1
+15:18:27 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c" -lm
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:51:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o    -lm
+Finished building target: Assignment1
+ 
+15:20:34 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c" -lm
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:51:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o    -lm
+Finished building target: Assignment1
+ 
+15:20:47 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c" -lm
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:51:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o    -lm
+Finished building target: Assignment1
+ 
+15:23:28 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c" -lm
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:51:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o    -lm
+Finished building target: Assignment1
+ 
+15:24:30 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c" -lm
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:51:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o    -lm
+Finished building target: Assignment1
+ 
+15:25:15 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c" -lm
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:51:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o    -lm
+Finished building target: Assignment1
+ 
+15:25:32 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c" -lm
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:51:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o    -lm
+Finished building target: Assignment1
+ 
+15:25:44 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c" -lm
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:51:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o    -lm
+Finished building target: Assignment1
+ 
+15:26:47 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c" -lm
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:51:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o    -lm
+Finished building target: Assignment1
+ 
+15:27:17 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c" -lm
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:51:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o    -lm
+Finished building target: Assignment1
+ 
+15:27:38 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c" -lm
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:51:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o    -lm
+Finished building target: Assignment1
+ 
+15:35:08 **** Clean-only build of configuration Debug for project Assignment1 ****
+make clean 
+rm -rf  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.d  ./main.d ./sensor.d  Assignment1
+ 
+15:35:11 **** Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../.metadata/.plugins/org.eclipse.cdt.make.core/specs.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF".metadata/.plugins/org.eclipse.cdt.make.core/specs.d" -MT".metadata/.plugins/org.eclipse.cdt.make.core/specs.d" -o ".metadata/.plugins/org.eclipse.cdt.make.core/specs.o" "../.metadata/.plugins/org.eclipse.cdt.make.core/specs.c" -lm
+Finished building: ../.metadata/.plugins/org.eclipse.cdt.make.core/specs.c
+ 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c" -lm
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:51:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+Finished building: ../main.c
+ 
+Building file: ../sensor.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"sensor.d" -MT"sensor.d" -o "sensor.o" "../sensor.c" -lm
+Finished building: ../sensor.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o    -lm
+Finished building target: Assignment1
+ 
+15:35:19 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+make: Nothing to be done for 'all'.
+15:36:38 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c" -lm
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:51:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o    -lm
+Finished building target: Assignment1
+ 
+15:37:14 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c" -lm
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:51:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o    -lm
+Finished building target: Assignment1
+ 
+15:37:32 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c" -lm
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:51:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o    -lm
+Finished building target: Assignment1
+ 
+15:37:48 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c" -lm
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:51:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o    -lm
+Finished building target: Assignment1
+ 
+15:42:49 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c" -lm
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:51:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o    -lm
+Finished building target: Assignment1
+ 
+15:43:11 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c" -lm
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:51:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o    -lm
+Finished building target: Assignment1
+ 
+15:43:27 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c" -lm
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:51:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o    -lm
+Finished building target: Assignment1
+ 
+15:44:15 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c" -lm
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:51:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o    -lm
+Finished building target: Assignment1
+ 
+15:47:49 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c" -lm
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:51:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o    -lm
+Finished building target: Assignment1
+ 
+15:48:11 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c" -lm
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:51:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o    -lm
+Finished building target: Assignment1
+ 
+15:48:39 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c" -lm
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:51:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o    -lm
+Finished building target: Assignment1
+ 
+15:49:41 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c" -lm
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:51:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o    -lm
+Finished building target: Assignment1
+ 
+15:50:31 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c" -lm
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:51:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o    -lm
+Finished building target: Assignment1
+ 
+15:51:04 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c" -lm
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:51:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o    -lm
+Finished building target: Assignment1
+ 
+15:51:36 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c" -lm
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:51:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o    -lm
+Finished building target: Assignment1
+ 
+15:52:22 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c" -lm
+../main.c: In function ‘movingWindowIntegration’:
+../main.c:51:6: warning: unused variable ‘m’ [-Wunused-variable]
+  int m = n % 32;
+      ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o    -lm
+Finished building target: Assignment1
+ 
+16:08:22 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c" -lm
+../main.c: In function ‘main’:
+../main.c:19:49: error: called object ‘lowpass’ is not a function or function pointer
+   printf("%7d%7d%7d%7d%7d%7d%7d\n", n, x[n%13], lowpass(), highpass(), derivative(), squaring(), movingWindowIntegration());
+                                                 ^
+../main.c:13:22: note: declared here
+ int x[13], y[10011], lowpass[33], highpass[5], sq[30];
+                      ^
+../main.c:19:60: error: called object ‘highpass’ is not a function or function pointer
+   printf("%7d%7d%7d%7d%7d%7d%7d\n", n, x[n%13], lowpass(), highpass(), derivative(), squaring(), movingWindowIntegration());
+                                                            ^
+../main.c:13:35: note: declared here
+ int x[13], y[10011], lowpass[33], highpass[5], sq[30];
+                                   ^
+subdir.mk:21: recipe for target 'main.o' failed
+make: *** [main.o] Error 1
+16:09:10 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c" -lm
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o    -lm
+Finished building target: Assignment1
+ 
+16:09:55 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c" -lm
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o    -lm
+Finished building target: Assignment1
+ 
+16:10:23 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c" -lm
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o    -lm
+Finished building target: Assignment1
+ 
+16:11:28 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c" -lm
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o    -lm
+Finished building target: Assignment1
+ 
+16:12:59 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c" -lm
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o    -lm
+Finished building target: Assignment1
+ 
+16:14:12 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c" -lm
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o    -lm
+Finished building target: Assignment1
+ 
+16:17:02 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c" -lm
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o    -lm
+Finished building target: Assignment1
+ 
+16:17:29 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c" -lm
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o    -lm
+Finished building target: Assignment1
+ 
+16:22:51 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c" -lm
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o    -lm
+Finished building target: Assignment1
+ 
+16:25:04 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c" -lm
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o    -lm
+Finished building target: Assignment1
+ 
+16:25:57 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c" -lm
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o    -lm
+Finished building target: Assignment1
+ 
+16:26:22 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c" -lm
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o    -lm
+Finished building target: Assignment1
+ 
+16:26:44 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c" -lm
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o    -lm
+Finished building target: Assignment1
+ 
+16:28:39 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c" -lm
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o    -lm
+Finished building target: Assignment1
+ 
+16:29:19 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c" -lm
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o    -lm
+Finished building target: Assignment1
+ 
+16:30:51 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c" -lm
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./main.o ./sensor.o    -lm
+Finished building target: Assignment1
+ 

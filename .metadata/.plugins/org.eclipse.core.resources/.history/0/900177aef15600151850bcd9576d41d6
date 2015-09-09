@@ -1,0 +1,79 @@
+#include <stdio.h>
+#include <math.h>
+#include "sensor.h"
+
+// Filter function declerations
+int lowPass();
+int highPass();
+int derivative();
+int squaring();
+int movingWindowIntegration();
+
+// arrays
+int x[33], y[10011];
+int n = 1;
+
+// Main program
+int main(int argc, char *argv[]) {
+
+
+	while((x[n % 33] = getNextData()) != -10) {
+		lowPass();
+		printf("%7d%7d%7d%7d\n", n, x[n%33], y[n], x[(n-6)%33]);
+		n++;
+	}
+
+
+	// End of program
+	return 0;
+}
+
+int increment(){
+
+}
+
+// Filters here
+int lowPass() {
+	y[n] = 2 * y[n-1] - y[n-2] + 1.0 / 32.0 * (x[n%33] - 2 * x[(n-6)%33] + x[(n-12)%33]);
+	return y[n];
+}
+
+int highPass() {
+	y[n] = y[n-1] - x[n%33] / 32 + x[(n-16)%33] - x[(n-17)%33] + x[(n-32)%33] / 32;
+	return y[n];
+}
+
+int derivative() {
+	y[n] = 1 / 8 * (2 * x[n%33] + x[(n-1)%33] - x[(n-3)%33] - 2 * x[(n-4)%33]);
+	return y[n];
+}
+
+int squaring() {
+	y[n] *= y[n];
+	return y[n];
+}
+
+int movingWindowIntegration() {
+	int m = n % 32;
+
+	int N = 30; // ????
+	int buf = 0;
+
+	for (int i = 1; i < N; i++) {
+		buf += x[n-(N-i)];
+	}
+
+
+	y[n] = 1 / N * buf;
+	return y[n];
+}
+
+
+
+
+
+
+
+
+
+
