@@ -2,65 +2,81 @@
 #include <math.h>
 #include "sensor.h"
 
+#define SIZE 33
+#define N 30
 
-// Filter function declerations
-int lowPass();
-int highPass();
-int derivative();
-int squaring();
-int movingWindowIntegration();
+// Filter function declarations
+int lowPass(void);
+int highPass(void);
+int derivative(void);
+int squaring(void);
+int movingWindowIntegration(void);
+void checkIfNIsOutOfBounds();
+
 
 // arrays
-int x[13], y[10011], lowpass[33], highpass[5], sq[30];
-int n = 1, deri;
+int x[SIZE], y[SIZE], lowpassArray[SIZE], highpassArray[SIZE], derivativeArray[SIZE], squaredArray[30];
+int n = 0;
 
 // Main program
 int main(int argc, char *argv[]) {
-	while(n < 15) {
-		x[n % 13] = getNextData();
-		//printf("%15d%15d%15d%15d%15d%15d%15d\n", n, x[n%13], lowPass(), highPass(), derivative(), squaring(), movingWindowIntegration());
+	// Not sure if this will work
+	while((x[n] = getNextData()) != EOF) {
+		lowPass();
+		highPass();
+		derivative();
+		squaring();
+		movingWindowIntegration();
 
-		printf("%15d%15d%15d%15d\n", n, x[n%13], lowPass(), highPass());
 		n++;
-	}
+		checkIfNIsOutOfBounds(n);
 
+		printf("%15d:%15d", x[n], y[n]);
+	}
 
 	// End of program
 	return 0;
 }
 
 // Filters here
-int lowPass() {
-	lowpass[n%33] = 2 * lowpass[(n-1)%33] - lowpass[(n-2)%33] + (x[n%13] - 2 * x[(n-6)%13] + x[(n-12)%13]) / 32;
-	return lowpass[n%33];
+int lowPass(void) {
+	lowpassArray[n] = (2*y[(n-1+SIZE)%SIZE]-y[(n-2+SIZE)%SIZE]+(x[n]-2*x[(n-6+SIZE)%SIZE]+x[(n-12+SIZE)%SIZE])/32);
+	return lowpassArray[n];
 }
 
-int highPass() {
-	highpass[n%5] = highpass[(n-1)%5] - lowpass[n%33] / 32.0 + lowpass[(n-16)%33] - lowpass[(n-17)%33] + lowpass[(n-32)%33] / 32.0;
-	return highpass[n%5];
+int highPass(void) {
+	highpassArray[n]=highpassArray[(n-1+SIZE)%SIZE]-lowpassArray[n]/32.0+
+			lowpassArray[(n-16+SIZE)%SIZE]-lowpassArray[(n-17+SIZE)%SIZE]+
+			lowpassArray[(n-32+SIZE)%SIZE]/32.0;
+	return highpassArray[n];
 }
 
 int derivative() {
-	deri = 1.0 / 8.0 * (2 * highpass[n%5] + highpass[(n-1)%5] - highpass[(n-3)%5] - 2 * highpass[(n-4)%5]);
-	return deri;
+	derivativeArray[n]= (2*highpassArray[n]+highpassArray[(n-1+SIZE)%SIZE]-
+			highpassArray[(n-3+SIZE)%SIZE]-2*highpassArray[(n-4+SIZE)%SIZE])/8;
+	return derivativeArray[n];
 }
 
 int squaring() {
-	sq[n] *= deri;
-	return sq[n];
+	squaredArray[n] = derivativeArray[n]*derivativeArray[n];
+	return squaredArray[n];
 }
 
 int movingWindowIntegration() {
-
-	int N = 30; // ????
 	int buf = 0;
 
 	for (int i = 1; i < N; i++) {
-		buf += sq[(n-(N-i))%30];
+		buf += squaredArray[(n-(N-i)+SIZE)%SIZE];
 	}
 
-	y[n] = 1 / N * buf;
+	y[n] = buf/8;
 	return y[n];
+}
+
+void checkIfNIsOutOfBounds() {
+	if (n >= SIZE) {
+		n = 0;
+	}
 }
 
 
