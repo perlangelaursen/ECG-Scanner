@@ -28,10 +28,10 @@ int main(int argc, char *argv[]) {
 		squaring();
 		movingWindowIntegration();
 
+		printf("%15d:%15d", x[n], y[n]);
+
 		n++;
 		checkIfNIsOutOfBounds(n);
-
-		printf("%15d:%15d", x[n], y[n]);
 	}
 
 	// End of program
@@ -40,11 +40,13 @@ int main(int argc, char *argv[]) {
 
 // Filters here
 int lowPass(void) {
-	lowpassArray[n] = (2*y[(n-1+SIZE)%SIZE]-y[(n-2+SIZE)%SIZE]+(x[n]-2*x[(n-6+SIZE)%SIZE]+x[(n-12+SIZE)%SIZE])/32);
+	lowpassArray[n] = (2*lowpassArray[(n-1+SIZE)%SIZE]-lowpassArray[(n-2+SIZE)%SIZE]
+						+(x[n]-2*x[(n-6+SIZE)%SIZE]+x[(n-12+SIZE)%SIZE])/32);
 	return lowpassArray[n];
 }
 
 int highPass(void) {
+	// Uses floats
 	highpassArray[n]=highpassArray[(n-1+SIZE)%SIZE]-lowpassArray[n]/32.0+
 			lowpassArray[(n-16+SIZE)%SIZE]-lowpassArray[(n-17+SIZE)%SIZE]+
 			lowpassArray[(n-32+SIZE)%SIZE]/32.0;
@@ -69,7 +71,7 @@ int movingWindowIntegration() {
 		buf += squaredArray[(n-(N-i)+SIZE)%SIZE];
 	}
 
-	y[n] = buf/8;
+	y[n] = buf/N;
 	return y[n];
 }
 
