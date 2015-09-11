@@ -2,12 +2,6 @@
 #include <math.h>
 #include "sensor.h"
 
-// Not sure if useful...
-//typedef enum { false = 0, true = !false } bool; /* Taken from stackoverflow
-//				http://stackoverflow.com/questions/1921539/using-boolean-values-in-c
-//				By Michael Potter */
-
-
 #define SIZE 33
 #define N 30
 
@@ -23,7 +17,7 @@ int readData();
 int calculateIndex(int n, int i);
 void checkIfNIsOutOfBounds();
 
-int x[10001], y[10001], lowpassArray[10001], highpassArray[10001], derivativeArray[10001], squaredArray[10001];
+int x[SIZE], y[SIZE], lowpassArray[SIZE], highpassArray[SIZE], derivativeArray[SIZE], squaredArray[SIZE];
 int n = 0;
 
 // Main program
@@ -39,9 +33,9 @@ int main(int argc, char *argv[]) {
 		squaring();
 		movingWindowIntegration();
 
-		printf("%15d%15d%15d\n", n + 1, x[n], squaredArray[n]);
+		printf("%15d%15d%15d\n", n + 1, x[n], y[n]);
 		n++;
-		//checkIfNIsOutOfBounds();
+		checkIfNIsOutOfBounds();
 	}
 
 	// End of program
