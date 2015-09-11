@@ -11,16 +11,15 @@ int highPass(void);
 int derivative(void);
 int squaring(void);
 int movingWindowIntegration(void);
+int calculateIndex(int n, int i);
 void checkIfNIsOutOfBounds();
 
-
-// arrays
-int x[SIZE], y[SIZE], lowpassArray[SIZE], highpassArray[SIZE], derivativeArray[SIZE], squaredArray[30];
+int x[SIZE], y[SIZE], lowpassArray[SIZE], highpassArray[SIZE], derivativeArray[SIZE], squaredArray[SIZE];
 int n = 0;
 
 // Main program
 int main(int argc, char *argv[]) {
-	// Not sure if this will work
+	// Does not read the entire file
 	while((x[n] = getNextData()) != EOF) {
 		lowPass();
 		highPass();
@@ -28,34 +27,34 @@ int main(int argc, char *argv[]) {
 		squaring();
 		movingWindowIntegration();
 
-		printf("%15d:%15d", x[n], y[n]);
-
+		printf("%15d:%15d\n",x[n], y[n]);
 		n++;
-		checkIfNIsOutOfBounds(n);
+		checkIfNIsOutOfBounds();
 	}
 
 	// End of program
 	return 0;
 }
 
-// Filters here
+// Filter Implementation
 int lowPass(void) {
-	lowpassArray[n] = (2*lowpassArray[(n-1+SIZE)%SIZE]-lowpassArray[(n-2+SIZE)%SIZE]
-						+(x[n]-2*x[(n-6+SIZE)%SIZE]+x[(n-12+SIZE)%SIZE])/32);
+	lowpassArray[n] = (2*lowpassArray[calculateIndex(n, 1)]-
+			lowpassArray[calculateIndex(n, 2)]+(x[n]-
+			2*x[calculateIndex(n, 6)]+x[calculateIndex(n, 12)])/32);
 	return lowpassArray[n];
 }
 
 int highPass(void) {
-	// Uses floats
-	highpassArray[n]=highpassArray[(n-1+SIZE)%SIZE]-lowpassArray[n]/32.0+
-			lowpassArray[(n-16+SIZE)%SIZE]-lowpassArray[(n-17+SIZE)%SIZE]+
-			lowpassArray[(n-32+SIZE)%SIZE]/32.0;
+	highpassArray[n]=highpassArray[calculateIndex(n, 1)]-
+			lowpassArray[n]/32+lowpassArray[calculateIndex(n, 16)]-
+			lowpassArray[calculateIndex(n, 17)]+lowpassArray[calculateIndex(n, 32)]/32;
 	return highpassArray[n];
 }
 
 int derivative() {
-	derivativeArray[n]= (2*highpassArray[n]+highpassArray[(n-1+SIZE)%SIZE]-
-			highpassArray[(n-3+SIZE)%SIZE]-2*highpassArray[(n-4+SIZE)%SIZE])/8;
+	derivativeArray[n]=(2*highpassArray[n]+highpassArray[calculateIndex(n, 1)]
+						-highpassArray[calculateIndex(n, 3)]-
+						2*highpassArray[calculateIndex(n, 4)])/8;
 	return derivativeArray[n];
 }
 
@@ -67,8 +66,8 @@ int squaring() {
 int movingWindowIntegration() {
 	int buf = 0;
 
-	for (int i = 1; i < N; i++) {
-		buf += squaredArray[(n-(N-i)+SIZE)%SIZE];
+	for (int i = 1; i <= N; i++) {
+		buf += squaredArray[calculateIndex(n, (N-i))];
 	}
 
 	y[n] = buf/N;
@@ -76,9 +75,15 @@ int movingWindowIntegration() {
 }
 
 void checkIfNIsOutOfBounds() {
+	// Insures that the n variable never will be greater than the size of the array
 	if (n >= SIZE) {
 		n = 0;
 	}
+}
+
+// Function calculates the previous index relative to the size of the array
+int calculateIndex(int n, int i) {
+	return (n-i+SIZE)%SIZE;
 }
 
 
