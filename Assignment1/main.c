@@ -22,8 +22,6 @@ int n = 0;
 
 // Main program
 int main(int argc, char *argv[]) {
-	// Does not read the entire file
-
 	printf("%15s%15s%15s\n", "Number", "Data Read", "Output");
 
 	while(readData()) {
