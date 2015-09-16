@@ -5,14 +5,17 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
 ../main.c \
+../peaks.c \
 ../sensor.c 
 
 OBJS += \
 ./main.o \
+./peaks.o \
 ./sensor.o 
 
 C_DEPS += \
 ./main.d \
+./peaks.d \
 ./sensor.d 
 
 
