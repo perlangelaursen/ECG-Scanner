@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "sensor.h"
+#include "peaks.h"
 
 #define SIZE 33
 #define N 30
@@ -27,7 +28,7 @@ int n = 0;
 
 // Main program
 int main(int argc, char *argv[]) {
-	printf("%15s%15s%15s\n", "Number", "Data Read", "Output");
+	//printf("%15s%15s%15s\n", "Number", "Data Read", "Output");
 
 	while(readData()) {
 		lowPass();
@@ -36,11 +37,16 @@ int main(int argc, char *argv[]) {
 		squaring();
 		movingWindowIntegration();
 
-		printf("%15d%15d%15d\n", n + 1, x[calcIndex(n, 0, xSize)], y[calcIndex(n, 0, ySize)]);
-		n++;
+		//printf("%15d%15d%15d\n", n + 1, x[calcIndex(n, 0, xSize)], y[calcIndex(n, 0, ySize)]);
+
 		//checkIfNIsOutOfBounds();
+
+		detectPeak(y, n - 1, ySize);
+
+		n++;
 	}
 
+	printf("Stopped program\n");
 	// End of program
 	return 0;
 }

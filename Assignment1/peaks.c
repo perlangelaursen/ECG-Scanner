@@ -1,12 +1,19 @@
 #include "peaks.h"
+int rrHigh = 10000;
 
-
-int detectPeak(int x[], int n){
-	if(x[n-1] < x[n] && x[n] > x[n+1]){
-		 peaks[(i + peakSize) % peakSize] = x[n];
-		 if(peaks[i] > thres1){
+int detectPeak(int x[], int n, int size){
+	//printf("%5d xn-1 %15d x: %5d xn+1:%5d\n", n, x[n-1], x[n], x[n+1]);
+	if(x[(n-1+size)%size] < x[(n+size)%size] && x[(n+size)%size] > x[(n+1+size)%size]){
+		 peaks[(i + peakSize) % peakSize] = x[(n-1+size)%size];
+		 if(peaks[(i + peakSize) % peakSize] > thres1){
 			 rr[(j + rrSize) % rrSize] = n - lastPeak;
 			 rrOk[(j + rrSize) % rrSize] = n - lastPeakOk;
+
+		//	 printf("RR__OK: %d\n", rrOk[(j + rrSize) % rrSize]);
+			// printf("R_Peak: %d\n", peaks[(i + peakSize) % peakSize]);
+
+			 //printf("j: %d\n", i);
+			 //printf("n: %d\n", i);
 
 			 if(rrLow <  rrOk[(j + rrSize) % rrSize] &&  rrOk[(j + rrSize) % rrSize] < rrHigh){
 				 rPeaks[j] = peaks[(i + peakSize) % peakSize];
@@ -21,6 +28,7 @@ int detectPeak(int x[], int n){
 
 				 thres1 = npkf + (spkf-npkf)/4;
 				 thres2 = thres1/2;
+
 			 }else if(rrOk[(j + rrSize) % rrSize] > rrMiss){
 				 int m = i;
 				 while(peaks[(m + peakSize) % peakSize] <= thres2){
@@ -45,6 +53,7 @@ int detectPeak(int x[], int n){
 			 npkf = peaks[(i + peakSize) % peakSize]/8 + 7*npkf/8;
 			 thres1 = npkf + (spkf-npkf)/4;
 			 thres2 = thres1/2;
+
 		 }
 		 lastPeak = n;
 		 i++;
