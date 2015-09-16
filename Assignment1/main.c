@@ -14,7 +14,7 @@ int movingWindowIntegration();
 
 // Additional function
 int readData();
-int calculateIndex(int n, int i);
+int calcIndex(int n, int i);
 void checkIfNIsOutOfBounds();
 
 int x[SIZE], y[SIZE], lowpassArray[SIZE], highpassArray[SIZE], derivativeArray[SIZE], squaredArray[SIZE];
@@ -55,23 +55,23 @@ int readData() {
 
 // Filter Implementation
 int lowPass() {
-	lowpassArray[n] = (2*lowpassArray[calculateIndex(n, 1)]-
-			lowpassArray[calculateIndex(n, 2)]+(x[n]-
-			2*x[calculateIndex(n, 6)]+x[calculateIndex(n, 12)])/32);
+	lowpassArray[n] = (2*lowpassArray[calcIndex(n, 1)]-
+			lowpassArray[calcIndex(n, 2)]+(x[n]-
+			2*x[calcIndex(n, 6)]+x[calcIndex(n, 12)])/32);
 	return lowpassArray[n];
 }
 
 int highPass() {
-	highpassArray[n]=highpassArray[calculateIndex(n, 1)]-
-			lowpassArray[n]/32+lowpassArray[calculateIndex(n, 16)]-
-			lowpassArray[calculateIndex(n, 17)]+lowpassArray[calculateIndex(n, 32)]/32;
+	highpassArray[n]=highpassArray[calcIndex(n, 1)]-
+			lowpassArray[n]/32+lowpassArray[calcIndex(n, 16)]-
+			lowpassArray[calcIndex(n, 17)]+lowpassArray[calcIndex(n, 32)]/32;
 	return highpassArray[n];
 }
 
 int derivative() {
-	derivativeArray[n]=(2*highpassArray[n]+highpassArray[calculateIndex(n, 1)]
-						-highpassArray[calculateIndex(n, 3)]-
-						2*highpassArray[calculateIndex(n, 4)])/8;
+	derivativeArray[n]=(2*highpassArray[n]+highpassArray[calcIndex(n, 1)]
+						-highpassArray[calcIndex(n, 3)]-
+						2*highpassArray[calcIndex(n, 4)])/8;
 	return derivativeArray[n];
 }
 
@@ -84,7 +84,7 @@ int movingWindowIntegration() {
 	int buf = 0;
 
 	for (int i = 1; i <= N; i++) {
-		buf += squaredArray[calculateIndex(n, (N-i))];
+		buf += squaredArray[calcIndex(n, (N-i))];
 	}
 
 	y[n] = buf/N;
@@ -99,7 +99,7 @@ void checkIfNIsOutOfBounds() {
 }
 
 // Function calculates the previous index relative to the size of the array
-int calculateIndex(int n, int i) {
+int calcIndex(int n, int i) {
 	return (n-i+SIZE)%SIZE;
 }
 
