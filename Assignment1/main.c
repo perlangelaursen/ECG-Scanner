@@ -21,16 +21,16 @@ int n = 0;
 
 // Main program
 int main(int argc, char *argv[]) {
-	printf("%15s%15s%15s\n", "Number", "Data Read", "Output");
+	//printf("%15s%15s%15s\n", "Number", "Data Read", "Output");
 
 	while(readData()) {
 		dataFilter(x, xSize, y, ySize, n);
 
-		printf("%15d%15d%15d\n", n + 1, x[calcIndex(n, 0, xSize)], y[calcIndex(n, 0, ySize)]);
+		//printf("%15d%15d%15d\n", n + 1, x[calcIndex(n, 0, xSize)], y[calcIndex(n, 0, ySize)]);
 
 		//checkIfNIsOutOfBounds();
 
-		//detectPeak(y, calcIndex(n, 1, ySize), ySize);
+		detectPeak(y, calcIndex(n, 1, ySize), ySize);
 
 		n++;
 	}

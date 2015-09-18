@@ -3,10 +3,10 @@
 
 #define peakSize 800
 #define rrSize 8
-static int peaks[peakSize], rPeaks[1000], rrRecent[rrSize], rrRecentOk[rrSize];
-static int i, j, lastPeak, lastPeakOk, thres1, thres2, spkf, npkf, rr, rrAverage1, rrAverage2, rrLow, rrMiss;
+static int peaks[peakSize], rrRecent[rrSize], rrRecentOk[rrSize];
+static int thres1, thres2, spkf, npkf, rr, rrAverage1, rrAverage2, rrLow, rrMiss;
 static int interval, peakCount, rpeakCount, missCount;
-static int rrHigh, rpeak;
+static int rrHigh, rpeak, time;
 
 int detectPeak(int x[], int n, int size);
 int calculateRR(void);
