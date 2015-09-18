@@ -1,26 +1,33 @@
 #include "peaks.h"
-int rrHigh = 10000;
+static int rrHigh = 10000;
+static int interval = 0;
+static int peakCount = 0;
+static int rpeakCount = 0;
+static int missCount = 0;
 
 int detectPeak(int x[], int n, int size){
-	//printf("%5d xn-1 %15d x: %5d xn+1:%5d\n", n, x[n-1], x[n], x[n+1]);
-	if(x[(n-1+size)%size] < x[(n+size)%size] && x[(n+size)%size] > x[(n+1+size)%size]){
-		 peaks[(i + peakSize) % peakSize] = x[(n-1+size)%size];
-		 if(peaks[(i + peakSize) % peakSize] > thres1){
-			 rr[(j + rrSize) % rrSize] = n - lastPeak;
-			 rrOk[(j + rrSize) % rrSize] = n - lastPeakOk;
+	int isPeakDetected = 0;
 
-		//	 printf("RR__OK: %d\n", rrOk[(j + rrSize) % rrSize]);
-			// printf("R_Peak: %d\n", peaks[(i + peakSize) % peakSize]);
+	if(x[calcPIndex(n, 1, size)] < x[n] && x[n] > x[calcPIndex(n, -1, size)]){
+		 peaks[(peakCount + peakSize) % peakSize] = x[n];
+		 if(peaks[(peakCount + peakSize) % peakSize] > thres1)
+		 {
 
-			 //printf("j: %d\n", i);
-			 //printf("n: %d\n", i);
+			 rr = calculateRR();
 
-			 if(rrLow <  rrOk[(j + rrSize) % rrSize] &&  rrOk[(j + rrSize) % rrSize] < rrHigh){
-				 rPeaks[j] = peaks[(i + peakSize) % peakSize];
-				 spkf = peaks[(i + peakSize) % peakSize]/8 + 7*spkf/8;
+			 if(rrLow <  rr && rr < rrHigh)
+			 {
+				 rpeak = peaks[(peakCount + peakSize) % peakSize];
 
-				 rrAverage1 = (rrAverage1*(rrSize-1) - rr[(j + 1 + rrSize) % rrSize] + rr[(j + rrSize) % rrSize])/8;
-				 rrAverage2 = (rrAverage2*(rrSize-1) - rrOk[(j + 1 + rrSize) % rrSize] + rrOk[(j + rrSize) % rrSize])/8;
+				 printf("%15d %15d", rr, rpeak);
+
+				 rrRecent[(rpeakCount + rrSize) % rrSize] = rr;
+				 rrRecentOk[(rpeakCount + rrSize) % rrSize] = rr;
+
+				 spkf = peaks[(peakCount + peakSize) % peakSize]/8 + 7*spkf/8;
+
+				 rrAverage1 = calcRRAverage1();
+				 rrAverage2 = calcRRAverage2();
 
 				 rrLow = 92*rrAverage2/100;
 				 rrHigh = 116*rrAverage2/100;
@@ -29,36 +36,89 @@ int detectPeak(int x[], int n, int size){
 				 thres1 = npkf + (spkf-npkf)/4;
 				 thres2 = thres1/2;
 
-			 }else if(rrOk[(j + rrSize) % rrSize] > rrMiss){
-				 int m = i;
-				 while(peaks[(m + peakSize) % peakSize] <= thres2){
-					 m--;
+				 rpeakCount++;
+				 missCount = 0;
+
+				 isPeakDetected = 1;
+
+			 } else
+			 {
+				 missCount++;
+
+				 if(rr > rrMiss)
+				 {
+					 if(searchBack())
+					 {
+						 rpeak = peaks[(peakCount + peakSize) % peakSize];
+						 rrRecentOk[(rpeakCount + rrSize) % rrSize] = rr;
+						 spkf = peaks[(peakCount + peakSize) % peakSize]/8 + 7*spkf/8;
+						 rrAverage1 = calcRRAverage1();
+						 rrLow = 92*rrAverage1/100;
+						 rrHigh = 116*rrAverage1/100;
+						 rrMiss = 166*rrAverage1/100;
+
+						 thres1 = npkf + (spkf-npkf)/4;
+						 thres2 = thres1/2;
+						 rpeakCount++;
+
+					 }
 				 }
-				 rPeaks[j] = peaks[(i + peakSize) % peakSize];
-				 spkf = peaks[(i + peakSize) % peakSize]/8 + 7*spkf/8;
-
-				 rrAverage1 = (rrAverage1*(rrSize-1) - rr[(j + 1 + rrSize) % rrSize] + rr[(j + rrSize) % rrSize])/8;
-
-				 rrLow = 92*rrAverage2/100;
-				 rrHigh = 116*rrAverage2/100;
-				 rrMiss = 166*rrAverage2/100;
-
-				 thres1 = npkf + (spkf-npkf)/4;
-				 thres2 = thres1/2;
 			 }
 
-			 lastPeakOk = n;
-			 j++;
-		 }else{
-			 npkf = peaks[(i + peakSize) % peakSize]/8 + 7*npkf/8;
+			 //lastPeakOk = n;
+			 //j++;
+		 }
+		 else
+		 {
+			 npkf = peaks[(peakCount + peakSize) % peakSize] + 7*npkf/8;
 			 thres1 = npkf + (spkf-npkf)/4;
 			 thres2 = thres1/2;
 
 		 }
-		 lastPeak = n;
-		 i++;
+		 peakCount++;
+	}
+	interval++;
+
+	return isPeakDetected;
+}
+
+int searchBack(void) {
+	int i = 0;
+	int peak2 = 0;
+	while(i < peakSize) {
+		peak2 = peaks[(peakCount-i)%peakSize];
+		if (peak2 > thres2) {
+			return 1;
+		}
 	}
 	return 0;
+}
+
+int calcRRAverage1(void) {
+	int sum = 0;
+	for(int i = 0; i < rrSize; i++) {
+		sum += rrRecent[i];
+	}
+	return sum/rrSize;
+}
+
+int calcRRAverage2(void) {
+	int sum = 0;
+	for(int i = 0; i < rrSize; i++) {
+		sum += rrRecentOk[i];
+	}
+	return sum/rrSize;
+}
+
+int calculateRR(void) {
+	int temp = interval;
+	interval = 0;
+	return temp;
+}
+
+// Function calculates the previous index relative to the size of the array
+int calcPIndex(int n, int i, int size) {
+	return (n - i + size) % size;
 }
 
 
