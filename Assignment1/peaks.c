@@ -18,13 +18,13 @@ int detectPeak(int x[], int n, int size){
 
 			 if(rrLow <  rr && rr < rrHigh)
 			 {
-				 rpeak = peaks[(peakCount) % peakSize];
+				 rpeak = peaks[(peakCount+peakSize) % peakSize];
 
 				 printf("%15d %15d\n", time, rpeak);
-				 spkf = peaks[(peakCount) % peakSize]/8 + 7*spkf/8;
+				 spkf = peaks[(peakCount+peakSize) % peakSize]/8 + 7*spkf/8;
 
-				 rrRecentOk[(rpeakCount) % rrSize] = rr;
-				 rrRecent[(rpeakCount) % rrSize] = rr;
+				 rrRecentOk[(rpeakCount+rrSize) % rrSize] = rr;
+				 rrRecent[(rpeakCount+rrSize) % rrSize] = rr;
 
 				 rrAverage2 = calcRRAverage2();
 				 rrAverage1 = calcRRAverage1();
@@ -52,9 +52,9 @@ int detectPeak(int x[], int n, int size){
 					 {
 						 rpeak = peak;
 						 printf("%15d %15d\n", time, rpeak);
-						 spkf = peak/8 + 7*spkf/8;
+						 spkf = peak/4 + 3*spkf/4;
 
-						 rrRecent[(rpeakCount) % rrSize] = rr;
+						 rrRecent[(rpeakCount+rrSize) % rrSize] = rr;
 
 						 rrAverage1 = calcRRAverage1();
 						 rrLow = 92*rrAverage1/100;
@@ -70,7 +70,7 @@ int detectPeak(int x[], int n, int size){
 		 }
 		 else
 		 {
-			 npkf = peaks[(peakCount) % peakSize] + 7*npkf/8;
+			 npkf = peaks[(peakCount+peakSize) % peakSize]/8 + 7*npkf/8;
 			 thres1 = npkf + (spkf-npkf)/4;
 			 thres2 = thres1/2;
 
@@ -83,12 +83,10 @@ int detectPeak(int x[], int n, int size){
 }
 
 int searchBack(void) {
-	int i = 0;
-	while(i < peakSize) {
-		if (peaks[(peakCount-i)%peakSize] > thres2) {
-			return peaks[(peakCount-i)%peakSize];
+	for(int i = 0; i < peakSize; i++){
+		if (peaks[(peakCount-i+peakSize)%peakSize] > thres2) {
+			return peaks[(peakCount-i+peakSize)%peakSize];
 		}
-		i++;
 	}
 	return NULL;
 }
