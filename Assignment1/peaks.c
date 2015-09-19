@@ -10,8 +10,8 @@ int detectPeak(int x[], int n, int size){
 	int isPeakDetected = 0;
 
 	if(x[calcPIndex(n, 1, size)] < x[n] && x[n] > x[calcPIndex(n, -1, size)]){
-		 peaks[(peakCount) % peakSize] = x[n];
-		 if(peaks[(peakCount) % peakSize] > thres1)
+		 peaks[(peakCount+peakSize) % peakSize] = x[n];
+		 if(peaks[(peakCount+peakSize) % peakSize] > thres1)
 		 {
 
 			 rr = calculateRR();
@@ -19,6 +19,8 @@ int detectPeak(int x[], int n, int size){
 			 if(rrLow <  rr && rr < rrHigh)
 			 {
 				 rpeak = peaks[(peakCount+peakSize) % peakSize];
+
+				 bloodPressureCheck();
 
 				 printf("%15d %15d\n", time, rpeak);
 				 spkf = peaks[(peakCount+peakSize) % peakSize]/8 + 7*spkf/8;
@@ -29,9 +31,9 @@ int detectPeak(int x[], int n, int size){
 				 rrAverage2 = calcRRAverage2();
 				 rrAverage1 = calcRRAverage1();
 
-				 rrLow = 92*rrAverage2/100;
-				 rrHigh = 116*rrAverage2/100;
-				 rrMiss = 166*rrAverage2/100;
+				 rrLow = (92*rrAverage2)/100;
+				 rrHigh = (116*rrAverage2)/100;
+				 rrMiss = (166*rrAverage2)/100;
 
 				 thres1 = npkf + (spkf-npkf)/4;
 				 thres2 = thres1/2;
@@ -41,36 +43,41 @@ int detectPeak(int x[], int n, int size){
 
 				 isPeakDetected = 1;
 
-			 } else
+			 } else if ((rr > rrHigh && rr < rrMiss) || (rr < rrMiss))
+			 {
+				missCount++;
+				checkRRMiss();
+			 }
+			 else if (rr > rrMiss)
 			 {
 				 missCount++;
+				 checkRRMiss();
 
-				 if(rr > rrMiss)
+				 int peak = searchBack();
+				 if(peak != NULL)
 				 {
-					 int peak = searchBack();
-					 if(peak != NULL)
-					 {
-						 rpeak = peak;
-						 printf("%15d %15d\n", time, rpeak);
-						 spkf = peak/4 + 3*spkf/4;
+					 rpeak = peak;
+					 printf("%15d %15d\n", time, rpeak);
+					 //Should be formula below but prints too many results
+					 //spkf = peak/4 + (3*spkf)/4;
+					 spkf = peak/8 + (7*spkf)/8;
 
-						 rrRecent[(rpeakCount+rrSize) % rrSize] = rr;
+					 rrRecent[(rpeakCount+rrSize) % rrSize] = rr;
 
-						 rrAverage1 = calcRRAverage1();
-						 rrLow = 92*rrAverage1/100;
-						 rrHigh = 116*rrAverage1/100;
-						 rrMiss = 166*rrAverage1/100;
+					 rrAverage1 = calcRRAverage1();
+					 rrLow = (92*rrAverage2)/100;
+					 rrHigh = (116*rrAverage2)/100;
+					 rrMiss = (166*rrAverage2)/100;
 
-						 thres1 = npkf + (spkf-npkf)/4;
-						 thres2 = thres1/2;
-						 rpeakCount++;
-					 }
+					 thres1 = npkf + (spkf-npkf)/4;
+					 thres2 = thres1/2;
+					 rpeakCount++;
 				 }
 			 }
 		 }
 		 else
 		 {
-			 npkf = peaks[(peakCount+peakSize) % peakSize]/8 + 7*npkf/8;
+			 npkf = peaks[(peakCount+peakSize) % peakSize]/8 + (7*npkf)/8;
 			 thres1 = npkf + (spkf-npkf)/4;
 			 thres2 = thres1/2;
 
@@ -89,6 +96,12 @@ int searchBack(void) {
 		}
 	}
 	return NULL;
+}
+
+void checkRRMiss(void) {
+	if(missCount >= 5) {
+		printf("HEART BEAT IRREGULAR\n SEEK MEDICAL ASSISTANCE");
+	}
 }
 
 int calcRRAverage1(void) {
@@ -112,6 +125,12 @@ int calculateRR(void) {
 	time += interval;
 	interval = 0;
 	return temp;
+}
+
+void bloodPressureCheck(void) {
+	if (rpeak < 2000) {
+		printf("BLOOD PRESSURE: %d\n SEEK MEDICAL ASSISTANCE", rpeak);
+	}
 }
 
 // Function calculates the previous index relative to the size of the array

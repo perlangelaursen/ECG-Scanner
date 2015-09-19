@@ -15,7 +15,7 @@ void checkIfNIsOutOfBounds();
 #define lowPassSize 33
 #define highPassSize 5
 #define squaredSize 31
-#define ySize 31
+#define ySize 3
 int x[xSize], y[ySize];
 int n = 0;
 

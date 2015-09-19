@@ -13,4 +13,6 @@ int calculateRR(void);
 int calcRRAverage1(void);
 int calcRRAverage2(void);
 int searchBack(void);
+void checkRRMiss(void);
+void bloodPressureCheck(void);
 int calcPIndex(int n, int i, int size);
