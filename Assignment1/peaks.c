@@ -1,5 +1,9 @@
 #include "peaks.h"
-static int rrHigh = 10000;
+static int rrHigh = 246; //Initial value
+static int rrMiss = 120; //Initial value
+static int rrLow = 342; // Initial value
+static int spkf = 4500; // Initial value
+static int npkf = 2000; // Initial value
 static int interval = 0;
 static int peakCount = 0;
 static int rpeakCount = 0;
@@ -43,36 +47,30 @@ int detectPeak(int x[], int n, int size){
 
 				 isPeakDetected = 1;
 
-			 } else if ((rr > rrHigh && rr < rrMiss) || (rr < rrMiss))
+			 } else
 			 {
 				missCount++;
 				checkRRMiss();
-			 }
-			 else if (rr > rrMiss)
-			 {
-				 missCount++;
-				 checkRRMiss();
+				if(rr > rrMiss) {
+					int peak = searchBack();
+					if(peak != NULL)
+					{
+						rpeak = peak;
+						printf("%15d %15d\n", time, rpeak);
+						spkf = peak/4 + (3*spkf)/4;
 
-				 int peak = searchBack();
-				 if(peak != NULL)
-				 {
-					 rpeak = peak;
-					 printf("%15d %15d\n", time, rpeak);
-					 //Should be formula below but prints too many results
-					 //spkf = peak/4 + (3*spkf)/4;
-					 spkf = peak/8 + (7*spkf)/8;
+						rrRecent[(rpeakCount+rrSize) % rrSize] = rr;
 
-					 rrRecent[(rpeakCount+rrSize) % rrSize] = rr;
+						rrAverage1 = calcRRAverage1();
+						rrLow = (92*rrAverage2)/100;
+						rrHigh = (116*rrAverage2)/100;
+						rrMiss = (166*rrAverage2)/100;
 
-					 rrAverage1 = calcRRAverage1();
-					 rrLow = (92*rrAverage2)/100;
-					 rrHigh = (116*rrAverage2)/100;
-					 rrMiss = (166*rrAverage2)/100;
-
-					 thres1 = npkf + (spkf-npkf)/4;
-					 thres2 = thres1/2;
-					 rpeakCount++;
-				 }
+						thres1 = npkf + (spkf-npkf)/4;
+						thres2 = thres1/2;
+						rpeakCount++;
+					}
+				}
 			 }
 		 }
 		 else
@@ -100,7 +98,8 @@ int searchBack(void) {
 
 void checkRRMiss(void) {
 	if(missCount >= 5) {
-		printf("HEART BEAT IRREGULAR\n SEEK MEDICAL ASSISTANCE");
+		printf("HEART BEAT IRREGULAR\nSEEK MEDICAL ASSISTANCE\n");
+		missCount = 0;
 	}
 }
 
@@ -129,7 +128,7 @@ int calculateRR(void) {
 
 void bloodPressureCheck(void) {
 	if (rpeak < 2000) {
-		printf("BLOOD PRESSURE: %d\n SEEK MEDICAL ASSISTANCE", rpeak);
+		printf("BLOOD PRESSURE: %d\nSEEK MEDICAL ASSISTANCE\n", rpeak);
 	}
 }
 
