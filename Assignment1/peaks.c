@@ -14,16 +14,16 @@ static int recentCounter = 0;
 static int recentOkCounter = 0;
 static int timer = 0;
 
-int detectPeak(int x[], int n, int size){
-	int isPeakDetected = 0;
-
+void detectPeak(int x[], int n, int size){
 	if(x[calcPIndex(n, 1, size)] < x[n] && x[n] > x[calcPIndex(n, -1, size)]){
 		 peaks[(peakCount+peakSize) % peakSize] = x[n];
 		 if(peaks[(peakCount+peakSize) % peakSize] > thres1){
+
 			 rr = calculateRR();
 			 interval = 0;
 			 //printf("RR interval: %d %5d %5d\n", rr, peaks[(peakCount+peakSize) % peakSize],thres1);
 			 if(rrLow <  rr && rr < rrHigh){
+
 				 rpeak = peaks[(peakCount+peakSize) % peakSize];
 
 				 bloodPressureCheck();
@@ -49,9 +49,10 @@ int detectPeak(int x[], int n, int size){
 				 rpeakCount++;
 				 missCount = 0;
 
-				 isPeakDetected = 1;
 
-			 } else{
+			 } else {
+				missCount++;
+				checkRRMiss();
 				if(rr > rrMiss) {
 					int peak = searchBack();
 					if(peak != 0){
@@ -86,7 +87,6 @@ int detectPeak(int x[], int n, int size){
 		 //printf("\n Average1: %5d%5d \n ", rrAverage1, rrAverage2);
 	}
 	interval++;
-	return isPeakDetected;
 }
 
 int searchBack(void) {
