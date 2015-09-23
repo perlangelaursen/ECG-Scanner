@@ -34,9 +34,6 @@ int main(int argc, char *argv[]) {
 
 		n++;
 	}
-
-	printf("Stopped program\n");
-	// End of program
 	return 0;
 }
 

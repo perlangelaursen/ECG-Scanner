@@ -10,18 +10,14 @@ static int rpeakCount = 0;
 static int missCount = 0;
 static int time = 0;
 
-int detectPeak(int x[], int n, int size){
-	int isPeakDetected = 0;
-
+void detectPeak(int x[], int n, int size){
 	if(x[calcPIndex(n, 1, size)] < x[n] && x[n] > x[calcPIndex(n, -1, size)]){
 		 peaks[(peakCount+peakSize) % peakSize] = x[n];
-		 if(peaks[(peakCount+peakSize) % peakSize] > thres1)
-		 {
+		 if(peaks[(peakCount+peakSize) % peakSize] > thres1) {
 
 			 rr = calculateRR();
 
-			 if(rrLow <  rr && rr < rrHigh)
-			 {
+			 if(rrLow <  rr && rr < rrHigh) {
 				 rpeak = peaks[(peakCount+peakSize) % peakSize];
 
 				 bloodPressureCheck();
@@ -45,16 +41,12 @@ int detectPeak(int x[], int n, int size){
 				 rpeakCount++;
 				 missCount = 0;
 
-				 isPeakDetected = 1;
-
-			 } else
-			 {
+			 } else {
 				missCount++;
 				checkRRMiss();
 				if(rr > rrMiss) {
 					int peak = searchBack();
-					if(peak != NULL)
-					{
+					if(peak != NULL) {
 						rpeak = peak;
 						printf("%15d %15d\n", time, rpeak);
 						spkf = peak/4 + (3*spkf)/4;
@@ -73,8 +65,7 @@ int detectPeak(int x[], int n, int size){
 				}
 			 }
 		 }
-		 else
-		 {
+		 else {
 			 npkf = peaks[(peakCount+peakSize) % peakSize]/8 + (7*npkf)/8;
 			 thres1 = npkf + (spkf-npkf)/4;
 			 thres2 = thres1/2;
@@ -83,8 +74,6 @@ int detectPeak(int x[], int n, int size){
 		 peakCount++;
 	}
 	interval++;
-
-	return isPeakDetected;
 }
 
 int searchBack(void) {
