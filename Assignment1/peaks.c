@@ -1,42 +1,46 @@
 #include "peaks.h"
-static int rrHigh = 246; //Initial value
-static int rrMiss = 120; //Initial value
-static int rrLow = 342; // Initial value
-static int spkf = 4500; // Initial value
-static int npkf = 2000; // Initial value
+static int rrHigh = 174; //Initial value Based on typical interval of 150
+static int rrMiss = 249; //Initial value Based on typical interval of 150
+static int rrLow = 138; // Initial value Based on typical interval of 150
+static int spkf = 4700; // Initial value Approx average of rpeaks
+static int npkf = 2300; // Initial value
+static int thres1 = 3500;
+static int thres2 = 1750;
 static int interval = 0;
 static int peakCount = 0;
 static int rpeakCount = 0;
 static int missCount = 0;
-static int time = 0;
+static int recentCounter = 0;
+static int recentOkCounter = 0;
+static int timer = 0;
 
 int detectPeak(int x[], int n, int size){
 	int isPeakDetected = 0;
 
 	if(x[calcPIndex(n, 1, size)] < x[n] && x[n] > x[calcPIndex(n, -1, size)]){
 		 peaks[(peakCount+peakSize) % peakSize] = x[n];
-		 if(peaks[(peakCount+peakSize) % peakSize] > thres1)
-		 {
-
+		 if(peaks[(peakCount+peakSize) % peakSize] > thres1){
 			 rr = calculateRR();
-
-			 if(rrLow <  rr && rr < rrHigh)
-			 {
+			 interval = 0;
+			 //printf("RR interval: %d %5d %5d\n", rr, peaks[(peakCount+peakSize) % peakSize],thres1);
+			 if(rrLow <  rr && rr < rrHigh){
 				 rpeak = peaks[(peakCount+peakSize) % peakSize];
 
 				 bloodPressureCheck();
 
-				 printf("%15d %15d\n", time, rpeak);
+				 printf("%15d %15d %15R-Peak %15d %15d %15d\n", timer, rpeak, rrLow, rrHigh, thres1);
 				 spkf = peaks[(peakCount+peakSize) % peakSize]/8 + 7*spkf/8;
 
 				 rrRecentOk[(rpeakCount+rrSize) % rrSize] = rr;
 				 rrRecent[(rpeakCount+rrSize) % rrSize] = rr;
+				 recentCounter++;
+				 recentOkCounter++;
 
 				 rrAverage2 = calcRRAverage2();
 				 rrAverage1 = calcRRAverage1();
 
-				 rrLow = (92*rrAverage2)/100;
-				 rrHigh = (116*rrAverage2)/100;
+				 rrLow = (72*rrAverage2)/100;
+				 rrHigh = (125*rrAverage2)/100;
 				 rrMiss = (166*rrAverage2)/100;
 
 				 thres1 = npkf + (spkf-npkf)/4;
@@ -47,43 +51,41 @@ int detectPeak(int x[], int n, int size){
 
 				 isPeakDetected = 1;
 
-			 } else
-			 {
-				missCount++;
-				checkRRMiss();
+			 } else{
 				if(rr > rrMiss) {
 					int peak = searchBack();
-					if(peak != NULL)
-					{
+					if(peak != 0){
+
 						rpeak = peak;
-						printf("%15d %15d\n", time, rpeak);
+						printf("%15d %15d %15Miss-Peak\n", timer, rpeak);
 						spkf = peak/4 + (3*spkf)/4;
 
 						rrRecent[(rpeakCount+rrSize) % rrSize] = rr;
+						recentCounter++;
 
 						rrAverage1 = calcRRAverage1();
-						rrLow = (92*rrAverage2)/100;
-						rrHigh = (116*rrAverage2)/100;
-						rrMiss = (166*rrAverage2)/100;
+						rrLow = (92*rrAverage1)/100;
+						rrHigh = (116*rrAverage1)/100;
+						rrMiss = (166*rrAverage1)/100;
 
 						thres1 = npkf + (spkf-npkf)/4;
 						thres2 = thres1/2;
 						rpeakCount++;
 					}
 				}
+				checkRRMiss();
+				missCount++;
 			 }
-		 }
-		 else
-		 {
+		 }else{
 			 npkf = peaks[(peakCount+peakSize) % peakSize]/8 + (7*npkf)/8;
 			 thres1 = npkf + (spkf-npkf)/4;
 			 thres2 = thres1/2;
 
 		 }
 		 peakCount++;
+		 //printf("\n Average1: %5d%5d \n ", rrAverage1, rrAverage2);
 	}
 	interval++;
-
 	return isPeakDetected;
 }
 
@@ -93,12 +95,12 @@ int searchBack(void) {
 			return peaks[(peakCount-i+peakSize)%peakSize];
 		}
 	}
-	return NULL;
+	return 0;
 }
 
 void checkRRMiss(void) {
 	if(missCount >= 5) {
-		printf("HEART BEAT IRREGULAR\nSEEK MEDICAL ASSISTANCE\n");
+		printf("HEART BEAT IRREGULAR SEEK MEDICAL ASSISTANCE%15d\n");
 		missCount = 0;
 	}
 }
@@ -108,21 +110,26 @@ int calcRRAverage1(void) {
 	for(int i = 0; i < rrSize; i++) {
 		sum += rrRecent[i];
 	}
-	return sum/rrSize;
+	int no = (recentCounter <= rrSize) ? recentCounter : rrSize;
+
+	return sum/no;
 }
 
 int calcRRAverage2(void) {
+
 	int sum = 0;
 	for(int i = 0; i < rrSize; i++) {
 		sum += rrRecentOk[i];
 	}
-	return sum/rrSize;
+	int no = (recentOkCounter <= rrSize) ? recentOkCounter : rrSize;
+
+	return sum/no;
 }
 
 int calculateRR(void) {
 	int temp = interval;
-	time += interval;
-	interval = 0;
+	timer += interval;
+	//interval = 0;
 	return temp;
 }
 
