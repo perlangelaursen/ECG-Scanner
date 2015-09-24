@@ -8,6 +8,10 @@
 // Additional function
 int readData();
 int calcIndex(int n, int i, int size);
+void startClock();
+void pauseClock();
+void unPauseClock();
+void stopClock();
 
 #define xSize 13
 #define lowPassSize 33
@@ -17,13 +21,16 @@ int calcIndex(int n, int i, int size);
 int x[xSize], y[ySize];
 int n = 0;
 
+// For measuring code execution time
+clock_t start, end;
+double cpu_time_used;
+
 // Main program
 int main(int argc, char *argv[]) {
 	//printf("%15s%15s%15s\n", "Number", "Data Read", "Output");
 
-	clock_t start, end;
-	double cpu_time_used;
-	start = clock();
+	startClock();
+
 
 	while(readData()) {
 		dataFilter(x, xSize, y, ySize, n);
@@ -35,8 +42,7 @@ int main(int argc, char *argv[]) {
 		n++;
 	}
 
-	end = clock();
-	cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+	stopClock();
 
 	printf("Time spent on entire program: %g\n", cpu_time_used);
 
@@ -61,12 +67,20 @@ int calcIndex(int n, int i, int size) {
 	return (n - i + size) % size;
 }
 
+void startClock() {
+	start = clock();
+}
 
+void pauseClock() {
+	end = clock();
+}
 
+void unPauseClock() {
+	clock_t tempClock = clock();
+	start += tempClock - end;
+}
 
-
-
-
-
-
-
+void stopClock() {
+	end = clock();
+	cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+}
