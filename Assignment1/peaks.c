@@ -9,6 +9,7 @@ static int thres2 = 1750;
 static int rrRecent[rrSize] = {100,100,100,100,100,100,100,100};
 static int rrRecentOk[rrSize] = {151,151,151,151,151,151,151,151};
 static int interval = 0;
+static int sampleRate = 250;
 static int peakCount = 0;
 static int rpeakCount = 0;
 static int missCount = 0;
@@ -26,7 +27,7 @@ void detectPeak(int x[], int n, int size){
 
 				 bloodPressureCheck();
 
-				 printf("%15d %15d %15R-Peak %15d %15d %15d\n", timer, rpeak, rrLow, rrHigh, thres1);
+				 printf("%15d %15d %15R-Peak %15d \n", timer, rpeak, (60*sampleRate)/rr);
 				 spkf = peaks[(peakCount+peakSize) % peakSize]/8 + 7*spkf/8;
 
 				 rrRecentOk[(rpeakCount+rrSize) % rrSize] = rr;
