@@ -5,7 +5,7 @@
 #define rrSize 8
 static int peaks[peakSize], rrRecent[rrSize], rrRecentOk[rrSize];
 static int thres1, thres2, spkf, npkf, rr, rrAverage1, rrAverage2, rrLow, rrMiss;
-static int interval, peakCount, rpeakCount, missCount;
+static int rrInterval, peakCount, rpeakCount, missCount;
 static int rrHigh, rpeak, timer;
 
 void detectPeak(int x[], int n, int size);
