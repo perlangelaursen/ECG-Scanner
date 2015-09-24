@@ -39,7 +39,6 @@ int main(int argc, char *argv[]) {
 	cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
 
 	printf("%d",cpu_time_used);
-	printf("Stopped program\n");
 	// End of program
 	return 0;
 }

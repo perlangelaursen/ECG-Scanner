@@ -27,7 +27,7 @@ void detectPeak(int x[], int n, int size){
 
 				 bloodPressureCheck();
 
-				 printf("%15d %15d %15R-Peak %15d \n", timer, rpeak, (60*sampleRate)/rr);
+				 printf("Time: %5d R-Peak: %5d Pulse: %5d \n", timer, rpeak, (60*sampleRate)/rr);
 				 spkf = peaks[(peakCount+peakSize) % peakSize]/8 + 7*spkf/8;
 
 				 rrRecentOk[(rpeakCount+rrSize) % rrSize] = rr;
