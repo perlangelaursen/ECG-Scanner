@@ -1,7 +1,7 @@
 #include "peaks.h"
 static int rrHigh = 246; //Initial value
-static int rrMiss = 120; //Initial value
-static int rrLow = 342; // Initial value
+static int rrMiss = 342; //Initial value
+static int rrLow = 120; // Initial value
 static int spkf = 4500; // Initial value
 static int npkf = 2000; // Initial value
 static int interval = 0;
