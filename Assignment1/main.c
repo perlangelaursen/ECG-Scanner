@@ -5,12 +5,13 @@
 #include "filter.h"
 #include "peaks.h"
 
-#define SIZE 33
-
 // Additional function
 int readData();
 int calcIndex(int n, int i, int size);
-void checkIfNIsOutOfBounds();
+void startClock();
+void pauseClock();
+void unPauseClock();
+void stopClock();
 
 #define xSize 13
 #define lowPassSize 33
@@ -20,31 +21,31 @@ void checkIfNIsOutOfBounds();
 int x[xSize], y[ySize];
 int n = 0;
 
+// For measuring code execution time
+clock_t start, end;
+double cpu_time_used;
+
 // Main program
 int main(int argc, char *argv[]) {
 	//printf("%15s%15s%15s\n", "Number", "Data Read", "Output");
 
-	clock_t start, end;
-	double cpu_time_used;
-	start = clock();
+	startClock();
+
 
 	while(readData()) {
 		dataFilter(x, xSize, y, ySize, n);
 
 		//printf("%15d%15d%15d\n", n + 1, x[calcIndex(n, 0, xSize)], y[calcIndex(n, 0, ySize)]);
 
-		//checkIfNIsOutOfBounds();
-
 		detectPeak(y, calcIndex(n, 1, ySize), ySize);
 
 		n++;
 	}
 
-	end = clock();
-	cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+	stopClock();
 
-	printf("%d",cpu_time_used);
-	printf("Stopped program\n");
+	printf("Time spent on entire program: %g\n", cpu_time_used);
+
 	// End of program
 	return 0;
 }
@@ -61,24 +62,25 @@ int readData() {
 	return 1;
 }
 
-void checkIfNIsOutOfBounds() {
-	// Insures that the n variable never will be greater than the size of the array
-	if (n >= SIZE) {
-		n = 0;
-	}
-}
-
 // Function calculates the previous index relative to the size of the array
 int calcIndex(int n, int i, int size) {
 	return (n - i + size) % size;
 }
 
+void startClock() {
+	start = clock();
+}
 
+void pauseClock() {
+	end = clock();
+}
 
+void unPauseClock() {
+	clock_t tempClock = clock();
+	start += tempClock - end;
+}
 
-
-
-
-
-
-
+void stopClock() {
+	end = clock();
+	cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+}
