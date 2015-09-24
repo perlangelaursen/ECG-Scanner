@@ -55,7 +55,7 @@ void detectPeak(int x[], int n, int size){
 					if(peak != 0){
 
 						rpeak = peak;
-						printf("%15d %15d %15Miss-Peak\n", timer, rpeak);
+						printf("Time: %5d R-Peak: %5d Pulse: %5d \n", timer, rpeak, (60*sampleRate)/rr);
 						spkf = peak/4 + (3*spkf)/4;
 
 						rrRecent[(rpeakCount+rrSize) % rrSize] = rr;
