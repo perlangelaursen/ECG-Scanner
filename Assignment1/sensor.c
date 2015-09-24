@@ -1,6 +1,6 @@
 #include "sensor.h"
 
-static const char filename[] = "Files/ECG.txt";
+static const char filename[] = "Files/ECG10800K.txt";
 FILE *file;
 
 int getNextData() {
