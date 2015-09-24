@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <math.h>
+#include <time.h>
 #include "sensor.h"
 #include "filter.h"
 #include "peaks.h"
@@ -23,6 +24,10 @@ int n = 0;
 int main(int argc, char *argv[]) {
 	//printf("%15s%15s%15s\n", "Number", "Data Read", "Output");
 
+	clock_t start, end;
+	double cpu_time_used;
+	start = clock();
+
 	while(readData()) {
 		dataFilter(x, xSize, y, ySize, n);
 
@@ -34,6 +39,13 @@ int main(int argc, char *argv[]) {
 
 		n++;
 	}
+
+	end = clock();
+	cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+
+	printf("%d",cpu_time_used);
+	printf("Stopped program\n");
+	// End of program
 	return 0;
 }
 

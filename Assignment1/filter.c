@@ -4,7 +4,7 @@ void dataFilter(int x[], int xSize, int y[], int ySize, int n) {
 	lowPass(x, xSize, n);
 	highPass(n);
 	derivative(n);
-	squaring(n);
+	squared(n);
 	movingWindowIntegration(y, ySize, n);
 }
 
@@ -26,7 +26,7 @@ void derivative(int n) {
 							2*highpassArray[calcFIndex(n, 4, highPassSize)])/8;
 }
 
-void squaring(int n) {
+void squared(int n) {
 	squaredArray[calcFIndex(n, 0, squaredSize)] = derivativeNo*derivativeNo;
 }
 
