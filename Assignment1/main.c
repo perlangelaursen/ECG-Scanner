@@ -38,7 +38,8 @@ int main(int argc, char *argv[]) {
 	end = clock();
 	cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
 
-	printf("%d",cpu_time_used);
+	printf("Time spent on entire program: %g\n", cpu_time_used);
+
 	// End of program
 	return 0;
 }
