@@ -1,3 +1,5 @@
+#include "index.h"
+
 #define lowPassSize 33
 #define highPassSize 5
 #define squaredSize 31
@@ -14,4 +16,3 @@ void highPass(int n);
 void derivative(int n);
 void squared(int n);
 void movingWindowIntegration(int y[], int ySize, int n);
-int calcFIndex(int n, int i, int size);

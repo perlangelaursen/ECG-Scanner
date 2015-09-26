@@ -13,7 +13,7 @@ static int rrRecentOk[rrSize] = {151,151,151,151,151,151,151,151};
 static int sampleRate = 250;
 static int peakCount = 0;
 static int rpeakCount = 0;
-static int missCount = 0;
+static int rrMissCount = 0;
 static int timer = 0;
 static int rrInterval = 0;
 
@@ -48,12 +48,11 @@ void detectPeak(int x[], int n, int size){
 				 thres2 = thres1/2;
 
 				 rpeakCount++;
-				 missCount = 0;
+				 rrMissCount = 0;
 
 				 rrInterval = 0;
 			 } else {
-				//printf("MISS rrInterval: %d %5d %5d %5d\n", rr, timer, peaks[(peakCount+peakSize) % peakSize], rrInterval);
-				missCount++;
+				rrMissCount++;
 				checkRRMiss();
 				if(rrInterval > rrMiss) {
 					int peak = searchBack();
@@ -99,9 +98,9 @@ int searchBack(void) {
 }
 
 void checkRRMiss(void) {
-	if(missCount >= 5) {
+	if(rrMissCount >= 5) {
 		printf("HEART BEAT IRREGULAR SEEK MEDICAL ASSISTANCE%15d%15d\n", timer, rpeak);
-		missCount = 0;
+		rrMissCount = 0;
 	}
 }
 

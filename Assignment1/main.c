@@ -4,10 +4,10 @@
 #include "sensor.h"
 #include "filter.h"
 #include "peaks.h"
+#include "index.h"
 
 // Additional function
 int readData();
-int calcIndex(int n, int i, int size);
 void startClock();
 void pauseClock();
 void unPauseClock();
@@ -60,11 +60,6 @@ int readData() {
 
 	x[calcIndex(n, 0, xSize)] = dataRead;
 	return 1;
-}
-
-// Function calculates the previous index relative to the size of the array
-int calcIndex(int n, int i, int size) {
-	return (n - i + size) % size;
 }
 
 void startClock() {
