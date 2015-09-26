@@ -14,7 +14,7 @@ void pauseClock();
 void unPauseClock();
 void stopClock();
 
-#define xSize 13
+#define xSize 12
 #define ySize 3
 int x[xSize], y[ySize];
 int n = 0;
