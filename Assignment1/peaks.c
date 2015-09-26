@@ -18,7 +18,7 @@ static int timer = 0;
 static int rrInterval = 0;
 
 void detectPeak(int x[], int n, int size){
-	if(x[calcPIndex(n, 1, size)] < x[n] && x[n] > x[calcPIndex(n, -1, size)]){
+	if(x[calcIndex(n, 1, size)] < x[n] && x[n] > x[calcIndex(n, -1, size)]){
 		 peaks[(peakCount+peakSize) % peakSize] = x[n];
 		 if(peaks[(peakCount+peakSize) % peakSize] > thres1){
 
@@ -129,11 +129,6 @@ void bloodPressureCheck(void) {
 	if (rpeak < 2000) {
 		printf("BLOOD PRESSURE: %d\nSEEK MEDICAL ASSISTANCE\n", rpeak);
 	}
-}
-
-// Function calculates the previous index relative to the size of the array
-int calcPIndex(int n, int i, int size) {
-	return (n - i + size) % size;
 }
 
 

@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "index.h"
 
 #define peakSize 800
 #define rrSize 8
@@ -15,4 +16,3 @@ int calcRRAverage2(void);
 int searchBack(void);
 void checkRRMiss(void);
 void bloodPressureCheck(void);
-int calcPIndex(int n, int i, int size);
