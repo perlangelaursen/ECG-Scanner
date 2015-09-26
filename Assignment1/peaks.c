@@ -3,51 +3,45 @@ static int rrHigh = 174; //Initial value Based on typical thresInterval of 150
 static int rrMiss = 249; //Initial value Based on typical thresInterval of 150
 static int rrLow = 138; // Initial value Based on typical thresInterval of 150
 static int spkf = 4700; // Initial value Approx average of rpeaks
-static int npkf = 2300; // Initial value
-static int lowVar = 78;
-static int highVar = 116;
+static int npkf = 2300; // Initial value Approx average of noise peak
+const int lowVar = 78;
+const int highVar = 116;
+const int missVar = 166;
+const int sampleRate = 250;
 static int thres1 = 3500;
 static int thres2 = 1750;
 static int rrRecent[rrSize] = {100,100,100,100,100,100,100,100};
 static int rrRecentOk[rrSize] = {151,151,151,151,151,151,151,151};
-static int sampleRate = 250;
 static int peakCount = 0;
-static int rpeakCount = 0;
+static int rPeakCount = 0;
 static int rrMissCount = 0;
 static int timer = 0;
 static int rrInterval = 0;
 
 void detectPeak(int x[], int n, int size){
-	if(x[calcPIndex(n, 1, size)] < x[n] && x[n] > x[calcPIndex(n, -1, size)]){
+	if(x[calcIndex(n, 1, size)] < x[n] && x[n] > x[calcIndex(n, -1, size)]){
 		 peaks[(peakCount+peakSize) % peakSize] = x[n];
 		 if(peaks[(peakCount+peakSize) % peakSize] > thres1){
-
-			 //printf("RR thresInterval: %d %5d %5d\n", rrInterval, peaks[(peakCount+peakSize) % peakSize],thres1);
 			 if(rrLow <  rrInterval && rrInterval < rrHigh){
-
-				 //printf("RR rrInterval: %d %5d %5d %5d\n", rrInterval, timer, peaks[(peakCount+peakSize) % peakSize]);
 
 				 rpeak = peaks[(peakCount+peakSize) % peakSize];
 
-				 bloodPressureCheck();
+				 rPeakCheck();
 
 				 printf("Time: %5d R-Peak: %5d Pulse: %5d \n", timer, rpeak, (60*sampleRate)/rrInterval);
 				 spkf = peaks[(peakCount+peakSize) % peakSize]/8 + 7*spkf/8;
 
-				 rrRecentOk[(rpeakCount+rrSize) % rrSize] = rrInterval;
-				 rrRecent[(rpeakCount+rrSize) % rrSize] = rrInterval;
+				 rrRecentOk[(rPeakCount+rrSize) % rrSize] = rrInterval;
+				 rrRecent[(rPeakCount+rrSize) % rrSize] = rrInterval;
 
 				 rrAverage2 = calcRRAverage2();
 				 rrAverage1 = calcRRAverage1();
 
-				 rrLow = (lowVar*rrAverage2)/100;
-				 rrHigh = (highVar*rrAverage2)/100;
-				 rrMiss = (166*rrAverage2)/100;
+				 calcRRValues(rrAverage2);
 
-				 thres1 = npkf + (spkf-npkf)/4;
-				 thres2 = thres1/2;
+				 calcThreshold();
 
-				 rpeakCount++;
+				 rPeakCount++;
 				 rrMissCount = 0;
 
 				 rrInterval = 0;
@@ -61,31 +55,37 @@ void detectPeak(int x[], int n, int size){
 						printf("Time: %5d R-Peak: %5d Pulse: %5d \n", timer, rpeak, (60*sampleRate)/rrInterval);
 						spkf = peak/4 + (3*spkf)/4;
 
-						rrRecent[(rpeakCount+rrSize) % rrSize] = rrInterval;
+						rrRecent[(rPeakCount+rrSize) % rrSize] = rrInterval;
 
 						rrAverage1 = calcRRAverage1();
-						rrLow = (lowVar*rrAverage1)/100;
-						rrHigh = (highVar*rrAverage1)/100;
-						rrMiss = (166*rrAverage1)/100;
+						calcRRValues(rrAverage1);
 
-						thres1 = npkf + (spkf-npkf)/4;
-						thres2 = thres1/2;
-						rpeakCount++;
+						calcThreshold();
+						rPeakCount++;
 
-						 rrInterval = 0;
+						rrInterval = 0;
 					}
 				}
 			 }
 		 }else{
 			 npkf = peaks[(peakCount+peakSize) % peakSize]/8 + (7*npkf)/8;
-			 thres1 = npkf + (spkf-npkf)/4;
-			 thres2 = thres1/2;
-
+			 calcThreshold();
 		 }
 		 peakCount++;
 	}
 	rrInterval++;
 	timer++;
+}
+
+void calcThreshold(void) {
+	thres1 = npkf + (spkf-npkf)/4;
+	thres2 = thres1/2;
+}
+
+void calcRRValues(int avg) {
+	rrLow = (lowVar*avg)/100;
+	rrHigh = (highVar*avg)/100;
+	rrMiss = (missVar*avg)/100;
 }
 
 int searchBack(void) {
@@ -109,30 +109,22 @@ int calcRRAverage1(void) {
 	for(int i = 0; i < rrSize; i++) {
 		sum += rrRecent[i];
 	}
-
 	return sum/rrSize;
 }
 
 int calcRRAverage2(void) {
-
 	int sum = 0;
 	for(int i = 0; i < rrSize; i++) {
 		sum += rrRecentOk[i];
 	}
-
 	return sum/rrSize;
 }
 
 
-void bloodPressureCheck(void) {
+void rPeakCheck(void) {
 	if (rpeak < 2000) {
 		printf("BLOOD PRESSURE: %d\nSEEK MEDICAL ASSISTANCE\n", rpeak);
 	}
-}
-
-// Function calculates the previous index relative to the size of the array
-int calcPIndex(int n, int i, int size) {
-	return (n - i + size) % size;
 }
 
 
