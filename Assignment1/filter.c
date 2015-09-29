@@ -1,3 +1,8 @@
+/*
+ * author: Per Lange Laursen (s144456)
+ * memory optimized by Stefan Frederiksen (s144469)
+ */
+
 #include "filter.h"
 
 void dataFilter(int x[], int xSize, int y[], int ySize, int n) {

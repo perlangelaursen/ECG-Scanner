@@ -18,6 +18,10 @@ static int rrMissCount = 0;
 static int timer = 0;
 static int rrInterval = 0;
 
+/*
+ * structure of Peak Detection: Per Lange Laursen(s144456)
+ * optimized by Mathias Pedersen (s144486) and Stefan Frederiksen (s144469)
+ */
 void detectPeak(int x[], int n, int size){
 	if(x[calcIndex(n, 1, size)] < x[n] && x[n] > x[calcIndex(n, -1, size)]){
 		 peaks[(peakCount+peakSize) % peakSize] = x[n];
@@ -77,17 +81,20 @@ void detectPeak(int x[], int n, int size){
 	timer++;
 }
 
+// Written by Per Lange Laursen (s144456)
 void calcThreshold(void) {
 	thres1 = npkf + (spkf-npkf)/4;
 	thres2 = thres1/2;
 }
 
+// Written by Per Lange Laursen (s144456)
 void calcRRValues(int avg) {
 	rrLow = (lowVar*avg)/100;
 	rrHigh = (highVar*avg)/100;
 	rrMiss = (missVar*avg)/100;
 }
 
+// Written by Per Lange Laursen (s144456)
 int searchBack(void) {
 	for(int i = 0; i < peakSize; i++){
 		if (peaks[(peakCount-i+peakSize)%peakSize] > thres2) {
@@ -97,6 +104,7 @@ int searchBack(void) {
 	return 0;
 }
 
+// Written by Per Lange Laursen (s144456)
 void checkRRMiss(void) {
 	if(rrMissCount >= 5) {
 		printf("HEART BEAT IRREGULAR SEEK MEDICAL ASSISTANCE%15d%15d\n", timer, rpeak);
@@ -104,6 +112,7 @@ void checkRRMiss(void) {
 	}
 }
 
+// Written by Per Lange Laursen (s144456)
 int calcRRAverage1(void) {
 	int sum = 0;
 	for(int i = 0; i < rrSize; i++) {
@@ -112,6 +121,7 @@ int calcRRAverage1(void) {
 	return sum/rrSize;
 }
 
+// Written by Per Lange Laursen (s144456)
 int calcRRAverage2(void) {
 	int sum = 0;
 	for(int i = 0; i < rrSize; i++) {
@@ -120,7 +130,7 @@ int calcRRAverage2(void) {
 	return sum/rrSize;
 }
 
-
+// Written by Per Lange Laursen (s144456)
 void rPeakCheck(void) {
 	if (rpeak < 2000) {
 		printf("BLOOD PRESSURE: %d\nSEEK MEDICAL ASSISTANCE\n", rpeak);

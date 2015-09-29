@@ -40,6 +40,7 @@ int main(int argc, char *argv[]) {
 	return 0;
 }
 
+// Written by Stefan Frederiksen (s144469)
 int readData() {
 	// Returns 1 if successful, 0 if EOF is read
 	int dataRead = getNextData();
@@ -52,19 +53,23 @@ int readData() {
 	return 1;
 }
 
+// Written by Stefan Frederiksen (s144469)
 void startClock() {
 	start = clock();
 }
 
+// Written by Stefan Frederiksen (s144469)
 void pauseClock() {
 	end = clock();
 }
 
+// Written by Stefan Frederiksen (s144469)
 void unPauseClock() {
 	clock_t tempClock = clock();
 	start += tempClock - end;
 }
 
+// Written by Stefan Frederiksen (s144469)
 void stopClock() {
 	end = clock();
 	cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;

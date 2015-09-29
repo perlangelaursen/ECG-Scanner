@@ -11,7 +11,6 @@ static int rrHigh, rpeak, timer;
 const int lowVar, highVar, missVar, sampleRate;
 
 void detectPeak(int x[], int n, int size);
-int calculateRR(void);
 int calcRRAverage1(void);
 int calcRRAverage2(void);
 int searchBack(void);

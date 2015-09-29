@@ -1,3 +1,7 @@
+/*
+ * author: Stefan Frederiksen (s144469)
+ */
+
 #include "sensor.h"
 
 static const char filename[] = "Files/ECG.txt";
