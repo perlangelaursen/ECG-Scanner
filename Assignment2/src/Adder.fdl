@@ -1,6 +1,6 @@
 dp Adder(
-	in A, B 	: tc(32);
-	out R 	: tc(32)
+	in A, B : tc(32);
+	out R : tc(32)
 	) {
 
 	always {

@@ -1,8 +1,8 @@
 dp ALU(
-	in A, B 	: tc(32);
-	in Select 	: ns(2);
-	out R 		: tc(32);
-	out N, Z	: ns(1)
+	in A, B : tc(32);
+	in Select : ns(2);
+	out R : tc(32);
+	out N, Z : ns(1)
 	) {
 
 	always {
@@ -13,17 +13,17 @@ dp ALU(
 }
 
 dp testALU(
-	out A, B 	: tc(32);
-	out Select 	: ns(2);
-	in R 		: tc(32);
+	out A, B : tc(32);
+	out Select : ns(2);
+	in R : tc(32);
 	in N, Z	: ns(1)
 	) {
 	always {
 		$display($dec, "Cycle: ", $cycle, 
-						", A=", A, 
-						", B=", B,
-						", Select=", Select, 
-						", R=", R);
+		", A=", A, 
+		", B=", B,
+		", Select=", Select, 
+		", R=", R);
 		$display($dec, "N=", N, " Z=", Z);
 	}
 
