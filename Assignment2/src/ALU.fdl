@@ -1,0 +1,48 @@
+dp ALU(
+	in A, B 	: tc(32);
+	in Select 	: ns(2);
+	out R 		: tc(32);
+	out N, Z	: ns(1)
+	) {
+
+	always {
+		R = Select[1] ? (Select[0] ? B : A) : (Select[0] ? B - A : A - B);
+		N = R[31];
+		Z = R == 0;
+	}
+}
+
+dp testALU(
+	out A, B 	: tc(32);
+	out Select 	: ns(2);
+	in R 		: tc(32);
+	in N, Z	: ns(1)
+	) {
+	always {
+		$display($dec, "Cycle: ", $cycle, 
+						", A=", A, 
+						", B=", B,
+						", Select=", Select, 
+						", R=", R);
+		$display($dec, "N=", N, " Z=", Z);
+	}
+
+	sfg test_0 { A = 6; B = 10; Select = 0; } // -4
+	sfg test_1 { A = 6; B = 7; Select = 1; } // 1
+	sfg test_2 { A = 12; B = 0; Select = 2; } // 12
+	sfg test_3 { A = 12; B = 0; Select = 3; } // 0
+}
+
+fsm f_testbench(testALU) {
+	initial s0;
+	state s1, s2, s3;
+	@s0 (test_0) -> s1;
+	@s1 (test_1) -> s2;
+	@s2 (test_2) -> s3;
+	@s3 (test_3) -> s0;
+}
+
+system myFirstSystem {
+	ALU(A, B, Select, R, N, Z);
+	testALU(A, B, Select, R, N, Z);
+}
