@@ -15,7 +15,7 @@ dp InsMem(in address : ns(5);
 	sig wr, rd : ns(1);
 	sig idata : ns(32);
 	sig odata : ns(32);
-	use instmem(address, wr, rd, idata odata);
+	use instmem(address, wr, rd, idata, odata);
 
 	always {
 		wr = 0;
@@ -28,7 +28,7 @@ dp InsMem(in address : ns(5);
 dp testInsMem(out address: ns(5);
 			  in instruction : ns(32)) {
 	always {
-		$display($dec, "Cycle: ", $cycle, " Address: ", address, "Instruction: ", instruction);
+		$display($dec, "Cycle: ", $cycle, " Address: ", address, " Instruction: ", $bin, instruction);
 	}
 	sfg test_0{address = 1;}
 	sfg test_1{address = 2;}
