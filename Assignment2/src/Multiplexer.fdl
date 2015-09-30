@@ -1,0 +1,41 @@
+dp multiplex(
+	in a : tc(32);
+	in b : tc(32);
+	in select : ns(1);
+	out r : tc(32)
+	){
+	always{
+		r = select ? a : b;
+		//$display($desc, "Chosen output: ", r);
+	}
+}
+
+dp testMulti(
+	out A : tc(32);
+	out B : tc(32);
+	out Select : ns(1);
+	in R : tc(32)
+    ){
+	always{
+    	$display($dec, "Cycle:", $cycle, ", A=", A , ", B=", B , ", select=", Select, ", R=", R);
+	}
+	sfg test_0 { A=3;  B=6; Select=0;}
+	sfg test_1 { A=23; B=17; Select=0;}
+	sfg test_2 { A=12; B=0; Select=1;}
+}
+
+fsm f_testbench(testMulti){
+
+  initial s0;         
+  state s1, s2;       
+  @s0 (test_0) -> s1; 
+  @s1 (test_1) -> s2; 
+  @s2 (test_2) -> s0; 
+}
+
+system myFirstSystem{
+  multiplex(A, B, Select, r);
+  testMulti(A, B, Select, r);
+}
+
+
