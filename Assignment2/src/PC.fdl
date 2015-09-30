@@ -1,8 +1,11 @@
 dp PC(out pc_out : ns(5)){
+	reg PCr : ns(5);
 	always {
 		$display($dec, "Cycle: ", $cycle);
 		$display($dec, "pc_out: ", pc_out);
 
+		PCr = PCr +1;
+		pc_out = PCr;
 	}
 }
 
