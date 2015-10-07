@@ -1,0 +1,27 @@
+LOAD R0 0  // Nuværende læsning
+LOAD R1 30 // Ældste læsning
+LOAD R2 31 // buffer(Tidligere average)
+
+// Gange med 30
+SHIFTLEFT R3 R2 32 // Mem[32] = 4
+SHIFTLEFT R4 R2 33 // Mem[33] = 3
+SHIFTLEFT R5 R2 34 // Mem[34] = 2
+SHIFTLEFT R6 R2 35 // Mem[35] = 1
+ADD R3 R3 R4
+ADD R4 R5 R6
+ADD R3 R3 R4
+
+// - med ældste læsning
+SUB R3 R3 R1 
+
+//+ med nuværende
+ADD R3 R3 R0
+
+//Div med 30 FÅÅÅCK
+SHIFTRIGHT R3 R2 32 // Mem[32] = 4
+SHIFTRIGHT R4 R2 33 // Mem[33] = 3
+SHIFTRIGHT R5 R2 34 // Mem[34] = 2
+SHIFTRIGHT R6 R2 35 // Mem[35] = 1
+ADD R3 R3 R4
+ADD R4 R5 R6
+ADD R3 R3 R4
