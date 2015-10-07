@@ -1,0 +1,511 @@
+14:36:27 **** Clean-only build of configuration Debug for project Assignment1 ****
+make clean 
+rm -rf  ./filter.o ./index.o ./main.o ./peaks.o ./sensor.o  ./filter.d ./index.d ./main.d ./peaks.d ./sensor.d  Assignment1
+ 
+14:36:27 **** Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../.metadata/.plugins/org.eclipse.cdt.make.core/specs.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF".metadata/.plugins/org.eclipse.cdt.make.core/specs.d" -MT".metadata/.plugins/org.eclipse.cdt.make.core/specs.d" -o ".metadata/.plugins/org.eclipse.cdt.make.core/specs.o" "../.metadata/.plugins/org.eclipse.cdt.make.core/specs.c" -lm
+Finished building: ../.metadata/.plugins/org.eclipse.cdt.make.core/specs.c
+ 
+Building file: ../filter.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"filter.d" -MT"filter.d" -o "filter.o" "../filter.c" -lm
+Finished building: ../filter.c
+ 
+Building file: ../index.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"index.d" -MT"index.d" -o "index.o" "../index.c" -lm
+Finished building: ../index.c
+ 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c" -lm
+In file included from ../main.c:5:0:
+../filter.h:13:12: warning: ‘lowpassArray’ defined but not used [-Wunused-variable]
+ static int lowpassArray[lowPassSize];
+            ^
+../filter.h:14:12: warning: ‘highpassArray’ defined but not used [-Wunused-variable]
+ static int highpassArray[highPassSize];
+            ^
+../filter.h:15:12: warning: ‘derivativeNo’ defined but not used [-Wunused-variable]
+ static int derivativeNo;
+            ^
+../filter.h:16:12: warning: ‘squaredArray’ defined but not used [-Wunused-variable]
+ static int squaredArray[squaredSize];
+            ^
+In file included from ../main.c:6:0:
+../peaks.h:7:12: warning: ‘peaks’ defined but not used [-Wunused-variable]
+ static int peaks[peakSize], rrRecent[rrSize], rrRecentOk[rrSize];
+            ^
+../peaks.h:7:29: warning: ‘rrRecent’ defined but not used [-Wunused-variable]
+ static int peaks[peakSize], rrRecent[rrSize], rrRecentOk[rrSize];
+                             ^
+../peaks.h:7:47: warning: ‘rrRecentOk’ defined but not used [-Wunused-variable]
+ static int peaks[peakSize], rrRecent[rrSize], rrRecentOk[rrSize];
+                                               ^
+../peaks.h:8:12: warning: ‘thres1’ defined but not used [-Wunused-variable]
+ static int thres1, thres2, spkf, npkf, rrAverage1, rrAverage2, rrLow, rrMiss;
+            ^
+../peaks.h:8:20: warning: ‘thres2’ defined but not used [-Wunused-variable]
+ static int thres1, thres2, spkf, npkf, rrAverage1, rrAverage2, rrLow, rrMiss;
+                    ^
+../peaks.h:8:28: warning: ‘spkf’ defined but not used [-Wunused-variable]
+ static int thres1, thres2, spkf, npkf, rrAverage1, rrAverage2, rrLow, rrMiss;
+                            ^
+../peaks.h:8:34: warning: ‘npkf’ defined but not used [-Wunused-variable]
+ static int thres1, thres2, spkf, npkf, rrAverage1, rrAverage2, rrLow, rrMiss;
+                                  ^
+../peaks.h:8:40: warning: ‘rrAverage1’ defined but not used [-Wunused-variable]
+ static int thres1, thres2, spkf, npkf, rrAverage1, rrAverage2, rrLow, rrMiss;
+                                        ^
+../peaks.h:8:52: warning: ‘rrAverage2’ defined but not used [-Wunused-variable]
+ static int thres1, thres2, spkf, npkf, rrAverage1, rrAverage2, rrLow, rrMiss;
+                                                    ^
+../peaks.h:8:64: warning: ‘rrLow’ defined but not used [-Wunused-variable]
+ static int thres1, thres2, spkf, npkf, rrAverage1, rrAverage2, rrLow, rrMiss;
+                                                                ^
+../peaks.h:8:71: warning: ‘rrMiss’ defined but not used [-Wunused-variable]
+ static int thres1, thres2, spkf, npkf, rrAverage1, rrAverage2, rrLow, rrMiss;
+                                                                       ^
+../peaks.h:9:12: warning: ‘rrInterval’ defined but not used [-Wunused-variable]
+ static int rrInterval, peakCount, rPeakCount, rrMissCount;
+            ^
+../peaks.h:9:24: warning: ‘peakCount’ defined but not used [-Wunused-variable]
+ static int rrInterval, peakCount, rPeakCount, rrMissCount;
+                        ^
+../peaks.h:9:35: warning: ‘rPeakCount’ defined but not used [-Wunused-variable]
+ static int rrInterval, peakCount, rPeakCount, rrMissCount;
+                                   ^
+../peaks.h:9:47: warning: ‘rrMissCount’ defined but not used [-Wunused-variable]
+ static int rrInterval, peakCount, rPeakCount, rrMissCount;
+                                               ^
+../peaks.h:10:12: warning: ‘rrHigh’ defined but not used [-Wunused-variable]
+ static int rrHigh, rpeak, timer;
+            ^
+../peaks.h:10:20: warning: ‘rpeak’ defined but not used [-Wunused-variable]
+ static int rrHigh, rpeak, timer;
+                    ^
+../peaks.h:10:27: warning: ‘timer’ defined but not used [-Wunused-variable]
+ static int rrHigh, rpeak, timer;
+                           ^
+Finished building: ../main.c
+ 
+Building file: ../peaks.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"peaks.d" -MT"peaks.d" -o "peaks.o" "../peaks.c" -lm
+Finished building: ../peaks.c
+ 
+Building file: ../sensor.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"sensor.d" -MT"sensor.d" -o "sensor.o" "../sensor.c" -lm
+Finished building: ../sensor.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./filter.o ./index.o ./main.o ./peaks.o ./sensor.o    -lm
+./main.o:(.bss+0x0): multiple definition of `buf'
+makefile:30: recipe for target 'Assignment1' failed
+./filter.o:(.bss+0x0): first defined here
+collect2: error: ld returned 1 exit status
+make: *** [Assignment1] Error 1
+14:37:27 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c" -lm
+In file included from ../main.c:5:0:
+../filter.h:13:12: warning: ‘lowpassArray’ defined but not used [-Wunused-variable]
+ static int lowpassArray[lowPassSize];
+            ^
+../filter.h:14:12: warning: ‘highpassArray’ defined but not used [-Wunused-variable]
+ static int highpassArray[highPassSize];
+            ^
+../filter.h:15:12: warning: ‘derivativeNo’ defined but not used [-Wunused-variable]
+ static int derivativeNo;
+            ^
+../filter.h:16:12: warning: ‘squaredArray’ defined but not used [-Wunused-variable]
+ static int squaredArray[squaredSize];
+            ^
+In file included from ../main.c:6:0:
+../peaks.h:7:12: warning: ‘peaks’ defined but not used [-Wunused-variable]
+ static int peaks[peakSize], rrRecent[rrSize], rrRecentOk[rrSize];
+            ^
+../peaks.h:7:29: warning: ‘rrRecent’ defined but not used [-Wunused-variable]
+ static int peaks[peakSize], rrRecent[rrSize], rrRecentOk[rrSize];
+                             ^
+../peaks.h:7:47: warning: ‘rrRecentOk’ defined but not used [-Wunused-variable]
+ static int peaks[peakSize], rrRecent[rrSize], rrRecentOk[rrSize];
+                                               ^
+../peaks.h:8:12: warning: ‘thres1’ defined but not used [-Wunused-variable]
+ static int thres1, thres2, spkf, npkf, rrAverage1, rrAverage2, rrLow, rrMiss;
+            ^
+../peaks.h:8:20: warning: ‘thres2’ defined but not used [-Wunused-variable]
+ static int thres1, thres2, spkf, npkf, rrAverage1, rrAverage2, rrLow, rrMiss;
+                    ^
+../peaks.h:8:28: warning: ‘spkf’ defined but not used [-Wunused-variable]
+ static int thres1, thres2, spkf, npkf, rrAverage1, rrAverage2, rrLow, rrMiss;
+                            ^
+../peaks.h:8:34: warning: ‘npkf’ defined but not used [-Wunused-variable]
+ static int thres1, thres2, spkf, npkf, rrAverage1, rrAverage2, rrLow, rrMiss;
+                                  ^
+../peaks.h:8:40: warning: ‘rrAverage1’ defined but not used [-Wunused-variable]
+ static int thres1, thres2, spkf, npkf, rrAverage1, rrAverage2, rrLow, rrMiss;
+                                        ^
+../peaks.h:8:52: warning: ‘rrAverage2’ defined but not used [-Wunused-variable]
+ static int thres1, thres2, spkf, npkf, rrAverage1, rrAverage2, rrLow, rrMiss;
+                                                    ^
+../peaks.h:8:64: warning: ‘rrLow’ defined but not used [-Wunused-variable]
+ static int thres1, thres2, spkf, npkf, rrAverage1, rrAverage2, rrLow, rrMiss;
+                                                                ^
+../peaks.h:8:71: warning: ‘rrMiss’ defined but not used [-Wunused-variable]
+ static int thres1, thres2, spkf, npkf, rrAverage1, rrAverage2, rrLow, rrMiss;
+                                                                       ^
+../peaks.h:9:12: warning: ‘rrInterval’ defined but not used [-Wunused-variable]
+ static int rrInterval, peakCount, rPeakCount, rrMissCount;
+            ^
+../peaks.h:9:24: warning: ‘peakCount’ defined but not used [-Wunused-variable]
+ static int rrInterval, peakCount, rPeakCount, rrMissCount;
+                        ^
+../peaks.h:9:35: warning: ‘rPeakCount’ defined but not used [-Wunused-variable]
+ static int rrInterval, peakCount, rPeakCount, rrMissCount;
+                                   ^
+../peaks.h:9:47: warning: ‘rrMissCount’ defined but not used [-Wunused-variable]
+ static int rrInterval, peakCount, rPeakCount, rrMissCount;
+                                               ^
+../peaks.h:10:12: warning: ‘rrHigh’ defined but not used [-Wunused-variable]
+ static int rrHigh, rpeak, timer;
+            ^
+../peaks.h:10:20: warning: ‘rpeak’ defined but not used [-Wunused-variable]
+ static int rrHigh, rpeak, timer;
+                    ^
+../peaks.h:10:27: warning: ‘timer’ defined but not used [-Wunused-variable]
+ static int rrHigh, rpeak, timer;
+                           ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./filter.o ./index.o ./main.o ./peaks.o ./sensor.o    -lm
+./main.o:(.bss+0x0): multiple definition of `buf'
+./filter.o:(.bss+0x0): first defined here
+collect2: error: ld returned 1 exit status
+makefile:30: recipe for target 'Assignment1' failed
+make: *** [Assignment1] Error 1
+14:37:52 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../filter.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"filter.d" -MT"filter.d" -o "filter.o" "../filter.c" -lm
+Finished building: ../filter.c
+ 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c" -lm
+In file included from ../main.c:5:0:
+../filter.h:13:12: warning: ‘lowpassArray’ defined but not used [-Wunused-variable]
+ static int lowpassArray[lowPassSize];
+            ^
+../filter.h:14:12: warning: ‘highpassArray’ defined but not used [-Wunused-variable]
+ static int highpassArray[highPassSize];
+            ^
+../filter.h:15:12: warning: ‘derivativeNo’ defined but not used [-Wunused-variable]
+ static int derivativeNo;
+            ^
+../filter.h:16:12: warning: ‘squaredArray’ defined but not used [-Wunused-variable]
+ static int squaredArray[squaredSize];
+            ^
+../filter.h:25:12: warning: ‘buf’ defined but not used [-Wunused-variable]
+ static int buf = 0;
+            ^
+In file included from ../main.c:6:0:
+../peaks.h:7:12: warning: ‘peaks’ defined but not used [-Wunused-variable]
+ static int peaks[peakSize], rrRecent[rrSize], rrRecentOk[rrSize];
+            ^
+../peaks.h:7:29: warning: ‘rrRecent’ defined but not used [-Wunused-variable]
+ static int peaks[peakSize], rrRecent[rrSize], rrRecentOk[rrSize];
+                             ^
+../peaks.h:7:47: warning: ‘rrRecentOk’ defined but not used [-Wunused-variable]
+ static int peaks[peakSize], rrRecent[rrSize], rrRecentOk[rrSize];
+                                               ^
+../peaks.h:8:12: warning: ‘thres1’ defined but not used [-Wunused-variable]
+ static int thres1, thres2, spkf, npkf, rrAverage1, rrAverage2, rrLow, rrMiss;
+            ^
+../peaks.h:8:20: warning: ‘thres2’ defined but not used [-Wunused-variable]
+ static int thres1, thres2, spkf, npkf, rrAverage1, rrAverage2, rrLow, rrMiss;
+                    ^
+../peaks.h:8:28: warning: ‘spkf’ defined but not used [-Wunused-variable]
+ static int thres1, thres2, spkf, npkf, rrAverage1, rrAverage2, rrLow, rrMiss;
+                            ^
+../peaks.h:8:34: warning: ‘npkf’ defined but not used [-Wunused-variable]
+ static int thres1, thres2, spkf, npkf, rrAverage1, rrAverage2, rrLow, rrMiss;
+                                  ^
+../peaks.h:8:40: warning: ‘rrAverage1’ defined but not used [-Wunused-variable]
+ static int thres1, thres2, spkf, npkf, rrAverage1, rrAverage2, rrLow, rrMiss;
+                                        ^
+../peaks.h:8:52: warning: ‘rrAverage2’ defined but not used [-Wunused-variable]
+ static int thres1, thres2, spkf, npkf, rrAverage1, rrAverage2, rrLow, rrMiss;
+                                                    ^
+../peaks.h:8:64: warning: ‘rrLow’ defined but not used [-Wunused-variable]
+ static int thres1, thres2, spkf, npkf, rrAverage1, rrAverage2, rrLow, rrMiss;
+                                                                ^
+../peaks.h:8:71: warning: ‘rrMiss’ defined but not used [-Wunused-variable]
+ static int thres1, thres2, spkf, npkf, rrAverage1, rrAverage2, rrLow, rrMiss;
+                                                                       ^
+../peaks.h:9:12: warning: ‘rrInterval’ defined but not used [-Wunused-variable]
+ static int rrInterval, peakCount, rPeakCount, rrMissCount;
+            ^
+../peaks.h:9:24: warning: ‘peakCount’ defined but not used [-Wunused-variable]
+ static int rrInterval, peakCount, rPeakCount, rrMissCount;
+                        ^
+../peaks.h:9:35: warning: ‘rPeakCount’ defined but not used [-Wunused-variable]
+ static int rrInterval, peakCount, rPeakCount, rrMissCount;
+                                   ^
+../peaks.h:9:47: warning: ‘rrMissCount’ defined but not used [-Wunused-variable]
+ static int rrInterval, peakCount, rPeakCount, rrMissCount;
+                                               ^
+../peaks.h:10:12: warning: ‘rrHigh’ defined but not used [-Wunused-variable]
+ static int rrHigh, rpeak, timer;
+            ^
+../peaks.h:10:20: warning: ‘rpeak’ defined but not used [-Wunused-variable]
+ static int rrHigh, rpeak, timer;
+                    ^
+../peaks.h:10:27: warning: ‘timer’ defined but not used [-Wunused-variable]
+ static int rrHigh, rpeak, timer;
+                           ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./filter.o ./index.o ./main.o ./peaks.o ./sensor.o    -lm
+Finished building target: Assignment1
+ 
+14:38:00 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+make: Nothing to be done for 'all'.
+14:38:37 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c" -lm
+In file included from ../main.c:5:0:
+../filter.h:13:12: warning: ‘lowpassArray’ defined but not used [-Wunused-variable]
+ static int lowpassArray[lowPassSize];
+            ^
+../filter.h:14:12: warning: ‘highpassArray’ defined but not used [-Wunused-variable]
+ static int highpassArray[highPassSize];
+            ^
+../filter.h:15:12: warning: ‘derivativeNo’ defined but not used [-Wunused-variable]
+ static int derivativeNo;
+            ^
+../filter.h:16:12: warning: ‘squaredArray’ defined but not used [-Wunused-variable]
+ static int squaredArray[squaredSize];
+            ^
+../filter.h:25:12: warning: ‘buf’ defined but not used [-Wunused-variable]
+ static int buf = 0;
+            ^
+In file included from ../main.c:6:0:
+../peaks.h:7:12: warning: ‘peaks’ defined but not used [-Wunused-variable]
+ static int peaks[peakSize], rrRecent[rrSize], rrRecentOk[rrSize];
+            ^
+../peaks.h:7:29: warning: ‘rrRecent’ defined but not used [-Wunused-variable]
+ static int peaks[peakSize], rrRecent[rrSize], rrRecentOk[rrSize];
+                             ^
+../peaks.h:7:47: warning: ‘rrRecentOk’ defined but not used [-Wunused-variable]
+ static int peaks[peakSize], rrRecent[rrSize], rrRecentOk[rrSize];
+                                               ^
+../peaks.h:8:12: warning: ‘thres1’ defined but not used [-Wunused-variable]
+ static int thres1, thres2, spkf, npkf, rrAverage1, rrAverage2, rrLow, rrMiss;
+            ^
+../peaks.h:8:20: warning: ‘thres2’ defined but not used [-Wunused-variable]
+ static int thres1, thres2, spkf, npkf, rrAverage1, rrAverage2, rrLow, rrMiss;
+                    ^
+../peaks.h:8:28: warning: ‘spkf’ defined but not used [-Wunused-variable]
+ static int thres1, thres2, spkf, npkf, rrAverage1, rrAverage2, rrLow, rrMiss;
+                            ^
+../peaks.h:8:34: warning: ‘npkf’ defined but not used [-Wunused-variable]
+ static int thres1, thres2, spkf, npkf, rrAverage1, rrAverage2, rrLow, rrMiss;
+                                  ^
+../peaks.h:8:40: warning: ‘rrAverage1’ defined but not used [-Wunused-variable]
+ static int thres1, thres2, spkf, npkf, rrAverage1, rrAverage2, rrLow, rrMiss;
+                                        ^
+../peaks.h:8:52: warning: ‘rrAverage2’ defined but not used [-Wunused-variable]
+ static int thres1, thres2, spkf, npkf, rrAverage1, rrAverage2, rrLow, rrMiss;
+                                                    ^
+../peaks.h:8:64: warning: ‘rrLow’ defined but not used [-Wunused-variable]
+ static int thres1, thres2, spkf, npkf, rrAverage1, rrAverage2, rrLow, rrMiss;
+                                                                ^
+../peaks.h:8:71: warning: ‘rrMiss’ defined but not used [-Wunused-variable]
+ static int thres1, thres2, spkf, npkf, rrAverage1, rrAverage2, rrLow, rrMiss;
+                                                                       ^
+../peaks.h:9:12: warning: ‘rrInterval’ defined but not used [-Wunused-variable]
+ static int rrInterval, peakCount, rPeakCount, rrMissCount;
+            ^
+../peaks.h:9:24: warning: ‘peakCount’ defined but not used [-Wunused-variable]
+ static int rrInterval, peakCount, rPeakCount, rrMissCount;
+                        ^
+../peaks.h:9:35: warning: ‘rPeakCount’ defined but not used [-Wunused-variable]
+ static int rrInterval, peakCount, rPeakCount, rrMissCount;
+                                   ^
+../peaks.h:9:47: warning: ‘rrMissCount’ defined but not used [-Wunused-variable]
+ static int rrInterval, peakCount, rPeakCount, rrMissCount;
+                                               ^
+../peaks.h:10:12: warning: ‘rrHigh’ defined but not used [-Wunused-variable]
+ static int rrHigh, rpeak, timer;
+            ^
+../peaks.h:10:20: warning: ‘rpeak’ defined but not used [-Wunused-variable]
+ static int rrHigh, rpeak, timer;
+                    ^
+../peaks.h:10:27: warning: ‘timer’ defined but not used [-Wunused-variable]
+ static int rrHigh, rpeak, timer;
+                           ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./filter.o ./index.o ./main.o ./peaks.o ./sensor.o    -lm
+Finished building target: Assignment1
+ 
+14:39:04 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../filter.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"filter.d" -MT"filter.d" -o "filter.o" "../filter.c" -lm
+../filter.c: In function ‘movingWindowIntegration’:
+../filter.c:45:2: warning: implicit declaration of function ‘printf’ [-Wimplicit-function-declaration]
+  printf("Entered MWI");
+  ^
+../filter.c:45:2: warning: incompatible implicit declaration of built-in function ‘printf’
+../filter.c:45:2: note: include ‘<stdio.h>’ or provide a declaration of ‘printf’
+Finished building: ../filter.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./filter.o ./index.o ./main.o ./peaks.o ./sensor.o    -lm
+Finished building target: Assignment1
+ 
+14:39:23 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../filter.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"filter.d" -MT"filter.d" -o "filter.o" "../filter.c" -lm
+../filter.c: In function ‘movingWindowIntegration’:
+../filter.c:45:2: warning: implicit declaration of function ‘printf’ [-Wimplicit-function-declaration]
+  printf("Entered MWI\n");
+  ^
+../filter.c:45:2: warning: incompatible implicit declaration of built-in function ‘printf’
+../filter.c:45:2: note: include ‘<stdio.h>’ or provide a declaration of ‘printf’
+Finished building: ../filter.c
+ 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c" -lm
+In file included from ../main.c:5:0:
+../filter.h:13:12: warning: ‘lowpassArray’ defined but not used [-Wunused-variable]
+ static int lowpassArray[lowPassSize];
+            ^
+../filter.h:14:12: warning: ‘highpassArray’ defined but not used [-Wunused-variable]
+ static int highpassArray[highPassSize];
+            ^
+../filter.h:15:12: warning: ‘derivativeNo’ defined but not used [-Wunused-variable]
+ static int derivativeNo;
+            ^
+../filter.h:16:12: warning: ‘squaredArray’ defined but not used [-Wunused-variable]
+ static int squaredArray[squaredSize];
+            ^
+../filter.h:25:12: warning: ‘buf’ defined but not used [-Wunused-variable]
+ static int buf = 0;
+            ^
+In file included from ../main.c:6:0:
+../peaks.h:7:12: warning: ‘peaks’ defined but not used [-Wunused-variable]
+ static int peaks[peakSize], rrRecent[rrSize], rrRecentOk[rrSize];
+            ^
+../peaks.h:7:29: warning: ‘rrRecent’ defined but not used [-Wunused-variable]
+ static int peaks[peakSize], rrRecent[rrSize], rrRecentOk[rrSize];
+                             ^
+../peaks.h:7:47: warning: ‘rrRecentOk’ defined but not used [-Wunused-variable]
+ static int peaks[peakSize], rrRecent[rrSize], rrRecentOk[rrSize];
+                                               ^
+../peaks.h:8:12: warning: ‘thres1’ defined but not used [-Wunused-variable]
+ static int thres1, thres2, spkf, npkf, rrAverage1, rrAverage2, rrLow, rrMiss;
+            ^
+../peaks.h:8:20: warning: ‘thres2’ defined but not used [-Wunused-variable]
+ static int thres1, thres2, spkf, npkf, rrAverage1, rrAverage2, rrLow, rrMiss;
+                    ^
+../peaks.h:8:28: warning: ‘spkf’ defined but not used [-Wunused-variable]
+ static int thres1, thres2, spkf, npkf, rrAverage1, rrAverage2, rrLow, rrMiss;
+                            ^
+../peaks.h:8:34: warning: ‘npkf’ defined but not used [-Wunused-variable]
+ static int thres1, thres2, spkf, npkf, rrAverage1, rrAverage2, rrLow, rrMiss;
+                                  ^
+../peaks.h:8:40: warning: ‘rrAverage1’ defined but not used [-Wunused-variable]
+ static int thres1, thres2, spkf, npkf, rrAverage1, rrAverage2, rrLow, rrMiss;
+                                        ^
+../peaks.h:8:52: warning: ‘rrAverage2’ defined but not used [-Wunused-variable]
+ static int thres1, thres2, spkf, npkf, rrAverage1, rrAverage2, rrLow, rrMiss;
+                                                    ^
+../peaks.h:8:64: warning: ‘rrLow’ defined but not used [-Wunused-variable]
+ static int thres1, thres2, spkf, npkf, rrAverage1, rrAverage2, rrLow, rrMiss;
+                                                                ^
+../peaks.h:8:71: warning: ‘rrMiss’ defined but not used [-Wunused-variable]
+ static int thres1, thres2, spkf, npkf, rrAverage1, rrAverage2, rrLow, rrMiss;
+                                                                       ^
+../peaks.h:9:12: warning: ‘rrInterval’ defined but not used [-Wunused-variable]
+ static int rrInterval, peakCount, rPeakCount, rrMissCount;
+            ^
+../peaks.h:9:24: warning: ‘peakCount’ defined but not used [-Wunused-variable]
+ static int rrInterval, peakCount, rPeakCount, rrMissCount;
+                        ^
+../peaks.h:9:35: warning: ‘rPeakCount’ defined but not used [-Wunused-variable]
+ static int rrInterval, peakCount, rPeakCount, rrMissCount;
+                                   ^
+../peaks.h:9:47: warning: ‘rrMissCount’ defined but not used [-Wunused-variable]
+ static int rrInterval, peakCount, rPeakCount, rrMissCount;
+                                               ^
+../peaks.h:10:12: warning: ‘rrHigh’ defined but not used [-Wunused-variable]
+ static int rrHigh, rpeak, timer;
+            ^
+../peaks.h:10:20: warning: ‘rpeak’ defined but not used [-Wunused-variable]
+ static int rrHigh, rpeak, timer;
+                    ^
+../peaks.h:10:27: warning: ‘timer’ defined but not used [-Wunused-variable]
+ static int rrHigh, rpeak, timer;
+                           ^
+Finished building: ../main.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./filter.o ./index.o ./main.o ./peaks.o ./sensor.o    -lm
+Finished building target: Assignment1
+ 
+14:39:42 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../filter.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"filter.d" -MT"filter.d" -o "filter.o" "../filter.c" -lm
+../filter.c: In function ‘movingWindowIntegration’:
+../filter.c:45:2: warning: implicit declaration of function ‘printf’ [-Wimplicit-function-declaration]
+  printf("Entered MWI\n");
+  ^
+../filter.c:45:2: warning: incompatible implicit declaration of built-in function ‘printf’
+../filter.c:45:2: note: include ‘<stdio.h>’ or provide a declaration of ‘printf’
+Finished building: ../filter.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./filter.o ./index.o ./main.o ./peaks.o ./sensor.o    -lm
+Finished building target: Assignment1
+ 
+14:39:50 **** Incremental Build of configuration Debug for project Assignment1 ****
+make all 
+Building file: ../filter.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"filter.d" -MT"filter.d" -o "filter.o" "../filter.c" -lm
+Finished building: ../filter.c
+ 
+Building target: Assignment1
+Invoking: GCC C Linker
+gcc  -o "Assignment1"  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o  ./filter.o ./index.o ./main.o ./peaks.o ./sensor.o    -lm
+Finished building target: Assignment1
+ 
