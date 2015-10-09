@@ -36,10 +36,11 @@ void squared(int n) {
 }
 
 void movingWindowIntegration(int y[], int ySize, int n) {
-	buf *= N;
-	buf -= squaredArray[calcIndex(n, 30, squaredSize)];
-	buf += squaredArray[calcIndex(n, 0, squaredSize)];
-	buf /= N;
+	int buf = 0;
 
-	y[calcIndex(n, 0, ySize)] = buf;
+	for (int i = 1; i <= N; i++) {
+		buf += squaredArray[calcIndex(n, (N-i), squaredSize)];
+	}
+
+	y[calcIndex(n, 0, ySize)] = buf/N;
 }

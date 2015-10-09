@@ -21,5 +21,3 @@ void highPass(int n);
 void derivative(int n);
 void squared(int n);
 void movingWindowIntegration(int y[], int ySize, int n);
-
-static int buf = 0;

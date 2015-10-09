@@ -29,7 +29,7 @@ all: Assignment1
 Assignment1: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C Linker'
-	gcc  -o "Assignment1" $(OBJS) $(USER_OBJS) $(LIBS) -lm
+	gcc -pg -pg -o "Assignment1" $(OBJS) $(USER_OBJS) $(LIBS) -lm
 	@echo 'Finished building target: $@'
 	@echo ' '
 
