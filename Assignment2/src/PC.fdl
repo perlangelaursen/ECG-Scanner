@@ -1,15 +1,47 @@
-dp PC(out pc_out : ns(5)){
+dp PC(in jump_target : ns(5);
+	in sel : ns(1);
+	out pc_out : ns(5)){
 	reg PCr : ns(5);
 	always {
-		$display($dec, "Cycle: ", $cycle);
-		$display($dec, "pc_out: ", pc_out);
-
-		PCr = PCr +1;
+		PCr = sel ? jump_target : PCr +1;
 		pc_out = PCr;
 	}
 }
 
-system PCsystem {
-	PC(pc_out);
+dp testPC(out jump_target : ns(5);
+	out sel : ns(1);
+	in pc_out : ns(5)) {
+	always {
+		$display($dec, "Cycle: ", $cycle);
+		$display($dec, "Select: ", sel);
+		$display($dec, "Jump Target: ", jump_target);
+		$display($dec, "pc_out: ", pc_out);
 
+		sfg test_0 { sel = 0; jump_target = 0; }
+		sfg test_1 { sel = 0; jump_target = 2; }
+		sfg test_2 { sel = 1; jump_target = 10; }
+		sfg test_3 { sel = 0; jump_target = 0; }
+		sfg test_4 { sel = 0; jump_target = 0; }
+		sfg test_5 { sel = 1; jump_target = 5; }
+		sfg test_6 { sel = 0; jump_target = 10; }
+		sfg test_7 { sel = 0; jump_target = 0; }
+	}
+}
+
+fsm f_testbench(testPC){
+	initial s0;
+	state s1, s2, s3, s4, s5, s6, s7;
+	@s0 (test_0) -> s1;
+	@s1 (test_1) -> s2;
+	@s2 (test_2) -> s3;
+	@s3 (test_3) -> s4;
+	@s4 (test_4) -> s5;
+	@s5 (test_5) -> s6;
+	@s6 (test_6) -> s7;
+	@s7 (test_7) -> s0;
+}
+
+system PCsystem {
+	PC(sel, jump_target, pc_out);
+	testPC(sel, jump_target, pc_out);
 }
