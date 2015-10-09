@@ -26,8 +26,6 @@ double cpu_time_used;
 int main(int argc, char *argv[]) {
 	startClock();
 
-	printf("Program started\n");
-
 	while(readData()) {
 		dataFilter(x, xSize, y, ySize, n);
 
