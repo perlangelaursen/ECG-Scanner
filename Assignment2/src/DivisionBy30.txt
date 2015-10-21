@@ -1,0 +1,41 @@
+// R1 er divisor
+// R2 er quotient
+// R3 er rest
+// R4 er en buffor for divisor
+// R5 er positionen på msb af divisor
+// R6 er i i for løkken
+// R7 buffer register
+
+// Find the highest set bit
+LOAD R4 R1 // buf = num
+ADD R5 R5 1 // loops++
+SHIFTRIGHT R4 R4 1
+BZERO 15 // hvis den er 0 så hopper den væk fra løkken
+BRANCH 11 // hopper tilbage i løkken
+
+// For Loop
+LOAD R6 R5 // i = loops
+
+SHIFTLEFT R3 R3 1 // R = R << 1
+
+// if (num & (1 << i))
+SHIFTLEFT R7 1 R6 // 1 << i
+AND R7 R1 R7 // num & (1 << i)
+BZERO 27 // hopper væk hvis den er 0, da betingelsen vil være false
+ADD R3 R3 1
+
+// if R >= 30
+SUB R7 R3 30 // R - 30, hopper væk hvis den er negativ
+BNEG 34
+ADD R3 R3 1
+// Q |= (1 << i)
+SHIFTLEFT R7 1 R6 // 1 << i
+OR R2 R2 R7
+
+SUB R6 R6 1
+BNEG 19
+
+
+
+
+
