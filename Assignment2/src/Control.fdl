@@ -6,25 +6,27 @@ dp Control (
   out storeenable : ns(1);
   out storesel    : ns(3)
 ){
-  sig opcode : ns(6);
+  sig operation : ns(6);
 
   always {
-    opcode = instruction[31:26];
+    operation = instruction[31:26];
 
-    Select    = (opcode == 0b000001) ? 0b0 :     //ADD, ADDI
-                (opcode == 0b000010) ? 0b1 :     //SUB
+    Select    = (operation == 0b000001) ? 0b01 : // ADDI
+                (operation == 0b000010) ? 0b10 : // SUB
+                (operation == 0b000011) ? 0b01 : // ADD
+                (operation == 0b000100) ? 0b11 : // BNEG
+                0b00;
+
+    branch    = (operation == 0b000101) ? 0b1 : 0b0;
+    bneg      = (operation == 0b000100) ? 0b1 : 0b0;
+
+    storeenable = (operation == 0b000001) ? 0b1 :
+                (operation == 0b000010) ? 0b1 :
+                (operation == 0b000011) ? 0b1 :
                 0b0;
 
-    branch    = (opcode == 0b000101) ? 0b1 : 0b0;
-    bneg      = (opcode == 0b000100) ? 0b1 : 0b0;
-
-    storeenable = (opcode == 0b000001) ? 0b1 :
-                (opcode == 0b000010) ? 0b1 :
-                (opcode == 0b000011) ? 0b1 :
-                0b0;
-
-    storesel   = (opcode == 0b000001) ? 0b0 :
-                (opcode == 0b000000) ? 0b0 :
+    storesel   = (operation == 0b000001) ? 0b0 :
+                (operation == 0b000000) ? 0b0 :
                 0b1;
   }
 }
@@ -37,11 +39,11 @@ dp testControl(
   in storeenable : ns(1);
   in storesel : ns(3)
 ) {
-  sig opcode : ns(6);
+  sig operation : ns(6);
 
   always{
-      opcode = instruction[31:26];
-      $display("opcode=", $bin, opcode,
+      operation = instruction[31:26];
+      $display("opcode=", $bin, operation,
          ", Select=", Select,
          ", BRANCH=", $bin, branch,
          ", BNEG=", $bin, bneg,
