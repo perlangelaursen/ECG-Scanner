@@ -21,7 +21,7 @@ dp ALU(
 
 dp testALU(
 	out A, B : tc(32);
-	out Select : ns(2);
+	out Select : ns(4);
 	in R : tc(32);
 	in N, Z	: ns(1)
 	) {
