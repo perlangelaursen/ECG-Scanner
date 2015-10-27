@@ -166,3 +166,15 @@ dp Or(in a, b : ns(1);
     result = (a | b) ? 0b1 : 0b0;
   }
 }
+
+dp PC(in instruction : ns(32);
+  in sel : ns(1);
+  out pc_out : ns(5)){
+  reg PCr : ns(5);
+  sig jump_target : ns(5);
+  always {
+    jump_target = instruction[4:0];
+    PCr = sel ? jump_target : PCr +1;
+    pc_out = PCr;
+  }
+}
