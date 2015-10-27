@@ -40,7 +40,10 @@ dp Control (
     storeenable = (operation == 0b000001) ? 0b1 :
                 (operation == 0b000010) ? 0b1 :
                 (operation == 0b000011) ? 0b1 :
-                0b0;
+                (operation == 0b000111) ? 0b1 :
+                (operation == 0b001000) ? 0b1 :
+                (operation == 0b001001) ? 0b1 :
+                (operation == 0b001010) ? 0b1 : 0b0;
 
     storesel   = (savelocation == 0b00001) ? 0b001 : // 1
                 (savelocation == 0b00010) ? 0b010 : // 2

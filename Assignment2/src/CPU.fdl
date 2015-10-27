@@ -67,7 +67,10 @@ dp Control (
     storeenable = (operation == 0b000001) ? 0b1 :
                 (operation == 0b000010) ? 0b1 :
                 (operation == 0b000011) ? 0b1 :
-                0b0;
+                (operation == 0b000111) ? 0b1 :
+                (operation == 0b001000) ? 0b1 :
+                (operation == 0b001001) ? 0b1 :
+                (operation == 0b001010) ? 0b1 : 0b0;
 
     storesel   = (savelocation == 0b00001) ? 0b001 : // 1
                 (savelocation == 0b00010) ? 0b010 : // 2
@@ -127,29 +130,29 @@ dp Register(
   reg r0, r1, r2, r3, r4, r5, r6, r7 : ns(16);
 
   always {
-    a = asel == 1 ? r1 :
-      asel == 2 ? r2 :
-      asel == 3 ? r3 :
-      asel == 4 ? r4 :
-      asel == 5 ? r5 :
-      asel == 6 ? r6 :
-      asel == 7 ? r7 : 0;
+    a = asel == 0b001 ? r1 :
+      asel == 0b010 ? r2 :
+      asel == 0b011 ? r3 :
+      asel == 0b100 ? r4 :
+      asel == 0b101 ? r5 :
+      asel == 0b110 ? r6 :
+      asel == 0b111 ? r7 : r0;
 
-    b = bsel == 1 ? r1 :
-      bsel == 2 ? r2 :
-      bsel == 3 ? r3 :
-      bsel == 4 ? r4 :
-      bsel == 5 ? r5 :
-      bsel == 6 ? r6 :
-      bsel == 7 ? r7 : 0;
+    b = bsel == 0b001 ? r1 :
+      bsel == 0b010 ? r2 :
+      bsel == 0b011 ? r3 :
+      bsel == 0b100 ? r4 :
+      bsel == 0b101 ? r5 :
+      bsel == 0b110 ? r6 :
+      bsel == 0b111 ? r7 : r0;
 
-    r1 = storeenable ? storesel == 1 ? storedata : r1 : r1;
-    r2 = storeenable ? storesel == 2 ? storedata : r2 : r2;
-    r3 = storeenable ? storesel == 3 ? storedata : r3 : r3;
-    r4 = storeenable ? storesel == 4 ? storedata : r4 : r4;
-    r5 = storeenable ? storesel == 5 ? storedata : r5 : r5;
-    r6 = storeenable ? storesel == 6 ? storedata : r6 : r6;
-    r7 = storeenable ? storesel == 7 ? storedata : r7 : r7;
+    r1 = storeenable ? (storesel == 0b001 ? storedata : r1) : r1;
+    r2 = storeenable ? (storesel == 0b010 ? storedata : r2) : r2;
+    r3 = storeenable ? (storesel == 0b011 ? storedata : r3) : r3;
+    r4 = storeenable ? (storesel == 0b100 ? storedata : r4) : r4;
+    r5 = storeenable ? (storesel == 0b101 ? storedata : r5) : r5;
+    r6 = storeenable ? (storesel == 0b110 ? storedata : r6) : r6;
+    r7 = storeenable ? (storesel == 0b111 ? storedata : r7) : r7;
   }
 }
 
