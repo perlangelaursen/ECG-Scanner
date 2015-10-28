@@ -1,16 +1,55 @@
-LOAD R1 (addr of current Squared)
-LOAD R2 (addr of last Squared)
-LOAD R3 (addr of last MWI)
-ADDI R4 R0 30 //(N = 30)
-ADDI R5 R0 0 // Counter
-SUB R2 R1 R2 // Subtract old from new
-BNEG 10 // Jump to line 10
-ADDI R5 R5 1 // Increment counter
-BRANCH 6
-SUB R3 R3 R5 // Subtract counter from last MWI
-SUB R5 R5 R5 // Reset counter
-SUB R1 R1 R4
-BNEG 16 // Check if sub results in subzero
-ADDI R5 R5 1 // Increment counter
-BRANCH 12
-ADD R3 R3 R1 // Calculate the new MWI
+LOAD R0 0  // Nuværende læsning
+LOAD R1 30 // Ældste læsning
+LOAD R2 31 // buffer(Tidligere average)
+
+// Gange med 30
+SHIFTLEFT R3 R2 32 // Mem[32] = 4
+SHIFTLEFT R4 R2 33 // Mem[33] = 3
+SHIFTLEFT R5 R2 34 // Mem[34] = 2
+SHIFTLEFT R6 R2 35 // Mem[35] = 1
+ADD R3 R3 R4
+ADD R4 R5 R6
+ADD R3 R3 R4
+
+// - med ældste læsning
+SUB R3 R3 R1 
+
+//+ med nuværende
+ADD R3 R3 R0
+
+//Div med 30
+
+// R7 - Divisor
+// R8 - Quotient
+// R9 - Remainder
+// R10 A buffer register
+// R11 - MSB of Divisor
+// R12 - For Loop counter
+
+LOAD R10 R7 // buf = num
+ADD R11 R11 7 // loops++
+SHIFTRIGHT R10 R10 7
+BZERO 34 // hvis den er 0 så hopper den væk fra løkken
+BRANCH 30 // hopper tilbage i løkken
+
+// For Loop
+LOAD R12 R11 // i = loops
+
+SHIFTLEFT R9 R9 1 // R = R << 1
+
+// if (num & (1 << i))
+SHIFTLEFT R10 1 R12 // 1 << i
+AND R10 R7 R10 // num & (1 << i)
+BZERO 46 // hopper væk hvis den er 0, da betingelsen vil være false
+ADD R9 R9 1
+
+// if R >= 30
+SUB R10 R9 30 // R - 30, hopper væk hvis den er negativ
+BNEG 53
+ADD R9 R9 1
+// Q |= (1 << i)
+SHIFTLEFT R10 1 R12 // 1 << i
+OR R8 R8 R10
+
+SUB R12 R12 1
+BNEG 38
