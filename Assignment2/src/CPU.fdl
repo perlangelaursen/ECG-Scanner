@@ -1,3 +1,62 @@
+
+dp CPU(){
+
+  sig pcOut : ns(5);
+  sig jmpTarget : ns(5);
+  sig jmp : ns(1);
+  sig insOut : ns(32);
+  sig branch : ns(1);
+  sig bneg : ns(1);
+  sig bzero : ns(1);
+  sig memSelect : ns(1);
+  sig addImmediate : ns(1);
+  sig aluSelect : ns(4);
+  sig storeSelect : ns(3);
+  sig storeEnable : ns(1);
+  sig storeData : tc(32);
+  sig aluOut : tc(32);
+  sig aluNeg : ns(1);
+  sig aluZero : ns(1);
+  sig regA, regB, aluB, insB : tc(32);
+  sig aSel, bSel : ns(3);
+  sig andNeg, andZero, orJmp : ns(1);
+
+
+  use PC(jmpTarget, jmp, pcOut);
+  use InsMem(pcOut, insOut);
+  use Control(insOut, branch, bneg, bzero, aluSelect, addImmediate, storeEnable, storeSelect, aSel, bSel);
+  use Register(aSel, bSel, storeSelect, storeEnable, aluOut, regA, regB);
+  use Multiplex(insB, regB, addImmediate, aluB);
+  use ALU(regA, aluB, aluSelect, aluOut, aluNeg, aluZero);
+  use And(aluZero, bzero, andZero);
+  use And(aluNeg,bneg, andNeg);
+  use Or(andZero, andNeg, orJmp);
+  use Or(branch, orJmp, jmp);
+
+
+  always{
+      jmpTarget = insOut[27:23];
+      insB = insOut[22:0];
+  }
+}
+
+dp testCPU() {
+
+
+  sfg initization{jmp = 0;}
+  sfg run {jmp = jmp;}
+}
+
+fsm ftCPU(testCPU) {
+  initial s0;
+  state s1;
+
+  @s0(initization) -> s1;
+  @s1(run) -> s1;
+}
+
+
+
 ipblock instmem(in address : ns(5);
         in wr, rd : ns(1);
         in idata : ns(32);
@@ -25,6 +84,18 @@ dp InsMem(in address : ns(5);
   }
 }
 
+dp Multiplex(
+  in a : tc(32);
+  in b : tc(32);
+  in select : ns(1);
+  out r : tc(32)
+  ){
+  always{
+    r = select ? a : b;
+    //$display($desc, "Chosen output: ", r);
+  }
+}
+
 dp Control (
   in instruction  : ns(32);
   out branch      : ns(1);
@@ -37,73 +108,73 @@ dp Control (
   out A           : ns(3);
   out B           : ns(3)
 ){
-  sig operation : ns(6);
-  sig savelocation : ns(5);
-  sig source1 : ns(5);
-  sig source2 : ns(5);
+  sig operation : ns(4);
+  sig savelocation : ns(3);
+  sig source1 : ns(3);
+  sig source2 : ns(3);
 
   always {
-    operation = instruction[31:26];
-    savelocation = instruction[25:21];
-    source1 = instruction[20:16];
-    source2 = instruction[15:11];
+    operation = instruction[31:28];
+    savelocation = instruction[27:23];
+    source1 = instruction[22:20];
+    source2 = instruction[19:17];
 
-    Select    = (operation == 0b000001) ? 0b0001 : // ADDI
-                (operation == 0b000010) ? 0b0010 : // SUB
-                (operation == 0b000011) ? 0b0001 : // ADD
-                (operation == 0b000100) ? 0b0011 : // BNEG
-                (operation == 0b000110) ? 0b0110 : // BZERO
-                (operation == 0b000111) ? 0b0111 : // SHIFTLEFT
-                (operation == 0b001000) ? 0b1000 : // SHIFTRIGHT
-                (operation == 0b001001) ? 0b1001 : // AND
-                (operation == 0b001010) ? 0b1010 : // OR
+    Select    = (operation == 0b0001) ? 0b0001 : // ADDI
+                (operation == 0b0010) ? 0b0010 : // SUB
+                (operation == 0b0011) ? 0b0001 : // ADD
+                (operation == 0b0100) ? 0b0011 : // BNEG
+                (operation == 0b0110) ? 0b0110 : // BZERO
+                (operation == 0b0111) ? 0b0111 : // SHIFTLEFT
+                (operation == 0b1000) ? 0b1000 : // SHIFTRIGHT
+                (operation == 0b1001) ? 0b1001 : // AND
+                (operation == 0b1010) ? 0b1010 : // OR
                 0b0000;
 
-    inputSource = (operation == 0b000001) ? 0b1 : 0b0;
-    branch    = (operation == 0b000101) ? 0b1 : 0b0;
-    bneg      = (operation == 0b000100) ? 0b1 : 0b0;
-    bzero     = (operation == 0b000110) ? 0b1 : 0b0;
+    inputSource = (operation == 0b0001) ? 0b1 : 0b0;
+    branch    = (operation == 0b0101) ? 0b1 : 0b0;
+    bneg      = (operation == 0b0100) ? 0b1 : 0b0;
+    bzero     = (operation == 0b0110) ? 0b1 : 0b0;
 
-    storeenable = (operation == 0b000001) ? 0b1 :
-                (operation == 0b000010) ? 0b1 :
-                (operation == 0b000011) ? 0b1 :
-                (operation == 0b000111) ? 0b1 :
-                (operation == 0b001000) ? 0b1 :
-                (operation == 0b001001) ? 0b1 :
-                (operation == 0b001010) ? 0b1 : 0b0;
+    storeenable = (operation == 0b0001) ? 0b1 :
+                (operation == 0b0010) ? 0b1 :
+                (operation == 0b0011) ? 0b1 :
+                (operation == 0b0111) ? 0b1 :
+                (operation == 0b1000) ? 0b1 :
+                (operation == 0b1001) ? 0b1 :
+                (operation == 0b1010) ? 0b1 : 0b0;
 
-    storesel   = (savelocation == 0b00001) ? 0b001 : // 1
-                (savelocation == 0b00010) ? 0b010 : // 2
-                (savelocation == 0b00011) ? 0b011 : // 3
-                (savelocation == 0b00100) ? 0b100 : // 4
-                (savelocation == 0b00101) ? 0b101 : // 5
-                (savelocation == 0b00110) ? 0b110 : // 6
+    storesel   = (savelocation == 0b001) ? 0b001 : // 1
+                (savelocation == 0b010) ? 0b010 : // 2
+                (savelocation == 0b011) ? 0b011 : // 3
+                (savelocation == 0b100) ? 0b100 : // 4
+                (savelocation == 0b101) ? 0b101 : // 5
+                (savelocation == 0b110) ? 0b110 : // 6
                 0b111; // 7 (0b00111)
 
-    A = (source1 == 0b00000) ? 0b000 : // 0
-        (source1 == 0b00001) ? 0b001 : // 1
-        (source1 == 0b00010) ? 0b010 : // 2
-        (source1 == 0b00011) ? 0b011 : // 3
-        (source1 == 0b00100) ? 0b100 : // 4
-        (source1 == 0b00101) ? 0b101 : // 5
-        (source1 == 0b00110) ? 0b110 : // 6
+    A = (source1 == 0b000) ? 0b000 : // 0
+        (source1 == 0b001) ? 0b001 : // 1
+        (source1 == 0b010) ? 0b010 : // 2
+        (source1 == 0b011) ? 0b011 : // 3
+        (source1 == 0b100) ? 0b100 : // 4
+        (source1 == 0b101) ? 0b101 : // 5
+        (source1 == 0b110) ? 0b110 : // 6
         0b111; // 7 (0b00111)
 
-    B = (source2 == 0b00000) ? 0b000 : // 0
-        (source2 == 0b00001) ? 0b001 : // 1
-        (source2 == 0b00010) ? 0b010 : // 2
-        (source2 == 0b00011) ? 0b011 : // 3
-        (source2 == 0b00100) ? 0b100 : // 4
-        (source2 == 0b00101) ? 0b101 : // 5
-        (source2 == 0b00110) ? 0b110 : // 6
+    B = (source2 == 0b000) ? 0b000 : // 0
+        (source2 == 0b001) ? 0b001 : // 1
+        (source2 == 0b010) ? 0b010 : // 2
+        (source2 == 0b011) ? 0b011 : // 3
+        (source2 == 0b100) ? 0b100 : // 4
+        (source2 == 0b101) ? 0b101 : // 5
+        (source2 == 0b110) ? 0b110 : // 6
         0b111; // 7 (0b00111)
   }
 }
 
 dp ALU(
-  in A, B : tc(16);
+  in A, B : tc(32);
   in Select : ns(4);
-  out R : tc(16);
+  out R : tc(32);
   out N, Z : ns(1)
   ) {
 
@@ -123,8 +194,8 @@ dp ALU(
 dp Register(
   in asel, bsel, storesel : ns(3);
   in storeenable : ns(1);
-  in storedata : tc(16);
-  out a, b : tc(16)
+  in storedata : tc(32);
+  out a, b : tc(32)
   ) {
 
   reg r0, r1, r2, r3, r4, r5, r6, r7 : ns(16);
@@ -170,13 +241,11 @@ dp Or(in a, b : ns(1);
   }
 }
 
-dp PC(in instruction : ns(32);
+dp PC(in jump_target : ns(5);
   in sel : ns(1);
   out pc_out : ns(5)){
   reg PCr : ns(5);
-  sig jump_target : ns(5);
   always {
-    jump_target = instruction[4:0];
     PCr = sel ? jump_target : PCr +1;
     pc_out = PCr;
   }
