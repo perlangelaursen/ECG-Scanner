@@ -1,3 +1,30 @@
+ipblock instmem(in address : ns(5);
+        in wr, rd : ns(1);
+        in idata : ns(32);
+        out odata : ns(32)) 
+{
+  iptype "ram";
+  ipparm "size=64";
+  ipparm "wl=32";
+  ipparm "file=program.txt";
+}
+
+dp InsMem(in address : ns(5);
+      out instruction : ns(32)) 
+{
+  sig wr, rd : ns(1);
+  sig idata : ns(32);
+  sig odata : ns(32);
+  use instmem(address, wr, rd, idata, odata);
+
+  always {
+    wr = 0;
+    rd = 1;
+    idata = 0;
+    instruction = odata;
+  }
+}
+
 dp Control (
   in instruction  : ns(32);
   out branch      : ns(1);
@@ -24,6 +51,8 @@ dp Control (
     Select    = (operation == 0b000001) ? 0b0001 : // ADDI
                 (operation == 0b000010) ? 0b0010 : // SUB
                 (operation == 0b000011) ? 0b0001 : // ADD
+                (operation == 0b000100) ? 0b0011 : // BNEG
+                (operation == 0b000110) ? 0b0110 : // BZERO
                 (operation == 0b000111) ? 0b0111 : // SHIFTLEFT
                 (operation == 0b001000) ? 0b1000 : // SHIFTRIGHT
                 (operation == 0b001001) ? 0b1001 : // AND
@@ -71,69 +100,84 @@ dp Control (
   }
 }
 
-dp testControl(
-  out instruction : ns(32);
-  in branch : ns(1);
-  in bneg : ns(1);
-  in bzero : ns(1);
+dp ALU(
+  in A, B : tc(16);
   in Select : ns(4);
-  in inputSource : ns(1);
-  in storeenable : ns(1);
-  in storesel : ns(3);
-  in A : ns(3);
-  in B : ns(3)
-) {
-  sig operation : ns(6);
-  sig savelocation : ns(5);
-  sig source1 : ns(5);
-  sig source2 : ns(5);
+  out R : tc(16);
+  out N, Z : ns(1)
+  ) {
 
-  always{
-      operation = instruction[31:26];
-      savelocation = instruction[25:21];
-      source1 = instruction[20:16];
-      source2 = instruction[15:11];
-      $display("opcode=", $bin, operation,
-         ", Select=", Select,
-         ", BRANCH=", $bin, branch,
-         ", BNEG=", $bin, bneg,
-         ", BZERO=", $bin, bzero,
-         ", Store Enable=", $bin, storeenable,
-         ", Store Select=", $bin, storesel,
-         ", A=", $bin, A,
-         ", B=", $bin, B);
+  always {
+    R = (Select == 0b0001) ? A + B :
+      (Select == 0b0010) ? A - B :
+      (Select == 0b0111) ? A << B:
+      (Select == 0b1000) ? A >> B:
+      (Select == 0b1001) ? A & B:
+      (Select == 0b1010) ? A | B:
+      0
+    N = R[31];
+    Z = R == 0;
   }
-  sfg test_0 { instruction = 0b00000000000000000000000000000000; }
-  sfg test_ADDI { instruction = 0b00000100000000000000000000000000; }
-  sfg test_SUB { instruction = 0b00001000000000000000000000000000; }
-  sfg test_ADD { instruction = 0b00001100000000000000000000000000; }
-  sfg test_BRANCH { instruction = 0b00010100000000000000000000000000; }
-  sfg test_BNEG { instruction = 0b00010000000000000000000000000000; }
-  sfg test_BZERO { instruction = 0b00011000000000000000000000000000; }
-  sfg test_SHIFTLEFT { instruction = 0b00011100000000000000000000000000; }
-  sfg test_SHIFTRIGHT { instruction = 0b00100000000000000000000000000000; }
-  sfg test_AND { instruction = 0b00100100000000000000000000000000; }
-  sfg test_OR { instruction = 0b00101000000000000000000000000000; }
 }
 
+dp Register(
+  in asel, bsel, storesel : ns(3);
+  in storeenable : ns(1);
+  in storedata : tc(16);
+  out a, b : tc(16)
+  ) {
 
-fsm f_testbench(testControl){
-  initial s0;
-  state s1, s2, s3, s4, s5, s6, s7, s8, s9, s10;
-  @s0 (test_0) -> s1;
-  @s1 (test_ADDI) -> s2;
-  @s2 (test_SUB) -> s3;
-  @s3 (test_ADD) -> s4;
-  @s4 (test_BRANCH) -> s5;
-  @s5 (test_BNEG) -> s6;
-  @s6 (test_BZERO) -> s7;
-  @s7 (test_SHIFTLEFT) -> s8;
-  @s8 (test_SHIFTRIGHT) -> s9;
-  @s9 (test_AND) -> s10;
-  @s10 (test_OR) -> s0;
+  reg r0, r1, r2, r3, r4, r5, r6, r7 : ns(16);
+
+  always {
+    a = asel == 0b001 ? r1 :
+      asel == 0b010 ? r2 :
+      asel == 0b011 ? r3 :
+      asel == 0b100 ? r4 :
+      asel == 0b101 ? r5 :
+      asel == 0b110 ? r6 :
+      asel == 0b111 ? r7 : r0;
+
+    b = bsel == 0b001 ? r1 :
+      bsel == 0b010 ? r2 :
+      bsel == 0b011 ? r3 :
+      bsel == 0b100 ? r4 :
+      bsel == 0b101 ? r5 :
+      bsel == 0b110 ? r6 :
+      bsel == 0b111 ? r7 : r0;
+
+    r1 = storeenable ? (storesel == 0b001 ? storedata : r1) : r1;
+    r2 = storeenable ? (storesel == 0b010 ? storedata : r2) : r2;
+    r3 = storeenable ? (storesel == 0b011 ? storedata : r3) : r3;
+    r4 = storeenable ? (storesel == 0b100 ? storedata : r4) : r4;
+    r5 = storeenable ? (storesel == 0b101 ? storedata : r5) : r5;
+    r6 = storeenable ? (storesel == 0b110 ? storedata : r6) : r6;
+    r7 = storeenable ? (storesel == 0b111 ? storedata : r7) : r7;
+  }
 }
 
-system ControlSystem {
-  Control(instruction, BRANCH, BNEG, BZERO, Select, inputSource, storeenable, storesel, A, B);
-  testControl(instruction, BRANCH, BNEG, BZERO, Select, inputSource, storeenable, storesel, A, B);
+dp And(in a, b : ns(1);
+  out result : ns(1)) {
+  always {
+    result = (a & b) ? 0b1 : 0b0;
+  }
+}
+
+dp Or(in a, b : ns(1);
+  out result : ns(1)) {
+  always {
+    result = (a | b) ? 0b1 : 0b0;
+  }
+}
+
+dp PC(in instruction : ns(32);
+  in sel : ns(1);
+  out pc_out : ns(5)){
+  reg PCr : ns(5);
+  sig jump_target : ns(5);
+  always {
+    jump_target = instruction[4:0];
+    PCr = sel ? jump_target : PCr +1;
+    pc_out = PCr;
+  }
 }
