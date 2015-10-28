@@ -24,8 +24,6 @@ dp Control (
     Select    = (operation == 0b000001) ? 0b0001 : // ADDI
                 (operation == 0b000010) ? 0b0010 : // SUB
                 (operation == 0b000011) ? 0b0001 : // ADD
-                (operation == 0b000100) ? 0b0011 : // BNEG
-                (operation == 0b000110) ? 0b0110 : // BZERO
                 (operation == 0b000111) ? 0b0111 : // SHIFTLEFT
                 (operation == 0b001000) ? 0b1000 : // SHIFTRIGHT
                 (operation == 0b001001) ? 0b1001 : // AND
