@@ -1,0 +1,183 @@
+ipblock instmem(in address : ns(5);
+        in wr, rd : ns(1);
+        in idata : ns(32);
+        out odata : ns(32)) 
+{
+  iptype "ram";
+  ipparm "size=64";
+  ipparm "wl=32";
+  ipparm "file=program.txt";
+}
+
+dp InsMem(in address : ns(5);
+      out instruction : ns(32)) 
+{
+  sig wr, rd : ns(1);
+  sig idata : ns(32);
+  sig odata : ns(32);
+  use instmem(address, wr, rd, idata, odata);
+
+  always {
+    wr = 0;
+    rd = 1;
+    idata = 0;
+    instruction = odata;
+  }
+}
+
+dp Control (
+  in instruction  : ns(32);
+  out branch      : ns(1);
+  out bneg        : ns(1);
+  out bzero       : ns(1);
+  out Select      : ns(4);
+  out inputSource : ns(1);
+  out storeenable : ns(1);
+  out storesel    : ns(3);
+  out A           : ns(3);
+  out B           : ns(3)
+){
+  sig operation : ns(6);
+  sig savelocation : ns(5);
+  sig source1 : ns(5);
+  sig source2 : ns(5);
+
+  always {
+    operation = instruction[31:26];
+    savelocation = instruction[25:21];
+    source1 = instruction[20:16];
+    source2 = instruction[15:11];
+
+    Select    = (operation == 0b000001) ? 0b0001 : // ADDI
+                (operation == 0b000010) ? 0b0010 : // SUB
+                (operation == 0b000011) ? 0b0001 : // ADD
+                (operation == 0b000100) ? 0b0011 : // BNEG
+                (operation == 0b000110) ? 0b0110 : // BZERO
+                (operation == 0b000111) ? 0b0111 : // SHIFTLEFT
+                (operation == 0b001000) ? 0b1000 : // SHIFTRIGHT
+                (operation == 0b001001) ? 0b1001 : // AND
+                (operation == 0b001010) ? 0b1010 : // OR
+                0b0000;
+
+    inputSource = (operation == 0b000001) ? 0b1 : 0b0;
+    branch    = (operation == 0b000101) ? 0b1 : 0b0;
+    bneg      = (operation == 0b000100) ? 0b1 : 0b0;
+    bzero     = (operation == 0b000110) ? 0b1 : 0b0;
+
+    storeenable = (operation == 0b000001) ? 0b1 :
+                (operation == 0b000010) ? 0b1 :
+                (operation == 0b000011) ? 0b1 :
+                (operation == 0b000111) ? 0b1 :
+                (operation == 0b001000) ? 0b1 :
+                (operation == 0b001001) ? 0b1 :
+                (operation == 0b001010) ? 0b1 : 0b0;
+
+    storesel   = (savelocation == 0b00001) ? 0b001 : // 1
+                (savelocation == 0b00010) ? 0b010 : // 2
+                (savelocation == 0b00011) ? 0b011 : // 3
+                (savelocation == 0b00100) ? 0b100 : // 4
+                (savelocation == 0b00101) ? 0b101 : // 5
+                (savelocation == 0b00110) ? 0b110 : // 6
+                0b111; // 7 (0b00111)
+
+    A = (source1 == 0b00000) ? 0b000 : // 0
+        (source1 == 0b00001) ? 0b001 : // 1
+        (source1 == 0b00010) ? 0b010 : // 2
+        (source1 == 0b00011) ? 0b011 : // 3
+        (source1 == 0b00100) ? 0b100 : // 4
+        (source1 == 0b00101) ? 0b101 : // 5
+        (source1 == 0b00110) ? 0b110 : // 6
+        0b111; // 7 (0b00111)
+
+    B = (source2 == 0b00000) ? 0b000 : // 0
+        (source2 == 0b00001) ? 0b001 : // 1
+        (source2 == 0b00010) ? 0b010 : // 2
+        (source2 == 0b00011) ? 0b011 : // 3
+        (source2 == 0b00100) ? 0b100 : // 4
+        (source2 == 0b00101) ? 0b101 : // 5
+        (source2 == 0b00110) ? 0b110 : // 6
+        0b111; // 7 (0b00111)
+  }
+}
+
+dp ALU(
+  in A, B : tc(16);
+  in Select : ns(4);
+  out R : tc(16);
+  out N, Z : ns(1)
+  ) {
+
+  always {
+    R = (Select == 0b0001) ? A + B :
+      (Select == 0b0010) ? A - B :
+      (Select == 0b0111) ? A << B:
+      (Select == 0b1000) ? A >> B:
+      (Select == 0b1001) ? A & B:
+      (Select == 0b1010) ? A | B:
+      0
+    N = R[31];
+    Z = R == 0;
+  }
+}
+
+dp Register(
+  in asel, bsel, storesel : ns(3);
+  in storeenable : ns(1);
+  in storedata : tc(16);
+  out a, b : tc(16)
+  ) {
+
+  reg r0, r1, r2, r3, r4, r5, r6, r7 : ns(16);
+
+  always {
+    a = asel == 0b001 ? r1 :
+      asel == 0b010 ? r2 :
+      asel == 0b011 ? r3 :
+      asel == 0b100 ? r4 :
+      asel == 0b101 ? r5 :
+      asel == 0b110 ? r6 :
+      asel == 0b111 ? r7 : r0;
+
+    b = bsel == 0b001 ? r1 :
+      bsel == 0b010 ? r2 :
+      bsel == 0b011 ? r3 :
+      bsel == 0b100 ? r4 :
+      bsel == 0b101 ? r5 :
+      bsel == 0b110 ? r6 :
+      bsel == 0b111 ? r7 : r0;
+
+    r1 = storeenable ? (storesel == 0b001 ? storedata : r1) : r1;
+    r2 = storeenable ? (storesel == 0b010 ? storedata : r2) : r2;
+    r3 = storeenable ? (storesel == 0b011 ? storedata : r3) : r3;
+    r4 = storeenable ? (storesel == 0b100 ? storedata : r4) : r4;
+    r5 = storeenable ? (storesel == 0b101 ? storedata : r5) : r5;
+    r6 = storeenable ? (storesel == 0b110 ? storedata : r6) : r6;
+    r7 = storeenable ? (storesel == 0b111 ? storedata : r7) : r7;
+  }
+}
+
+dp And(in a, b : ns(1);
+  out result : ns(1)) {
+  always {
+    result = (a & b) ? 0b1 : 0b0;
+  }
+}
+
+dp Or(in a, b : ns(1);
+  out result : ns(1)) {
+  always {
+    result = (a | b) ? 0b1 : 0b0;
+  }
+}
+
+dp PC(in instruction : ns(32);
+  in sel : ns(1);
+  out pc_out : ns(5)){
+  reg PCr : ns(5);
+  sig jump_target : ns(5);
+  always {
+    jump_target = instruction[4:0];
+    PCr = sel ? jump_target : PCr +1;
+    pc_out = PCr;
+  }
+}

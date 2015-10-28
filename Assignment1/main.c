@@ -25,6 +25,7 @@ double cpu_time_used;
 // Main program
 int main(int argc, char *argv[]) {
 	startClock();
+
 	while(readData()) {
 		dataFilter(x, xSize, y, ySize, n);
 
@@ -35,7 +36,7 @@ int main(int argc, char *argv[]) {
 
 	stopClock();
 
-	printf("Time spent on entire program: %g\n", cpu_time_used);
+	//printf("Time spent on entire program: %g\n", cpu_time_used);
 
 	return 0;
 }

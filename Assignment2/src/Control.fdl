@@ -1,0 +1,139 @@
+dp Control (
+  in instruction  : ns(32);
+  out branch      : ns(1);
+  out bneg        : ns(1);
+  out bzero       : ns(1);
+  out Select      : ns(4);
+  out inputSource : ns(1);
+  out storeenable : ns(1);
+  out storesel    : ns(3);
+  out A           : ns(3);
+  out B           : ns(3)
+){
+  sig operation : ns(6);
+  sig savelocation : ns(5);
+  sig source1 : ns(5);
+  sig source2 : ns(5);
+
+  always {
+    operation = instruction[31:26];
+    savelocation = instruction[25:21];
+    source1 = instruction[20:16];
+    source2 = instruction[15:11];
+
+    Select    = (operation == 0b000001) ? 0b0001 : // ADDI
+                (operation == 0b000010) ? 0b0010 : // SUB
+                (operation == 0b000011) ? 0b0001 : // ADD
+                (operation == 0b000111) ? 0b0111 : // SHIFTLEFT
+                (operation == 0b001000) ? 0b1000 : // SHIFTRIGHT
+                (operation == 0b001001) ? 0b1001 : // AND
+                (operation == 0b001010) ? 0b1010 : // OR
+                0b0000;
+
+    inputSource = (operation == 0b000001) ? 0b1 : 0b0;
+    branch    = (operation == 0b000101) ? 0b1 : 0b0;
+    bneg      = (operation == 0b000100) ? 0b1 : 0b0;
+    bzero     = (operation == 0b000110) ? 0b1 : 0b0;
+
+    storeenable = (operation == 0b000001) ? 0b1 :
+                (operation == 0b000010) ? 0b1 :
+                (operation == 0b000011) ? 0b1 :
+                (operation == 0b000111) ? 0b1 :
+                (operation == 0b001000) ? 0b1 :
+                (operation == 0b001001) ? 0b1 :
+                (operation == 0b001010) ? 0b1 : 0b0;
+
+    storesel   = (savelocation == 0b00001) ? 0b001 : // 1
+                (savelocation == 0b00010) ? 0b010 : // 2
+                (savelocation == 0b00011) ? 0b011 : // 3
+                (savelocation == 0b00100) ? 0b100 : // 4
+                (savelocation == 0b00101) ? 0b101 : // 5
+                (savelocation == 0b00110) ? 0b110 : // 6
+                0b111; // 7 (0b00111)
+
+    A = (source1 == 0b00000) ? 0b000 : // 0
+        (source1 == 0b00001) ? 0b001 : // 1
+        (source1 == 0b00010) ? 0b010 : // 2
+        (source1 == 0b00011) ? 0b011 : // 3
+        (source1 == 0b00100) ? 0b100 : // 4
+        (source1 == 0b00101) ? 0b101 : // 5
+        (source1 == 0b00110) ? 0b110 : // 6
+        0b111; // 7 (0b00111)
+
+    B = (source2 == 0b00000) ? 0b000 : // 0
+        (source2 == 0b00001) ? 0b001 : // 1
+        (source2 == 0b00010) ? 0b010 : // 2
+        (source2 == 0b00011) ? 0b011 : // 3
+        (source2 == 0b00100) ? 0b100 : // 4
+        (source2 == 0b00101) ? 0b101 : // 5
+        (source2 == 0b00110) ? 0b110 : // 6
+        0b111; // 7 (0b00111)
+  }
+}
+
+dp testControl(
+  out instruction : ns(32);
+  in branch : ns(1);
+  in bneg : ns(1);
+  in bzero : ns(1);
+  in Select : ns(4);
+  in inputSource : ns(1);
+  in storeenable : ns(1);
+  in storesel : ns(3);
+  in A : ns(3);
+  in B : ns(3)
+) {
+  sig operation : ns(6);
+  sig savelocation : ns(5);
+  sig source1 : ns(5);
+  sig source2 : ns(5);
+
+  always{
+      operation = instruction[31:26];
+      savelocation = instruction[25:21];
+      source1 = instruction[20:16];
+      source2 = instruction[15:11];
+      $display("opcode=", $bin, operation,
+         ", Select=", Select,
+         ", BRANCH=", $bin, branch,
+         ", BNEG=", $bin, bneg,
+         ", BZERO=", $bin, bzero,
+         ", Store Enable=", $bin, storeenable,
+         ", Store Select=", $bin, storesel,
+         ", A=", $bin, A,
+         ", B=", $bin, B);
+  }
+  sfg test_0 { instruction = 0b00000000000000000000000000000000; }
+  sfg test_ADDI { instruction = 0b00000100000000000000000000000000; }
+  sfg test_SUB { instruction = 0b00001000000000000000000000000000; }
+  sfg test_ADD { instruction = 0b00001100000000000000000000000000; }
+  sfg test_BRANCH { instruction = 0b00010100000000000000000000000000; }
+  sfg test_BNEG { instruction = 0b00010000000000000000000000000000; }
+  sfg test_BZERO { instruction = 0b00011000000000000000000000000000; }
+  sfg test_SHIFTLEFT { instruction = 0b00011100000000000000000000000000; }
+  sfg test_SHIFTRIGHT { instruction = 0b00100000000000000000000000000000; }
+  sfg test_AND { instruction = 0b00100100000000000000000000000000; }
+  sfg test_OR { instruction = 0b00101000000000000000000000000000; }
+}
+
+
+fsm f_testbench(testControl){
+  initial s0;
+  state s1, s2, s3, s4, s5, s6, s7, s8, s9, s10;
+  @s0 (test_0) -> s1;
+  @s1 (test_ADDI) -> s2;
+  @s2 (test_SUB) -> s3;
+  @s3 (test_ADD) -> s4;
+  @s4 (test_BRANCH) -> s5;
+  @s5 (test_BNEG) -> s6;
+  @s6 (test_BZERO) -> s7;
+  @s7 (test_SHIFTLEFT) -> s8;
+  @s8 (test_SHIFTRIGHT) -> s9;
+  @s9 (test_AND) -> s10;
+  @s10 (test_OR) -> s0;
+}
+
+system ControlSystem {
+  Control(instruction, BRANCH, BNEG, BZERO, Select, inputSource, storeenable, storesel, A, B);
+  testControl(instruction, BRANCH, BNEG, BZERO, Select, inputSource, storeenable, storesel, A, B);
+}

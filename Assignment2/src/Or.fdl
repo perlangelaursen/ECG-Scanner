@@ -1,0 +1,6 @@
+dp Or(in a, b : ns(1);
+	out result : ns(1)) {
+	always {
+		result = (a | b) ? 0b1 : 0b0;
+	}
+}

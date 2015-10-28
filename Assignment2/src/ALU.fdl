@@ -1,12 +1,19 @@
 dp ALU(
 	in A, B : tc(32);
-	in Select : ns(2);
+	in Select : ns(4);
 	out R : tc(32);
 	out N, Z : ns(1)
 	) {
 
 	always {
-		R = Select[1] ? (Select[0] ? B : A) : (Select[0] ? B - A : A - B);
+		R = (Select == 0b0001) ? A + B :
+			(Select == 0b0010) ? A - B :
+			(Select == 0b0111) ? A << B:
+			(Select == 0b1000) ? A >> B:
+			(Select == 0b1001) ? A & B:
+			(Select == 0b1010) ? A | B:
+			0
+		//R = Select[1] ? (Select[0] ? B : A) : (Select[0] ? B - A : A - B);
 		N = R[31];
 		Z = R == 0;
 	}
@@ -14,7 +21,7 @@ dp ALU(
 
 dp testALU(
 	out A, B : tc(32);
-	out Select : ns(2);
+	out Select : ns(4);
 	in R : tc(32);
 	in N, Z	: ns(1)
 	) {

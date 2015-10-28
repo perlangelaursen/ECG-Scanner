@@ -25,11 +25,13 @@ dp InsMem(in address : ns(5);
 	}
 }
 
+
 dp testInsMem(out address: ns(5);
 			  in instruction : ns(32)) {
 	always {
 		$display($dec, "Cycle: ", $cycle, " Address: ", address, " Instruction: ", $bin, instruction); // Prints the instruction in binary format
 	}
+
 	sfg test_0{address = 1;}
 	sfg test_1{address = 2;}
 	sfg test_2{address = 3;}
