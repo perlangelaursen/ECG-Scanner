@@ -4,6 +4,7 @@ dp CPU(){
   sig pcOut : ns(5);
   sig jmpTarget : ns(5);
   sig jmp : ns(1);
+  sig jmpResult : ns(1);
   sig insOut : ns(32);
   sig branch : ns(1);
   sig bneg : ns(1);
@@ -28,10 +29,10 @@ dp CPU(){
   use Register(aSel, bSel, storeSelect, storeEnable, aluOut, regA, regB);
   use Multiplex(insB, regB, addImmediate, aluB);
   use ALU(regA, aluB, aluSelect, aluOut, aluNeg, aluZero);
-  use And(aluZero, bzero, andZero);
-  use And(aluNeg,bneg, andNeg);
-  use Or(andZero, andNeg, orJmp);
-  use Or(branch, orJmp, jmp);
+  use AndBZERO(aluZero, bzero, andZero);
+  use AndBNEG(aluNeg,bneg, andNeg);
+  use OrB(andZero, andNeg, orJmp);
+  use Or(branch, orJmp, jmpResult);
 
 
   always{
@@ -44,7 +45,7 @@ dp testCPU() {
 
 
   sfg initization{jmp = 0;}
-  sfg run {jmp = jmp;}
+  sfg run {jmp = jmpResult;}
 }
 
 fsm ftCPU(testCPU) {
@@ -227,10 +228,24 @@ dp Register(
   }
 }
 
-dp And(in a, b : ns(1);
+dp AndBZERO(in a, b : ns(1);
   out result : ns(1)) {
   always {
     result = (a & b) ? 0b1 : 0b0;
+  }
+}
+
+dp AndBNEG(in a, b : ns(1);
+  out result : ns(1)) {
+  always {
+    result = (a & b) ? 0b1 : 0b0;
+  }
+}
+
+dp OrB(in a, b : ns(1);
+  out result : ns(1)) {
+  always {
+    result = (a | b) ? 0b1 : 0b0;
   }
 }
 
