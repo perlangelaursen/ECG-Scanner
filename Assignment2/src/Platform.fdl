@@ -32,9 +32,9 @@ dp CPU(
           sig aluOut : tc(32);
           sig aluNeg : ns(1);
           sig aluZero : ns(1);
-          sig regA, regB, aluB, insB : tc(32);
+          sig regA, regB, aluB, insB, dataMemoryOutput : tc(32);
           sig aSel, bSel : ns(3);
-          sig andNeg, andZero, orJmp : ns(1);
+          sig andNeg, andZero, orJmp, load, store : ns(1);
 
 
           use PC(jmpTarget, jmp, pcOut);
@@ -43,6 +43,8 @@ dp CPU(
           use Register(aSel, bSel, storeSelect, storeEnable, aluOut, regA, regB);
           use Multiplex(insB, regB, addImmediate, aluB);
           use ALU(regA, aluB, aluSelect, aluOut, aluNeg, aluZero);
+          use dataMemoryBuffer(M_datain, M_cmd, dataMemoryOutput, instruction, regA, M_dataout, M_dataoutrdy, load, store);
+          use DMMultiplex(aluOut, dataMemoryOutput, load);
           use AndBZERO(aluZero, bzero, andZero);
           use AndBNEG(aluNeg,bneg, andNeg);
           use OrB(andZero, andNeg, orJmp);
@@ -53,6 +55,23 @@ dp CPU(
 
 
        }       
+}
+
+dp dataMemoryBuffer(out M_datain : ns(32);
+           out M_cmd : ns(32);
+           out M_datainrdy : ns(1);
+           out dataMemoryOutput : tc(32);
+           in instruction : ns(32);
+           in regA : tc(32);
+           in M_dataout : ns(32);
+           in M_dataoutrdy : ns(1)
+           in load : ns(1);
+           in store : ns(1)) {
+  M_cmd = (load) ? (0b00101 + instruction[25:0] + 0b00) : 
+          (store) ? 0b00100000000000000000000000000000 : 0b00000000000000000000000000000000; // 2 Data Memory Needs Check
+  M_datain = (store) ? regA : 0b00000000000000000000000000000000;
+  M_datainrdy = (store ­| load) ? 0b1 : 0b0;
+  dataMemoryOutput = (M_dataoutrdy) ? M_dataout : regA;
 }
 
 ipblock instmem(in address : ns(5);
@@ -94,6 +113,17 @@ dp Multiplex(
   }
 }
 
+dp DMMultiplex(
+  in a : tc(32);
+  in b : tc(32);
+  in select : ns(1);
+  out r : tc(32)
+  ){
+  always{
+    r = select ? a : b;
+  }
+}
+
 dp Control (
   in instruction  : ns(32);
   out branch      : ns(1);
@@ -101,6 +131,8 @@ dp Control (
   out bzero       : ns(1);
   out Select      : ns(4);
   out inputSource : ns(1);
+  out load        : ns(1);
+  out store       : ns(1);
   out storeenable : ns(1);
   out storesel    : ns(3);
   out A           : ns(3);
@@ -132,6 +164,8 @@ dp Control (
     branch    = (operation == 0b0101) ? 0b1 : 0b0;
     bneg      = (operation == 0b0100) ? 0b1 : 0b0;
     bzero     = (operation == 0b0110) ? 0b1 : 0b0;
+    load      = (operation == 0b1011) ? 0b1 : 0b0;
+    store     = (operation == 0b1100) ? 0b1 : 0b0;
 
     storeenable = (operation == 0b0001) ? 0b1 :
                 (operation == 0b0010) ? 0b1 :
@@ -196,7 +230,7 @@ dp Register(
   out a, b : tc(32)
   ) {
 
-  reg r0, r1, r2, r3, r4, r5, r6, r7 : ns(16);
+  reg r0, r1, r2, r3, r4, r5, r6, r7 : ns(32);
 
   always {
     a = asel == 0b001 ? r1 :
