@@ -43,6 +43,7 @@ dp CPU(){
         "pcOut: ", pcOut,
         "jmpTarget: "jmpTarget,
         "jmp: ", jmp,
+        "jmpResult: ", jmpResult,
         "insOut: ", insOut,
         "branch: ", branch,
         "bneg: ", bneg,
@@ -226,7 +227,7 @@ dp Register(
   out a, b : tc(32)
   ) {
 
-  reg r0, r1, r2, r3, r4, r5, r6, r7 : ns(16);
+  reg r0, r1, r2, r3, r4, r5, r6, r7 : tc(32);
 
   always {
     a = asel == 0b001 ? r1 :
