@@ -1,79 +1,6 @@
 $option "vcd"
 
 
-////////////////////////////
-// CPU
-////////////////////////////
-
-dp CPU(
-           out M_datain : ns(32);
-           out M_cmd : ns(32);
-           out M_datainrdy : ns(1);
-           in M_dataout : ns(32);
-           in M_dataoutrdy : ns(1)
-           //in stall_cpu : ns(1)
-       ){
-       		// Implement your CPU here. 
-       		// Please remove the code below (it is only added such that that the platform can run without faults)  
-          sig pcOut : ns(5);
-          sig jmpTarget : ns(5);
-          sig jmp : ns(1);
-          sig jmpResult : ns(1);
-          sig insOut : ns(32);
-          sig branch : ns(1);
-          sig bneg : ns(1);
-          sig bzero : ns(1);
-          sig memSelect : ns(1);
-          sig addImmediate : ns(1);
-          sig aluSelect : ns(4);
-          sig storeSelect : ns(3);
-          sig storeEnable : ns(1);
-          sig storeData : tc(32);
-          sig aluOut : tc(32);
-          sig aluNeg : ns(1);
-          sig aluZero : ns(1);
-          sig regA, regB, aluB, insB, dataMemoryOutput : tc(32);
-          sig aSel, bSel : ns(3);
-          sig andNeg, andZero, orJmp, load, store : ns(1);
-
-
-          use PC(jmpTarget, jmp, pcOut);
-          use InsMem(pcOut, insOut);
-          use Control(insOut, branch, bneg, bzero, aluSelect, addImmediate, storeEnable, storeSelect, aSel, bSel);
-          use Register(aSel, bSel, storeSelect, storeEnable, aluOut, regA, regB);
-          use Multiplex(insB, regB, addImmediate, aluB);
-          use ALU(regA, aluB, aluSelect, aluOut, aluNeg, aluZero);
-          use dataMemoryBuffer(M_datain, M_cmd, dataMemoryOutput, instruction, regA, M_dataout, M_dataoutrdy, load, store);
-          use DMMultiplex(aluOut, dataMemoryOutput, load);
-          use AndBZERO(aluZero, bzero, andZero);
-          use AndBNEG(aluNeg,bneg, andNeg);
-          use OrB(andZero, andNeg, orJmp);
-          use Or(branch, orJmp, jmpResult);     
-       always{
-          jmpTarget = insOut[27:23];
-          insB = insOut[22:0];
-
-
-       }       
-}
-
-dp dataMemoryBuffer(out M_datain : ns(32);
-           out M_cmd : ns(32);
-           out M_datainrdy : ns(1);
-           out dataMemoryOutput : tc(32);
-           in instruction : ns(32);
-           in regA : tc(32);
-           in M_dataout : ns(32);
-           in M_dataoutrdy : ns(1)
-           in load : ns(1);
-           in store : ns(1)) {
-  M_cmd = (load) ? (0b00101 + instruction[25:0] + 0b00) : 
-          (store) ? 0b00100000000000000000000000000000 : 0b00000000000000000000000000000000; // 2 Data Memory Needs Check
-  M_datain = (store) ? regA : 0b00000000000000000000000000000000;
-  M_datainrdy = (store ­| load) ? 0b1 : 0b0;
-  dataMemoryOutput = (M_dataoutrdy) ? M_dataout : regA;
-}
-
 ipblock instmem(in address : ns(5);
         in wr, rd : ns(1);
         in idata : ns(32);
@@ -113,17 +40,6 @@ dp Multiplex(
   }
 }
 
-dp DMMultiplex(
-  in a : tc(32);
-  in b : tc(32);
-  in select : ns(1);
-  out r : tc(32)
-  ){
-  always{
-    r = select ? a : b;
-  }
-}
-
 dp Control (
   in instruction  : ns(32);
   out branch      : ns(1);
@@ -131,8 +47,6 @@ dp Control (
   out bzero       : ns(1);
   out Select      : ns(4);
   out inputSource : ns(1);
-  out load        : ns(1);
-  out store       : ns(1);
   out storeenable : ns(1);
   out storesel    : ns(3);
   out A           : ns(3);
@@ -145,27 +59,25 @@ dp Control (
 
   always {
     operation = instruction[31:28];
-    savelocation = instruction[27:23];
-    source1 = instruction[22:20];
-    source2 = instruction[19:17];
+    savelocation = instruction[27:25];
+    source1 = instruction[24:22];
+    source2 = instruction[21:19];
 
     Select    = (operation == 0b0001) ? 0b0001 : // ADDI
                 (operation == 0b0010) ? 0b0010 : // SUB
                 (operation == 0b0011) ? 0b0001 : // ADD
-                (operation == 0b0100) ? 0b0011 : // BNEG
-                (operation == 0b0110) ? 0b0110 : // BZERO
                 (operation == 0b0111) ? 0b0111 : // SHIFTLEFT
                 (operation == 0b1000) ? 0b1000 : // SHIFTRIGHT
                 (operation == 0b1001) ? 0b1001 : // AND
                 (operation == 0b1010) ? 0b1010 : // OR
                 0b0000;
 
-    inputSource = (operation == 0b0001) ? 0b1 : 0b0;
+    inputSource = (operation == 0b0001 
+                 | operation == 0b0111
+                 | operation == 0b1000) ? 0b1 : 0b0;
     branch    = (operation == 0b0101) ? 0b1 : 0b0;
     bneg      = (operation == 0b0100) ? 0b1 : 0b0;
     bzero     = (operation == 0b0110) ? 0b1 : 0b0;
-    load      = (operation == 0b1011) ? 0b1 : 0b0;
-    store     = (operation == 0b1100) ? 0b1 : 0b0;
 
     storeenable = (operation == 0b0001) ? 0b1 :
                 (operation == 0b0010) ? 0b1 :
@@ -175,31 +87,9 @@ dp Control (
                 (operation == 0b1001) ? 0b1 :
                 (operation == 0b1010) ? 0b1 : 0b0;
 
-    storesel   = (savelocation == 0b001) ? 0b001 : // 1
-                (savelocation == 0b010) ? 0b010 : // 2
-                (savelocation == 0b011) ? 0b011 : // 3
-                (savelocation == 0b100) ? 0b100 : // 4
-                (savelocation == 0b101) ? 0b101 : // 5
-                (savelocation == 0b110) ? 0b110 : // 6
-                0b111; // 7 (0b00111)
-
-    A = (source1 == 0b000) ? 0b000 : // 0
-        (source1 == 0b001) ? 0b001 : // 1
-        (source1 == 0b010) ? 0b010 : // 2
-        (source1 == 0b011) ? 0b011 : // 3
-        (source1 == 0b100) ? 0b100 : // 4
-        (source1 == 0b101) ? 0b101 : // 5
-        (source1 == 0b110) ? 0b110 : // 6
-        0b111; // 7 (0b00111)
-
-    B = (source2 == 0b000) ? 0b000 : // 0
-        (source2 == 0b001) ? 0b001 : // 1
-        (source2 == 0b010) ? 0b010 : // 2
-        (source2 == 0b011) ? 0b011 : // 3
-        (source2 == 0b100) ? 0b100 : // 4
-        (source2 == 0b101) ? 0b101 : // 5
-        (source2 == 0b110) ? 0b110 : // 6
-        0b111; // 7 (0b00111)
+    storesel   = savelocation;
+    A = source1;
+    B = source2;
   }
 }
 
@@ -217,9 +107,9 @@ dp ALU(
       (Select == 0b1000) ? A >> B:
       (Select == 0b1001) ? A & B:
       (Select == 0b1010) ? A | B:
-      0
+      0;
     N = R[31];
-    Z = R == 0;
+    Z = (R == 0);
   }
 }
 
@@ -230,7 +120,7 @@ dp Register(
   out a, b : tc(32)
   ) {
 
-  reg r0, r1, r2, r3, r4, r5, r6, r7 : ns(32);
+  reg r0, r1, r2, r3, r4, r5, r6, r7 : tc(32);
 
   always {
     a = asel == 0b001 ? r1 :
@@ -295,6 +185,77 @@ dp PC(in jump_target : ns(5);
     PCr = sel ? jump_target : PCr +1;
     pc_out = PCr;
   }
+}
+
+dp dataMemoryBuffer(out M_datain : ns(32);
+           out M_cmd : ns(32);
+           out M_datainrdy : ns(1);
+           out dataMemoryOutput : tc(32);
+           in instruction : ns(32);
+           in regA : tc(32);
+           in M_dataout : ns(32);
+           in M_dataoutrdy : ns(1)
+           in load : ns(1);
+           in store : ns(1)) {
+  M_cmd = (load) ? (0b00101 + instruction[25:0] + 0b00) : 
+          (store) ? 0b00100000000000000000000000000000 : 0b00000000000000000000000000000000; // 2 Data Memory Needs Check
+  M_datain = (store) ? regA : 0b00000000000000000000000000000000;
+  M_datainrdy = (store ­| load) ? 0b1 : 0b0;
+  dataMemoryOutput = (M_dataoutrdy) ? M_dataout : regA;
+}
+
+////////////////////////////
+// CPU
+////////////////////////////
+
+dp CPU(
+           out M_datain : ns(32);
+           out M_cmd : ns(32);
+           out M_datainrdy : ns(1);
+           in M_dataout : ns(32);
+           in M_dataoutrdy : ns(1)
+           //in stall_cpu : ns(1)
+       ){
+       		// Implement your CPU here. 
+       		// Please remove the code below (it is only added such that that the platform can run without faults)  
+          sig pcOut : ns(5);
+          sig jmpTarget : ns(5);
+          sig jmp : ns(1);
+          sig jmpResult : ns(1);
+          sig insOut : ns(32);
+          sig branch : ns(1);
+          sig bneg : ns(1);
+          sig bzero : ns(1);
+          sig memSelect : ns(1);
+          sig addImmediate : ns(1);
+          sig aluSelect : ns(4);
+          sig storeSelect : ns(3);
+          sig storeEnable : ns(1);
+          sig storeData : tc(32);
+          sig aluOut : tc(32);
+          sig aluNeg : ns(1);
+          sig aluZero : ns(1);
+          sig regA, regB, aluB, insB, dataMemoryOutput : tc(32);
+          sig aSel, bSel : ns(3);
+          sig andNeg, andZero, orJmp, load, store : ns(1);
+
+
+          use PC(jmpTarget, jmp, pcOut);
+          use InsMem(pcOut, insOut);
+          use Control(insOut, branch, bneg, bzero, aluSelect, addImmediate, storeEnable, storeSelect, aSel, bSel);
+          use Register(aSel, bSel, storeSelect, storeEnable, aluOut, regA, regB);
+          use Multiplex(insB, regB, addImmediate, aluB);
+          use ALU(regA, aluB, aluSelect, aluOut, aluNeg, aluZero);
+          use dataMemoryBuffer(M_datain, M_cmd, dataMemoryOutput, instruction, regA, M_dataout, M_dataoutrdy, load, store);
+          use DMMultiplex(aluOut, dataMemoryOutput, load);
+          use AndBZERO(aluZero, bzero, andZero);
+          use AndBNEG(aluNeg,bneg, andNeg);
+          use OrB(andZero, andNeg, orJmp);
+          use Or(branch, orJmp, jmpResult);     
+       always{
+          jmpTarget = insOut[27:23];
+          insB = insOut[21:0];
+       }       
 }
 
 ////////////////////////////
