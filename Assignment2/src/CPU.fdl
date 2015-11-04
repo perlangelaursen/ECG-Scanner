@@ -38,6 +38,33 @@ dp CPU(){
   always{
       jmpTarget = insOut[27:23];
       insB = insOut[22:0];
+
+      $display($dec, "Cycle: ", $cycle,
+        "pcOut: ", pcOut,
+        "jmpTarget: "jmpTarget,
+        "jmp: ", jmp,
+        "insOut: ", insOut,
+        "branch: ", branch,
+        "bneg: ", bneg,
+        "bzero: ", bzero,
+        "memSelect: ", memSelect,
+        "addImmediate: ", addImmediate,
+        "aluSelect: ", aluSelect,
+        "storeSelect: ", storeSelect,
+        "storeEnable: ", storeEnable,
+        "storeData: ", storeData,
+        "aluOut: ", aluOut,
+        "aluNeg: ", aluNeg, 
+        "aluZero: ", aluZero,
+        "regA: ", regA,
+        "regB: ", regB,
+        "aluB: ", aluB,
+        "insB: ", insB,
+        "aSel: ", aSel,
+        "bSel: ", bSel,
+        "andNeg: ", andNeg,
+        "andZero: ", andZero,
+        "orJmp: ", orJmp);
   }
 }
 
