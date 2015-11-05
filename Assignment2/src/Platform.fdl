@@ -149,26 +149,14 @@ dp Register(
   }
 }
 
-dp AndBZERO(in a, b : ns(1);
+dp And(in a, b : ns(1);
   out result : ns(1)) {
   always {
     result = (a & b) ? 0b1 : 0b0;
   }
 }
 
-dp AndBNEG(in a, b : ns(1);
-  out result : ns(1)) {
-  always {
-    result = (a & b) ? 0b1 : 0b0;
-  }
-}
-
-dp OrB(in a, b : ns(1);
-  out result : ns(1)) {
-  always {
-    result = (a | b) ? 0b1 : 0b0;
-  }
-}
+dp AndBNEG : And
 
 dp Or(in a, b : ns(1);
   out result : ns(1)) {
@@ -176,6 +164,8 @@ dp Or(in a, b : ns(1);
     result = (a | b) ? 0b1 : 0b0;
   }
 }
+
+dp OrB : Or
 
 dp PC(in jump_target : ns(5);
   in sel : ns(1);
