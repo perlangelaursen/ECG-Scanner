@@ -40,17 +40,7 @@ dp Multiplex(
   }
 }
 
-dp DMMultiplex(
-  in a : tc(32);
-  in b : tc(32);
-  in select : ns(1);
-  out r : tc(32)
-  ){
-  always{
-    r = select ? a : b;
-    //$display($desc, "Chosen output: ", r);
-  }
-}
+dp DMMultiplex : Multiplex
 
 dp Control (
   in instruction  : ns(32);
@@ -168,26 +158,14 @@ dp Register(
   }
 }
 
-dp AndBZERO(in a, b : ns(1);
+dp And(in a, b : ns(1);
   out result : ns(1)) {
   always {
     result = (a & b) ? 0b1 : 0b0;
   }
 }
 
-dp AndBNEG(in a, b : ns(1);
-  out result : ns(1)) {
-  always {
-    result = (a & b) ? 0b1 : 0b0;
-  }
-}
-
-dp OrB(in a, b : ns(1);
-  out result : ns(1)) {
-  always {
-    result = (a | b) ? 0b1 : 0b0;
-  }
-}
+dp AndBNEG : And
 
 dp Or(in a, b : ns(1);
   out result : ns(1)) {
@@ -195,6 +173,8 @@ dp Or(in a, b : ns(1);
     result = (a | b) ? 0b1 : 0b0;
   }
 }
+
+dp OrB : Or
 
 dp PC(in jump_target : ns(5);
   in sel : ns(1);
@@ -228,7 +208,7 @@ dp CPU(
           sig branch : ns(1);
           sig bneg : ns(1);
           sig bzero : ns(1);
-          sig memSelect : ns(1);
+          //sig memSelect : ns(1);
           sig addImmediate : ns(1);
           sig aluSelect : ns(4);
           sig storeSelect : ns(3);
@@ -237,7 +217,7 @@ dp CPU(
           sig aluOut : tc(32);
           sig aluNeg : ns(1);
           sig aluZero : ns(1);
-          sig regA, regB, aluB, insB, dataMemoryOutput : tc(32);
+          sig regA, regB, aluB, insB : tc(32);
           sig aSel, bSel : ns(3);
           sig andNeg, andZero, orJmp, extLoad, extStore, extSensor, extLCD : ns(1);
 
@@ -249,7 +229,7 @@ dp CPU(
           use Multiplex(insB, regB, addImmediate, aluB);
           use ALU(regA, aluB, aluSelect, aluOut, aluNeg, aluZero);
           use DMMultiplex(aluOut, M_dataout, M_dataoutrdy);
-          use AndBZERO(aluZero, bzero, andZero);
+          use And(aluZero, bzero, andZero);
           use AndBNEG(aluNeg,bneg, andNeg);
           use OrB(andZero, andNeg, orJmp);
           use Or(branch, orJmp, jmpResult);     

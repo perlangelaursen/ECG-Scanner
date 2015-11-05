@@ -146,7 +146,7 @@ dp Register(
   }
 }
 
-dp AndBZERO(in a, b : ns(1);
+dp And(in a, b : ns(1);
   out result : ns(1)) {
   always {
     result = (a & b) ? 0b1 : 0b0;
@@ -160,19 +160,14 @@ dp AndBNEG(in a, b : ns(1);
   }
 }
 
-dp OrB(in a, b : ns(1);
-  out result : ns(1)) {
-  always {
-    result = (a | b) ? 0b1 : 0b0;
-  }
-}
-
 dp Or(in a, b : ns(1);
   out result : ns(1)) {
   always {
     result = (a | b) ? 0b1 : 0b0;
   }
 }
+
+dp OrB : Or
 
 dp PC(in jump_target : ns(5);
   in sel : ns(1);
@@ -215,7 +210,7 @@ dp CPU(){
   use Register(aSel, bSel, storeSelect, storeEnable, storeData, regA, regB);
   use Multiplex(insB, regB, addImmediate, aluB);
   use ALU(regA, aluB, aluSelect, aluOut, aluNeg, aluZero);
-  use AndBZERO(aluZero, bzero, andZero);
+  use And(aluZero, bzero, andZero);
   use AndBNEG(aluNeg,bneg, andNeg);
   use OrB(andZero, andNeg, orJmp);
   use Or(branch, orJmp, jmpResult);
