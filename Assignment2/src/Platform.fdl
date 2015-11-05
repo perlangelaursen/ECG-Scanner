@@ -223,6 +223,7 @@ dp CPU(
           sig aSel, bSel : ns(3);
           sig andNeg, andZero, orJmp, extLoad, extStore, extSensor, extLCD : ns(1);
 
+          reg addr : ns(8);
 
           use PC(jmpTarget, jmp, pcOut);
           use InsMem(pcOut, insOut);
@@ -239,13 +240,13 @@ dp CPU(
           jmpTarget = insOut[27:23];
           insB = insOut[21:0];
 
-          M_cmd = (extLoad) ? 0b0010000 # insOut[24:0] :
-                  (extStore) ? 0b0010100 # insOut[24:0] :
+          M_cmd = (extLoad) ? 0b0010000 # insOut[24:8] # (addr - insOut[7:0]) :
+                  (extStore) ? 0b0010100 # insOut[24:8] # (addr - insOut[7:0]) :
                   (extSensor) ? 0b0001001# insOut[24:0] : 
                   (extLCD) ? 0b0011000 # insOut[24:0];
-
           M_dataout = (extStore) ? regA : 0b00000000000000000000000000000000;
-          M_dataoutrdy = (M_dataout = 0b00000000000000000000000000000000) ? 0b0 : 0b1;
+          M_dataoutrdy = (extStore | extLoad | extLCD | extSensor) ? 0b1 : 0b0;
+          addr = (extLoad | extStore) ? (addr + 1) : addr;
 
        }      
 ////////////////////////////

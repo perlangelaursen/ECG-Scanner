@@ -3,7 +3,7 @@ LOAD R2 (addr of last Squared)
 LOAD R3 (addr of last MWI)
 ADDI R4 R0 30 //(N = 30)
 ADDI R5 R0 0 // Counter
-SUB R2 R1 R2 // Subtract old from new
+SUB R2 R2 R4 // Subtract old from new
 BNEG 10 // Jump to line 10
 ADDI R5 R5 1 // Increment counter
 BRANCH 6
@@ -13,4 +13,5 @@ SUB R1 R1 R4
 BNEG 16 // Check if sub results in subzero
 ADDI R5 R5 1 // Increment counter
 BRANCH 12
-ADD R3 R3 R1 // Calculate the new MWI
+ADD R3 R3 R5 // Calculate the new MWI
+BRANCH 1
