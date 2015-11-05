@@ -78,9 +78,7 @@ dp Control (
                 (operation == 0b1010) ? 0b1010 : // OR
                 0b0000;
 
-    inputSource = (operation == 0b0001 
-                 | operation == 0b0111
-                 | operation == 0b1000) ? 0b1 : 0b0;
+    inputSource = (operation == 0b0001) ? 0b1 : 0b0;
     branch    = (operation == 0b0101) ? 0b1 : 0b0;
     bneg      = (operation == 0b0100) ? 0b1 : 0b0;
     bzero     = (operation == 0b0110) ? 0b1 : 0b0;
