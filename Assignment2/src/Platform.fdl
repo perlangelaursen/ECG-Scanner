@@ -40,6 +40,18 @@ dp Multiplex(
   }
 }
 
+dp DMMultiplex(
+  in a : tc(32);
+  in b : tc(32);
+  in select : ns(1);
+  out r : tc(32)
+  ){
+  always{
+    r = select ? a : b;
+    //$display($desc, "Chosen output: ", r);
+  }
+}
+
 dp Control (
   in instruction  : ns(32);
   out branch      : ns(1);
@@ -50,7 +62,11 @@ dp Control (
   out storeenable : ns(1);
   out storesel    : ns(3);
   out A           : ns(3);
-  out B           : ns(3)
+  out B           : ns(3);
+  out extLoad     : ns(1);
+  out extStore    : ns(1);
+  out extSensor   : ns(1);
+  out extLCD      : ns(1)
 ){
   sig operation : ns(4);
   sig savelocation : ns(3);
@@ -90,6 +106,11 @@ dp Control (
     storesel   = savelocation;
     A = source1;
     B = source2;
+
+    extLoad = (operation == 0b1101) ? 0b1 : 0b0;
+    extStore = (operation == 0b1110) ? 0b1 : 0b0;
+    extSensor = (operation == 0b1100) ? 0b1 : 0b0;
+    extLCD = (operation == 0b1111) ? 0b1 : 0b0;
   }
 }
 
@@ -177,23 +198,6 @@ dp PC(in jump_target : ns(5);
   }
 }
 
-dp dataMemoryBuffer(out M_datain : ns(32);
-           out M_cmd : ns(32);
-           out M_datainrdy : ns(1);
-           out dataMemoryOutput : tc(32);
-           in instruction : ns(32);
-           in regA : tc(32);
-           in M_dataout : ns(32);
-           in M_dataoutrdy : ns(1)
-           in load : ns(1);
-           in store : ns(1)) {
-  M_cmd = (load) ? (0b00101 + instruction[25:0] + 0b00) : 
-          (store) ? 0b00100000000000000000000000000000 : 0b00000000000000000000000000000000; // 2 Data Memory Needs Check
-  M_datain = (store) ? regA : 0b00000000000000000000000000000000;
-  M_datainrdy = (store ­| load) ? 0b1 : 0b0;
-  dataMemoryOutput = (M_dataoutrdy) ? M_dataout : regA;
-}
-
 ////////////////////////////
 // CPU
 ////////////////////////////
@@ -227,17 +231,16 @@ dp CPU(
           sig aluZero : ns(1);
           sig regA, regB, aluB, insB, dataMemoryOutput : tc(32);
           sig aSel, bSel : ns(3);
-          sig andNeg, andZero, orJmp, load, store : ns(1);
+          sig andNeg, andZero, orJmp, extLoad, extStore, extSensor, extLCD : ns(1);
 
 
           use PC(jmpTarget, jmp, pcOut);
           use InsMem(pcOut, insOut);
-          use Control(insOut, branch, bneg, bzero, aluSelect, addImmediate, storeEnable, storeSelect, aSel, bSel);
+          use Control(insOut, branch, bneg, bzero, aluSelect, addImmediate, storeEnable, storeSelect, aSel, bSel, extLoad, extStore, extSensor, extLCD);
           use Register(aSel, bSel, storeSelect, storeEnable, aluOut, regA, regB);
           use Multiplex(insB, regB, addImmediate, aluB);
           use ALU(regA, aluB, aluSelect, aluOut, aluNeg, aluZero);
-          use dataMemoryBuffer(M_datain, M_cmd, dataMemoryOutput, instruction, regA, M_dataout, M_dataoutrdy, load, store);
-          use DMMultiplex(aluOut, dataMemoryOutput, load);
+          use DMMultiplex(aluOut, M_dataout, M_dataoutrdy);
           use AndBZERO(aluZero, bzero, andZero);
           use AndBNEG(aluNeg,bneg, andNeg);
           use OrB(andZero, andNeg, orJmp);
@@ -245,9 +248,16 @@ dp CPU(
        always{
           jmpTarget = insOut[27:23];
           insB = insOut[21:0];
-       }       
-}
 
+          M_cmd = (extLoad) ? 0b0010000 # insOut[24:0] :
+                  (extStore) ? 0b0010100 # insOut[24:0] :
+                  (extSensor) ? 0b0001001# insOut[24:0] : 
+                  (extLCD) ? 0b0011000 # insOut[24:0];
+
+          M_dataout = (extStore) ? regA : 0b00000000000000000000000000000000;
+          M_dataoutrdy = (M_dataout = 0b00000000000000000000000000000000) ? 0b0 : 0b1;
+
+       }      
 ////////////////////////////
 // Bus
 ////////////////////////////
@@ -586,7 +596,7 @@ dp bus_toplevel(
            in M_datainrdy : ns(1);
            out M_dataout : ns(32);
            out M_dataoutrdy : ns(1);
-           //out stall_cpu : ns(1);
+           out stall_cpu : ns(1);
            
            // Slave interface (datamemory)
            in DM_datain : ns(32);
