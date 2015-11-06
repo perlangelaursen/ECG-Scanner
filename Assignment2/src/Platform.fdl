@@ -1,6 +1,5 @@
 $option "vcd"
 
-
 ipblock instmem(in address : ns(5);
         in wr, rd : ns(1);
         in idata : ns(32);
@@ -199,11 +198,10 @@ dp CPU(
            //in stall_cpu : ns(1)
        ){
        		// Implement your CPU here. 
-       		// Please remove the code below (it is only added such that that the platform can run without faults)  
+       		// Please remove the code below (it is only added such that that the platform can run without faults)
           sig pcOut : ns(5);
           sig jmpTarget : ns(5);
           sig jmp : ns(1);
-          sig jmpResult : ns(1);
           sig insOut : ns(32);
           sig branch : ns(1);
           sig bneg : ns(1);
@@ -222,6 +220,7 @@ dp CPU(
           sig andNeg, andZero, orJmp, extLoad, extStore, extSensor, extLCD : ns(1);
 
           reg addr : ns(8);
+          reg updateAddr : ns(1);
 
           use PC(jmpTarget, jmp, pcOut);
           use InsMem(pcOut, insOut);
@@ -233,20 +232,22 @@ dp CPU(
           use And(aluZero, bzero, andZero);
           use AndBNEG(aluNeg,bneg, andNeg);
           use OrB(andZero, andNeg, orJmp);
-          use Or(branch, orJmp, jmpResult);     
+          use Or(branch, orJmp, jmp);       
        always{
           jmpTarget = insOut[27:23];
           insB = insOut[21:0];
 
-          M_cmd = (extLoad) ? 0b0010000 # insOut[24:8] # (addr - insOut[7:0]) :
-                  (extStore) ? 0b0010100 # insOut[24:8] # (addr - insOut[7:0]) :
-                  (extSensor) ? 0b0001001# insOut[24:0] : 
-                  (extLCD) ? 0b0011000 # insOut[24:0];
-          M_dataout = (extStore) ? regA : 0b00000000000000000000000000000000;
-          M_dataoutrdy = (extStore | extLoad | extLCD | extSensor) ? 0b1 : 0b0;
-          addr = (extLoad | extStore) ? (addr + 1) : addr;
+       		M_datain = (extStore) ? regA : 0b00000000000000000000000000000000;
+       		M_cmd = (extLoad) ? 0b0010000 # insOut[24:8] # (addr + insOut[7:0]) : 
+                  (extStore) ? 0b0010100 # insOut[24:8] # (addr + insOut[7:0]) :
+                  (extSensor) ? 0b0001000 # insOut[24:0] : 
+                  (extLCD) ? 0b0011000 # insOut[24:0] : 0b00000000000000000000000000000000;
+       		M_datainrdy = (extStore | extLoad | extLCD | extSensor) ? 0b1 : 0b0;
+          addr = (extLoad | extStore) ? ((updateAddr) ? (addr + 1) : addr)  : addr;
+          updateAddr = (updateAddr == 0b1) ? 0b0 : 0b1;
+       }       
+}
 
-       }      
 ////////////////////////////
 // Bus
 ////////////////////////////
@@ -585,7 +586,7 @@ dp bus_toplevel(
            in M_datainrdy : ns(1);
            out M_dataout : ns(32);
            out M_dataoutrdy : ns(1);
-           out stall_cpu : ns(1);
+           //out stall_cpu : ns(1);
            
            // Slave interface (datamemory)
            in DM_datain : ns(32);
