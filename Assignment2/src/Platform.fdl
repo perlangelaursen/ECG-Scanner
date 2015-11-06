@@ -8,7 +8,8 @@ ipblock instmem(in address : ns(5);
   iptype "ram";
   ipparm "size=64";
   ipparm "wl=32";
-  ipparm "file=program.txt";
+  //ipparm "file=program.txt";
+  ipparm "file=inst.txt";
 }
 
 dp InsMem(in address : ns(5);
