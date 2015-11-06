@@ -178,10 +178,11 @@ dp OrB : Or
 
 dp PC(in jump_target : ns(5);
   in sel : ns(1);
+  in stall_cpu : ns(1);
   out pc_out : ns(5)){
   reg PCr : ns(5);
   always {
-    PCr = sel ? jump_target : PCr +1;
+    PCr = sel ? jump_target : ((stall_cpu) ? PCr : PCr +1);
     pc_out = PCr;
   }
 }
@@ -195,8 +196,8 @@ dp CPU(
            out M_cmd : ns(32);
            out M_datainrdy : ns(1);
            in M_dataout : ns(32);
-           in M_dataoutrdy : ns(1)
-           //in stall_cpu : ns(1)
+           in M_dataoutrdy : ns(1);
+           in stall_cpu : ns(1)
        ){
        		// Implement your CPU here. 
        		// Please remove the code below (it is only added such that that the platform can run without faults)
@@ -207,7 +208,6 @@ dp CPU(
           sig branch : ns(1);
           sig bneg : ns(1);
           sig bzero : ns(1);
-          //sig memSelect : ns(1);
           sig addImmediate : ns(1);
           sig aluSelect : ns(4);
           sig storeSelect : ns(3);
@@ -223,7 +223,7 @@ dp CPU(
           reg addr : ns(8);
           reg updateAddr : ns(1);
 
-          use PC(jmpTarget, jmp, pcOut);
+          use PC(jmpTarget, jmp, stall_cpu, pcOut);
           use InsMem(pcOut, insOut);
           use Control(insOut, branch, bneg, bzero, aluSelect, addImmediate, storeEnable, storeSelect, aSel, bSel, extLoad, extStore, extSensor, extLCD);
           use Register(aSel, bSel, storeSelect, storeEnable, aluOut, regA, regB);
@@ -587,7 +587,7 @@ dp bus_toplevel(
            in M_datainrdy : ns(1);
            out M_dataout : ns(32);
            out M_dataoutrdy : ns(1);
-           //out stall_cpu : ns(1);
+           out stall_cpu : ns(1);
            
            // Slave interface (datamemory)
            in DM_datain : ns(32);
@@ -664,6 +664,7 @@ dp bus_toplevel(
               ID_Sensor = 0x1;
               ID_DataMem = 0x2;
               ID_Output = 0x3;
+              stall_cpu = waitCPU;
            }
 }
 
@@ -928,9 +929,9 @@ fsm Output_cntrl(Output){
 ////////////////////////////
 system CPUsystem{
 
-   CPU(CPUdatain,CPUcmd,CPUdatainrdy,CPUdataout,CPUdataoutrdy);
+   CPU(CPUdatain,CPUcmd,CPUdatainrdy,CPUdataout,CPUdataoutrdy, CPUstall);
    
-   bus_toplevel(CPUdatain,CPUcmd,CPUdatainrdy,CPUdataout,CPUdataoutrdy, // master unit
+   bus_toplevel(CPUdatain,CPUcmd,CPUdatainrdy,CPUdataout,CPUdataoutrdy, CPUstall, // master unit
            DMDatain,DMDatainrdy,DMDataout,DMCmdout,DMDataoutrdy,DMStall, // slave (data memory)
            SensorDatain,SensorDatainrdy,SensorDataout,SensorCmdout,SensorDataoutrdy,SensorStall,  // slave (sensor)
            OPDatain,OPDatainrdy,OPDataout,OPCmdout,OPDataoutrdy,OPStall); // slave (Output)
