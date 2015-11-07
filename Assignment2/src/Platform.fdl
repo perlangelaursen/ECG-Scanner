@@ -89,7 +89,11 @@ dp Control (
                 (operation == 0b0111) ? 0b1 :
                 (operation == 0b1000) ? 0b1 :
                 (operation == 0b1001) ? 0b1 :
-                (operation == 0b1010) ? 0b1 : 0b0;
+                (operation == 0b1010) ? 0b1 : 
+                (operation == 0b1101) ? 0b1 : 
+                (operation == 0b1110) ? 0b1 :
+                (operation == 0b1100) ? 0b1 :
+                (operation == 0b1111) ? 0b1 : 0b0;
 
     storesel   = savelocation;
     A = source1;
