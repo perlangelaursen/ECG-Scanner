@@ -221,12 +221,12 @@ dp CPU(
           sig aluZero : ns(1);
           sig regA, regB, aluB, insB : tc(32);
           sig aSel, bSel : ns(3);
-          sig andNeg, andZero, orJmp, extLoad, extStore, extSensor, extLCD : ns(1);
+          sig andNeg, andZero, orJmp, extLoad, extStore, extSensor, extLCD, stall : ns(1);
 
           reg addr : ns(8);
           reg updateAddr : ns(1);
 
-          use PC(jmpTarget, jmp, M_dataoutrdy, pcOut);
+          use PC(jmpTarget, jmp, stall, pcOut);
           use InsMem(pcOut, insOut);
           use Control(insOut, branch, bneg, bzero, aluSelect, addImmediate, storeEnable, storeSelect, aSel, bSel, extLoad, extStore, extSensor, extLCD);
           use Register(aSel, bSel, storeSelect, storeEnable, aluOut, regA, regB);
@@ -238,6 +238,7 @@ dp CPU(
           use OrB(andZero, andNeg, orJmp);
           use Or(branch, orJmp, jmp);       
        always{
+          stall = (M_dataoutrdy == 0b1) ? 0b0 : 0b1;
           jmpTarget = insOut[27:23];
           insB = insOut[21:0];
 
