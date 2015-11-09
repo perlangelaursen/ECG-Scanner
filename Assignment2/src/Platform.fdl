@@ -12,7 +12,7 @@ ipblock instmem(in address : ns(5);
   ipparm "wl=32";
   //ipparm "file=program.txt";
   //ipparm "file=inst.txt";
-  ipparm "file=32divhex.txt"
+  ipparm "file=32divhex.txt";
 }
 
 dp InsMem(in address : ns(5);
@@ -248,9 +248,11 @@ dp CPU(
           jmpTarget = insOut[27:23];
           insB = insOut[21:0];
 
+          $display($dec, aluOut);
+
        		M_datain = (extStore | extLCD) ? regA : 
-                      (extLoad) ? (insOut[24:0] + addr) : 0b00000000000000000000000000000000;
-       		M_cmd = (extLoad) ? 0b0010000 # insOut[24:0] : 
+                      (extLoad) ? (insOut[24:0]) : 0b00000000000000000000000000000000;
+       		M_cmd = (extLoad) ? 0b0010000 # regA[24:0] : 
                   (extStore) ? 0b0010100 # insOut[24:0] + addr :
                   (extSensor) ? 0b0001000 # insOut[24:0] : 
                   (extLCD) ? 0b0011000 # insOut[24:0] : 0b00000000000000000000000000000000;
