@@ -1,4 +1,6 @@
 $option "vcd"
+$option "profile_toggle_alledge"
+$option "profile_display_operations"
 
 ipblock instmem(in address : ns(5);
         in wr, rd : ns(1);
@@ -8,8 +10,8 @@ ipblock instmem(in address : ns(5);
   iptype "ram";
   ipparm "size=64";
   ipparm "wl=32";
-  //ipparm "file=program.txt";
-  ipparm "file=inst.txt";
+  ipparm "file=program.txt";
+  //ipparm "file=inst.txt";
 }
 
 dp InsMem(in address : ns(5);
@@ -56,7 +58,8 @@ dp Control (
   out extLoad     : ns(1);
   out extStore    : ns(1);
   out extSensor   : ns(1);
-  out extLCD      : ns(1)
+  out extLCD      : ns(1);
+  out stall       : ns(1)
 ){
   sig operation : ns(4);
   sig savelocation : ns(3);
@@ -103,6 +106,8 @@ dp Control (
     extStore = (operation == 0b1110) ? 0b1 : 0b0;
     extSensor = (operation == 0b1100) ? 0b1 : 0b0;
     extLCD = (operation == 0b1111) ? 0b1 : 0b0;
+
+    stall = (operation == 0b1101 | operation == 0b1100) ? 0b1 : 0b0;
   }
 }
 
@@ -186,8 +191,7 @@ dp PC(in jump_target : ns(5);
   out pc_out : ns(5)){
   reg PCr : ns(5);
   always {
-    //PCr = sel ? jump_target : ((stall_cpu) ? PCr  : PCr + 1);
-    PCr = (stall_cpu == 0b0) ? PCr : ((sel) ? jump_target : PCr +1);
+    PCr = (stall_cpu == 0b1) ? PCr : ((sel == 0b1) ? jump_target : PCr +1);
     pc_out = PCr;
   }
 }
@@ -221,14 +225,15 @@ dp CPU(
           sig aluZero : ns(1);
           sig regA, regB, aluB, insB : tc(32);
           sig aSel, bSel : ns(3);
-          sig andNeg, andZero, orJmp, extLoad, extStore, extSensor, extLCD, stall : ns(1);
+          sig andNeg, andZero, orJmp, extLoad, extStore, extSensor, extLCD, sys_stall : ns(1);
 
           reg addr : ns(8);
           reg updateAddr : ns(1);
+          reg stall : ns(1);
 
           use PC(jmpTarget, jmp, stall, pcOut);
           use InsMem(pcOut, insOut);
-          use Control(insOut, branch, bneg, bzero, aluSelect, addImmediate, storeEnable, storeSelect, aSel, bSel, extLoad, extStore, extSensor, extLCD);
+          use Control(insOut, branch, bneg, bzero, aluSelect, addImmediate, storeEnable, storeSelect, aSel, bSel, extLoad, extStore, extSensor, extLCD, sys_stall);
           use Register(aSel, bSel, storeSelect, storeEnable, aluOut, regA, regB);
           use Multiplex(insB, regB, addImmediate, aluB);
           use ALU(regA, aluB, aluSelect, aluOut, aluNeg, aluZero);
@@ -238,11 +243,11 @@ dp CPU(
           use OrB(andZero, andNeg, orJmp);
           use Or(branch, orJmp, jmp);       
        always{
-          stall = (M_dataoutrdy == 0b1) ? 0b0 : 0b1;
+          stall = (M_dataoutrdy == 0b1) ? 0b0 : sys_stall;
           jmpTarget = insOut[27:23];
           insB = insOut[21:0];
 
-       		M_datain = (extStore) ? regA : 
+       		M_datain = (extStore | extLCD) ? regA : 
                       (extLoad) ? (insOut[24:0] + addr) : 0b00000000000000000000000000000000;
        		M_cmd = (extLoad) ? 0b0010000 # insOut[24:0] : 
                   (extStore) ? 0b0010100 # insOut[24:0] + addr :
