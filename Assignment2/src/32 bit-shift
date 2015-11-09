@@ -1,0 +1,40 @@
+//R1 - Start placering - Senere counter - 32
+//R2 - Bit shift
+//R3 - Counter
+//R4 - Gennemsnit
+//R5 - Midlertidigt tal ganget op osv.
+//R6 - Læsning for 32 datapunkter siden
+//R7 - Nuværende Læsning
+
+
+1	ADDI R1 R0 32 // Starter ved datapunkt 32
+2	ADDI R2 R0 5 // Konstant til Bit-Shift
+
+// Gennemsnit af de første 32
+3 	ADDI R3 R3 1 // Counter 
+4	SUB R7 R1 R3 // Counter == 32
+5	BZERO 9
+6	LOAD R4 R3 // Henter datapunkt fra counter plads
+7	ADD R5 R5 R4 // Lægger tallet til
+8	BRANCH 3
+9	SHIFTRIGHT R4 R5 R2 // Dividerer med 32
+10	SUB R1 R3 R1 //sætter counter til 32 datapunkter siden læsning
+
+// Start
+11	ADDI R1 // counter++
+12	ADDI R3 // counter32++
+13	LOAD R6 R1 //loader fra mem plads counter
+14	LOAD R7 R3 // loader fra mem plads counter32
+
+// Gange med 32
+15	SHIFTLEFT R5 R4 R2  
+
+// minus med ældste læsning
+16	SUB R5 R5 R6
+
+//+ med nuværende
+17	ADD R5 R5 R7
+
+//Div med 30
+18	SHIFTRIGHT R4 R5 R2
+19	BRANCH 11
