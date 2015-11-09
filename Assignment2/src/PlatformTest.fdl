@@ -12,7 +12,8 @@ ipblock instmem(in address : ns(5);
   ipparm "wl=32";
   //ipparm "file=program.txt";
   //ipparm "file=inst.txt";
-  ipparm "file=32divhex.txt";
+  //ipparm "file=32divhex.txt";
+  ipparm "file=32divbin.txt";
 }
 
 dp InsMem(in address : ns(5);
@@ -242,11 +243,29 @@ dp CPU(
           use And(aluZero, bzero, andZero);
           use AndBNEG(aluNeg,bneg, andNeg);
           use OrB(andZero, andNeg, orJmp);
-          use Or(branch, orJmp, jmp);       
+          use Or(branch, orJmp, jmp);      
+
+          $trace(branch, "traces/branch.seq");   
+          $trace(bneg, "traces/bneg.seq");
+          $trace(bzero, "traces/bzero.seq");
+          $trace(Select, "traces/Select.seq");
+          $trace(inputSource, "traces/inputSource.seq");
+          $trace(storeenable, "traces/storeEnable.seq");
+          $trace(storesel, "traces/storeSelect.seq");
+          $trace(A, "traces/A.seq");
+          $trace(B, "traces/B.seq");
+          $trace(extLoad, "traces/extLoad.seq");
+          $trace(extStore, "traces/extStore.seq");
+          $trace(extSensor, "traces/extSensor.seq");
+          $trace(extLCD, "traces/extLCD.seq");
+          $trace(stall, "traces/stall.seq");
+
        always{
           stall = (M_dataoutrdy == 0b1) ? 0b0 : sys_stall;
           jmpTarget = insOut[27:23];
           insB = insOut[21:0];
+
+
 
           outStore = extStore ? regA : 0b10000000000000000000000000000000;
 
