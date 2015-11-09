@@ -248,17 +248,17 @@ dp CPU(
           $trace(branch, "traces/branch.seq");   
           $trace(bneg, "traces/bneg.seq");
           $trace(bzero, "traces/bzero.seq");
-          $trace(Select, "traces/Select.seq");
-          $trace(inputSource, "traces/inputSource.seq");
-          $trace(storeenable, "traces/storeEnable.seq");
-          $trace(storesel, "traces/storeSelect.seq");
-          $trace(A, "traces/A.seq");
-          $trace(B, "traces/B.seq");
+          $trace(aluSelect, "traces/Select.seq");
+          $trace(addImmediate, "traces/inputSource.seq");
+          $trace(storeEnable, "traces/storeEnable.seq");
+          $trace(storeSelect, "traces/storeSelect.seq");
+          $trace(aSel, "traces/A.seq");
+          $trace(bSel, "traces/B.seq");
           $trace(extLoad, "traces/extLoad.seq");
           $trace(extStore, "traces/extStore.seq");
           $trace(extSensor, "traces/extSensor.seq");
           $trace(extLCD, "traces/extLCD.seq");
-          $trace(stall, "traces/stall.seq");
+          $trace(sys_stall, "traces/stall.seq");
 
        always{
           stall = (M_dataoutrdy == 0b1) ? 0b0 : sys_stall;
