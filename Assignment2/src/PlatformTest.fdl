@@ -12,8 +12,8 @@ ipblock instmem(in address : ns(5);
   ipparm "wl=32";
   //ipparm "file=program.txt";
   //ipparm "file=inst.txt";
-  //ipparm "file=32divhex.txt";
-  ipparm "file=32divbin.txt";
+  ipparm "file=32divhex.txt";
+  //ipparm "file=32divbin.txt";
 }
 
 dp InsMem(in address : ns(5);
