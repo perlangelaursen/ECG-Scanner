@@ -1,16 +1,16 @@
-dp PC(in jump_target : ns(5);
+dp PC(in jump_target : ns(6);
 	in sel : ns(1);
-	out pc_out : ns(5)){
-	reg PCr : ns(5);
+	out pc_out : ns(6)){
+	reg PCr : ns(6);
 	always {
 		PCr = sel ? jump_target : PCr +1;
 		pc_out = PCr;
 	}
 }
 
-dp testPC(out jump_target : ns(5);
+dp testPC(out jump_target : ns(6);
 	out sel : ns(1);
-	in pc_out : ns(5)) {
+	in pc_out : ns(6)) {
 	always {
 		$display($dec, "Cycle: ", $cycle);
 		$display($dec, "Select: ", sel);

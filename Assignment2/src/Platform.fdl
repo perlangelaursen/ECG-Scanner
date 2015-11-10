@@ -2,7 +2,7 @@ $option "vcd"
 $option "profile_toggle_alledge"
 $option "profile_display_operations"
 
-ipblock instmem(in address : ns(5);
+ipblock instmem(in address : ns(6);
         in wr, rd : ns(1);
         in idata : ns(32);
         out odata : ns(32)) 
@@ -15,7 +15,7 @@ ipblock instmem(in address : ns(5);
   //ipparm "file=32divhex.txt";
 }
 
-dp InsMem(in address : ns(5);
+dp InsMem(in address : ns(6);
       out instruction : ns(32)) 
 {
   sig wr, rd : ns(1);
@@ -186,11 +186,11 @@ dp Or(in a, b : ns(1);
 
 dp OrB : Or
 
-dp PC(in jump_target : ns(5);
+dp PC(in jump_target : ns(6);
   in sel : ns(1);
   in stall_cpu : ns(1);
-  out pc_out : ns(5)){
-  reg PCr : ns(5);
+  out pc_out : ns(6)){
+  reg PCr : ns(6);
   always {
     PCr = (stall_cpu == 0b1) ? PCr : ((sel == 0b1) ? jump_target : PCr +1);
     pc_out = PCr;
@@ -228,8 +228,6 @@ dp CPU(
           sig aSel, bSel : ns(3);
           sig andNeg, andZero, orJmp, extLoad, extStore, extSensor, extLCD, sys_stall : ns(1);
 
-          reg addr : ns(8);
-          reg updateAddr : ns(1);
           reg stall : ns(1);
 
           use PC(jmpTarget, jmp, stall, pcOut);
@@ -245,7 +243,7 @@ dp CPU(
           use Or(branch, orJmp, jmp);       
        always{
           stall = (M_dataoutrdy == 0b1) ? 0b0 : sys_stall;
-          jmpTarget = insOut[27:23];
+          jmpTarget = insOut[27:22];
           insB = insOut[21:0];
 
           $display($dec, aluOut);
@@ -253,12 +251,10 @@ dp CPU(
        		M_datain = (extStore | extLCD) ? regA : 
                       (extLoad) ? (insOut[24:0]) : 0b00000000000000000000000000000000;
        		M_cmd = (extLoad) ? 0b0010000 # regA[24:0] : 
-                  (extStore) ? 0b0010100 # insOut[24:0] + addr :
+                  (extStore) ? 0b0010100 # insOut[24:0] :
                   (extSensor) ? 0b0001000 # insOut[24:0] : 
                   (extLCD) ? 0b0011000 # insOut[24:0] : 0b00000000000000000000000000000000;
        		M_datainrdy = (extStore | extLoad | extLCD | extSensor) ? 0b1 : 0b0;
-          addr = (extLoad | extStore) ? ((updateAddr) ? (addr + 1) : addr)  : addr;
-          updateAddr = (updateAddr == 0b1) ? 0b0 : 0b1;
        }       
 }
 
