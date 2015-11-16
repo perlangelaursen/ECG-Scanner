@@ -193,7 +193,7 @@ dp PC(in jump_target : ns(6);
   reg PCr : ns(6);
   always {
     PCr = (stall_cpu == 0b1) ? PCr : ((sel == 0b1) ? jump_target : PCr +1);
-    pc_out = PCr;
+    pc_out = (stall_cpu == 0b1) ? PCr : ((sel == 0b1) ? jump_target : PCr +1);;
   }
 }
 
@@ -236,7 +236,7 @@ dp CPU(
           use Register(aSel, bSel, storeSelect, storeEnable, aluOut, regA, regB);
           use Multiplex(insB, regB, addImmediate, aluB);
           use ALU(regA, aluB, aluSelect, aluOut, aluNeg, aluZero);
-          use DMMultiplex(aluOut, M_dataout, M_dataoutrdy);
+          use DMMultiplex(M_dataout, aluOut, M_dataoutrdy);
           use And(aluZero, bzero, andZero);
           use AndBNEG(aluNeg,bneg, andNeg);
           use OrB(andZero, andNeg, orJmp);
