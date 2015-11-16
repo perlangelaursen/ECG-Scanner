@@ -1,0 +1,129 @@
+dp CoProc(in datain : ns(32);
+   in cmd : ns(32);
+   in datainrdy : ns(1);
+   out dataout : ns(32);
+   out dataoutrdy : ns(1);
+   in stall : ns(1) // true if the slave is currently busy (with handshaking) and cannot receive new data.)
+   ) {
+   reg datainrdyr : ns(1);
+   reg cmdr : ns(32);
+   reg stallr, loadData, execute : ns(1);
+   reg reg1, reg2, reg 3, reg4, reg5, reg6, reg 7, reg 8, reg9, reg10 : tc(32);
+   reg reg11, reg12, reg13, reg14, reg15, reg16, reg17, reg18, reg19, reg20 : tc(32);
+   reg reg21, reg22, reg23, reg24, reg25, reg26, reg27, reg28, reg29, reg30 : tc(32);
+   reg reg31, reg32 : tc(32);
+
+   sig sum12, sum34, sum56, sum78, sum910, sum1112, sum1314, sum1516 : tc(32);
+   sig sum1718, sum1920, sum2122, sum2324, sum2526, sum2728, sum2930 : tc(32);
+   sig sum3132, sum1234, sum5678, sum9101112, sum13141516 : tc(32);
+   sig sum17181920, sum21222324, sum25262728, sum29303132 : tc(32);
+   sig sum12345678, sum910111213141516, sum1718192021222324 : tc(32);
+   sig sum2526272829303132, sum12345678910111213141516 : tc(32);
+   sig sum17181920212223242526272829303132, totalsum : tc(32);
+
+   always {
+   		stallr = stall;
+   		loadData = (cmdr[27] == 0);
+   		execute = (cmdr[27] == 1);
+   }
+
+   sfg load{
+   		dataoutrdy = 0;
+   		datainrdyr = datainrdy;
+   		reg1 = datain;
+   		reg2 = reg1;
+   		reg3 = reg2;
+   		reg4 = reg3;
+   		reg5 = reg4;
+   		reg6 = reg5;
+   		reg7 = reg6;
+   		reg8 = reg7;
+   		reg9 = reg8;
+   		reg10 = reg9;
+   		reg11 = reg10;
+   		reg12 = reg11;
+   		reg13 = reg12;
+   		reg14 = reg13;
+   		reg15 = reg14;
+   		reg16 = reg15;
+   		reg17 = reg16;
+   		reg18 = reg17;
+   		reg19 = reg18;
+   		reg20 = reg19;
+   		reg21 = reg20;
+   		reg22 = reg21;
+   		reg23 = reg22;
+   		reg24 = reg23;
+   		reg25 = reg24;
+   		reg26 = reg25;
+   		reg27 = reg26;
+   		reg28 = reg27;
+   		reg29 = reg28;
+   		reg30 = reg29;
+   		reg31 = reg30;
+   		reg32 = reg31;
+   }
+
+   sfg executeCalc {
+   		sum12 = reg1 + reg2;
+   		sum34 = reg3 + reg4;
+   		sum56 = reg5 + reg6;
+   		sum78 = reg7 + reg8;
+   		sum910 = reg9 + reg10;
+   		sum1112 = reg11 + reg12;
+   		sum1314 = reg13 + reg14;
+   		sum1516 = reg15 + reg16;
+   		sum1718 = reg17 + reg18;
+   		sum1920 = reg19 + reg20;
+   		sum2122 = reg21 + reg22;
+   		sum2324 = reg23 + reg24;
+   		sum2526 = reg25 + reg26;
+   		sum2728 = reg27 + reg28;
+   		sum2930 = reg29 + reg30;
+   		sum3132 = reg31 + reg32;
+   		sum1234 =  sum12 + sum34;
+   		sum5678 = sum56 + sum78;
+   		sum9101112 = sum910 + sum1112;
+   		sum13141516 = sum1314 + sum1516;
+   		sum17181920 = sum1718 + sum1920;
+   		sum21222324 = sum2122 + sum2324;
+   		sum25262728 = sum2526 + sum2728;
+   		sum29303132 = sum2930 + sum3132;
+   		sum12345678 = sum1234 + sum5678;
+   		sum910111213141516 = sum9101112 + sum13141516;
+   		sum1718192021222324 = sum17181920 + sum21222324;
+		sum2526272829303132 = sum25262728 + sum29303132;
+		sum12345678910111213141516 = sum12345678 + sum910111213141516;
+		sum17181920212223242526272829303132 = sum1718192021222324 + sum2526272829303132;
+		totalsum = sum12345678910111213141516 + sum17181920212223242526272829303132;
+		dataout = totalsum >> 5; 
+		dataoutrdy = 0b1;
+
+   }
+
+   sfg awaithandshake{
+      dataoutrdy = 0;
+   }
+   
+   sfg resetAndSignalRdy{
+     dataoutrdy = 1;
+     datainrdyr = 0;
+   }
+   
+   sfg nothing{
+       dataoutrdy = 0; 
+   }
+}
+
+fsm CoProc_cntrl(CoProc){
+   initial s0;
+   state s1;
+   
+   @s0 if (datainrdyr == 1 & stallr == 0) then (resetAndSignalRdy) -> s0;
+       else if (datainrdyr == 1 & stallr == 1) then (nothing) -> s1;
+       else if (loadData == 0 & execute == 1) then (executeCalc) -> s1;
+       else (load) -> s0;
+   @s1 if (stallr == 0) then (resetAndSignalRdy) -> s0;
+       else (awaithandshake) -> s1;
+       
+}
