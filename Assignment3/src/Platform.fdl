@@ -60,6 +60,7 @@ dp Control (
   out extStore    : ns(1);
   out extSensor   : ns(1);
   out extLCD      : ns(1);
+  out extSCMD     : ns(1);
   out stall       : ns(1)
 ){
   sig operation : ns(4);
@@ -68,47 +69,48 @@ dp Control (
   sig source2 : ns(3);
 
   always {
-    operation = instruction[31:28];
-    savelocation = instruction[27:25];
-    source1 = instruction[24:22];
-    source2 = instruction[21:19];
+    operation = instruction[31:27];
+    savelocation = instruction[26:24];
+    source1 = instruction[23:21];
+    source2 = instruction[20:18];
 
-    Select    = (operation == 0b0001) ? 0b0001 : // ADDI
-                (operation == 0b0010) ? 0b0010 : // SUB
-                (operation == 0b0011) ? 0b0001 : // ADD
-                (operation == 0b0111) ? 0b0111 : // SHIFTLEFT
-                (operation == 0b1000) ? 0b1000 : // SHIFTRIGHT
-                (operation == 0b1001) ? 0b1001 : // AND
-                (operation == 0b1010) ? 0b1010 : // OR
+    Select    = (operation == 0b00001) ? 0b0001 : // ADDI
+                (operation == 0b00010) ? 0b0010 : // SUB
+                (operation == 0b00011) ? 0b0001 : // ADD
+                (operation == 0b00111) ? 0b0111 : // SHIFTLEFT
+                (operation == 0b01000) ? 0b1000 : // SHIFTRIGHT
+                (operation == 0b01001) ? 0b1001 : // AND
+                (operation == 0b01010) ? 0b1010 : // OR
                 0b0000;
 
-    inputSource = (operation == 0b0001) ? 0b1 : 0b0;
-    branch    = (operation == 0b0101) ? 0b1 : 0b0;
-    bneg      = (operation == 0b0100) ? 0b1 : 0b0;
-    bzero     = (operation == 0b0110) ? 0b1 : 0b0;
+    inputSource = (operation == 0b00001) ? 0b1 : 0b0;
+    branch    = (operation == 0b00101) ? 0b1 : 0b0;
+    bneg      = (operation == 0b00100) ? 0b1 : 0b0;
+    bzero     = (operation == 0b00110) ? 0b1 : 0b0;
 
-    storeenable = (operation == 0b0001) ? 0b1 :
-                (operation == 0b0010) ? 0b1 :
-                (operation == 0b0011) ? 0b1 :
-                (operation == 0b0111) ? 0b1 :
-                (operation == 0b1000) ? 0b1 :
-                (operation == 0b1001) ? 0b1 :
-                (operation == 0b1010) ? 0b1 : 
-                (operation == 0b1101) ? 0b1 : 
-                (operation == 0b1110) ? 0b1 :
-                (operation == 0b1100) ? 0b1 :
-                (operation == 0b1111) ? 0b1 : 0b0;
+    storeenable = (operation == 0b00001) ? 0b1 :
+                (operation == 0b00010) ? 0b1 :
+                (operation == 0b00011) ? 0b1 :
+                (operation == 0b00111) ? 0b1 :
+                (operation == 0b01000) ? 0b1 :
+                (operation == 0b01001) ? 0b1 :
+                (operation == 0b01010) ? 0b1 : 
+                (operation == 0b01101) ? 0b1 : 
+                (operation == 0b01110) ? 0b1 :
+                (operation == 0b01100) ? 0b1 :
+                (operation == 0b01111) ? 0b1 : 0b0;
 
     storesel   = savelocation;
     A = source1;
     B = source2;
 
-    extLoad = (operation == 0b1101) ? 0b1 : 0b0;
-    extStore = (operation == 0b1110) ? 0b1 : 0b0;
-    extSensor = (operation == 0b1100) ? 0b1 : 0b0;
-    extLCD = (operation == 0b1111) ? 0b1 : 0b0;
+    extLoad = (operation == 0b01101) ? 0b1 : 0b0;
+    extStore = (operation == 0b01110) ? 0b1 : 0b0;
+    extSensor = (operation == 0b01100) ? 0b1 : 0b0;
+    extLCD = (operation == 0b01111) ? 0b1 : 0b0;
+    extSCMD = (operation == 0b10000) ? 0b1 : 0b0;
 
-    stall = (operation == 0b1101 | operation == 0b1100) ? 0b1 : 0b0;
+    stall = (operation == 0b01101 | operation == 0b01100 | operation == 0b10000) ? 0b1 : 0b0;
   }
 }
 
@@ -226,13 +228,13 @@ dp CPU(
           sig aluZero : ns(1);
           sig regA, regB, aluB, insB : tc(32);
           sig aSel, bSel : ns(3);
-          sig andNeg, andZero, orJmp, extLoad, extStore, extSensor, extLCD, sys_stall : ns(1);
+          sig andNeg, andZero, orJmp, extLoad, extStore, extSensor, extLCD, extSCMD, sys_stall : ns(1);
 
           reg stall : ns(1);
 
           use PC(jmpTarget, jmp, stall, pcOut);
           use InsMem(pcOut, insOut);
-          use Control(insOut, branch, bneg, bzero, aluSelect, addImmediate, storeEnable, storeSelect, aSel, bSel, extLoad, extStore, extSensor, extLCD, sys_stall);
+          use Control(insOut, branch, bneg, bzero, aluSelect, addImmediate, storeEnable, storeSelect, aSel, bSel, extLoad, extStore, extSensor, extLCD, extSCMD, sys_stall);
           use Register(aSel, bSel, storeSelect, storeEnable, aluOut, regA, regB);
           use Multiplex(insB, regB, addImmediate, aluB);
           use ALU(regA, aluB, aluSelect, aluOut, aluNeg, aluZero);
@@ -243,18 +245,19 @@ dp CPU(
           use Or(branch, orJmp, jmp);       
        always{
           stall = (M_dataoutrdy == 0b1) ? 0b0 : sys_stall;
-          jmpTarget = insOut[27:22];
-          insB = insOut[21:0];
+          jmpTarget = insOut[26:21];
+          insB = insOut[20:0];
 
           $display($dec, aluOut);
 
-          M_datain = (extStore | extLCD) ? regA : 
+          M_datain = (extStore | extLCD | extSCMD) ? regA : 
                       (extLoad) ? (insOut[24:0]) : 0b00000000000000000000000000000000;
           M_cmd = (extLoad) ? 0b0010000 # regA[24:0] : 
                   (extStore) ? 0b0010100 # insOut[24:0] :
                   (extSensor) ? 0b0001000 # insOut[24:0] : 
-                  (extLCD) ? 0b0011000 # insOut[24:0] : 0b00000000000000000000000000000000;
-          M_datainrdy = (extStore | extLoad | extLCD | extSensor) ? 0b1 : 0b0;
+                  (extLCD) ? 0b0011000 # insOut[24:0]
+                  (extSCMD) ? 0b0100 # insOut[27:0] : 0b00000000000000000000000000000000;
+          M_datainrdy = (extStore | extLoad | extLCD | extSensor | extSCMD) ? 0b1 : 0b0;
        }       
 }
 
@@ -973,6 +976,7 @@ dp CoProc(in datain : ns(32);
       stallr = stall;
       loadData = (cmdr[27] == 0);
       execute = (cmdr[27] == 1);
+      cmdr = cmd;
    }
 
    sfg load{
@@ -1040,12 +1044,12 @@ dp CoProc(in datain : ns(32);
       sum12345678 = sum1234 + sum5678;
       sum910111213141516 = sum9101112 + sum13141516;
       sum1718192021222324 = sum17181920 + sum21222324;
-    sum2526272829303132 = sum25262728 + sum29303132;
-    sum12345678910111213141516 = sum12345678 + sum910111213141516;
-    sum17181920212223242526272829303132 = sum1718192021222324 + sum2526272829303132;
-    totalsum = sum12345678910111213141516 + sum17181920212223242526272829303132;
-    dataout = totalsum >> 5; 
-    dataoutrdy = 0b1;
+      sum2526272829303132 = sum25262728 + sum29303132;
+      sum12345678910111213141516 = sum12345678 + sum910111213141516;
+      sum17181920212223242526272829303132 = sum1718192021222324 + sum2526272829303132;
+      totalsum = sum12345678910111213141516 + sum17181920212223242526272829303132;
+      dataout = totalsum >> 5; 
+      dataoutrdy = 1;
 
    }
 
@@ -1092,5 +1096,5 @@ system CPUsystem{
    DataMem(DMDataout,DMCmdout,DMDataoutrdy,DMDatain,DMDatainrdy,DMStall); // Data Memory Unit
    Sensor(SensorDataout,SensorCmdout,SensorDataoutrdy,SensorDatain,SensorDatainrdy,SensorStall);
    Output(OPDataout,OPCmdout,OPDataoutrdy,OPDatain,OPDatainrdy,OPStall,FilterOut);
-   CoProc(CPDataout,CPCmdout,CPDataoutrdy,CPDatain,CPDatainrdy,CPStall); // 
+   CoProc(CPDataout,CPCmdout,CPDataoutrdy,CPDatain,CPDatainrdy,CPStall); // Coproccessor Unit
 }
