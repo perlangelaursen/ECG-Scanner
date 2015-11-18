@@ -1,0 +1,251 @@
+$option "profile_toggle_alledge"
+$option "profile_display_operations"
+
+ipblock instmem(in address : ns(5);
+        in wr, rd : ns(1);
+        in idata : ns(32);
+        out odata : ns(32)) 
+{
+  iptype "ram";
+  ipparm "size=64";
+  ipparm "wl=32";
+  //ipparm "file=dyt.txt";
+  ipparm "file=32divhex.txt";
+}
+
+dp InsMem(in address : ns(5);
+      out instruction : ns(32)) 
+{
+  sig wr, rd : ns(1);
+  sig idata : ns(32);
+  sig odata : ns(32);
+  use instmem(address, wr, rd, idata, odata);
+
+  always {
+    wr = 0;
+    rd = 1;
+    idata = 0;
+    instruction = odata;
+  }
+}
+
+dp Multiplex(
+  in a : tc(32);
+  in b : tc(32);
+  in select : ns(1);
+  out r : tc(32)
+  ){
+  always{
+    r = select ? a : b;
+    //$display($desc, "Chosen output: ", r);
+  }
+}
+
+dp Control (
+  in instruction  : ns(32);
+  out branch      : ns(1);
+  out bneg        : ns(1);
+  out bzero       : ns(1);
+  out Select      : ns(4);
+  out inputSource : ns(1);
+  out storeenable : ns(1);
+  out storesel    : ns(3);
+  out A           : ns(3);
+  out B           : ns(3)
+){
+  sig operation : ns(4);
+  sig savelocation : ns(3);
+  sig source1 : ns(3);
+  sig source2 : ns(3);
+
+  always {
+    operation = instruction[31:28];
+    savelocation = instruction[27:25];
+    source1 = instruction[24:22];
+    source2 = instruction[21:19];
+
+    Select    = (operation == 0b0001) ? 0b0001 : // ADDI
+                (operation == 0b0010) ? 0b0010 : // SUB
+                (operation == 0b0011) ? 0b0001 : // ADD
+                (operation == 0b0111) ? 0b0111 : // SHIFTLEFT
+                (operation == 0b1000) ? 0b1000 : // SHIFTRIGHT
+                (operation == 0b1001) ? 0b1001 : // AND
+                (operation == 0b1010) ? 0b1010 : // OR
+                0b0000;
+
+    inputSource = (operation == 0b0001) ? 0b1 : 0b0;
+    branch    = (operation == 0b0101) ? 0b1 : 0b0;
+    bneg      = (operation == 0b0100) ? 0b1 : 0b0;
+    bzero     = (operation == 0b0110) ? 0b1 : 0b0;
+
+    storeenable = (operation == 0b0001) ? 0b1 :
+                (operation == 0b0010) ? 0b1 :
+                (operation == 0b0011) ? 0b1 :
+                (operation == 0b0111) ? 0b1 :
+                (operation == 0b1000) ? 0b1 :
+                (operation == 0b1001) ? 0b1 :
+                (operation == 0b1010) ? 0b1 : 0b0;
+
+    storesel   = savelocation;
+    A = source1;
+    B = source2;
+  }
+}
+
+dp ALU(
+  in A, B : tc(32);
+  in Select : ns(4);
+  out R : tc(32);
+  out N, Z : ns(1)
+  ) {
+
+  always {
+    R = (Select == 0b0001) ? A + B :
+      (Select == 0b0010) ? A - B :
+      (Select == 0b0111) ? A << B:
+      (Select == 0b1000) ? A >> B:
+      (Select == 0b1001) ? A & B:
+      (Select == 0b1010) ? A | B:
+      0;
+    N = R[31];
+    Z = (R == 0);
+  }
+}
+
+dp Register(
+  in asel, bsel, storesel : ns(3);
+  in storeenable : ns(1);
+  in storedata : tc(32);
+  out a, b : tc(32)
+  ) {
+
+  reg r0, r1, r2, r3, r4, r5, r6, r7 : tc(32);
+
+  always {
+    a = asel == 0b001 ? r1 :
+      asel == 0b010 ? r2 :
+      asel == 0b011 ? r3 :
+      asel == 0b100 ? r4 :
+      asel == 0b101 ? r5 :
+      asel == 0b110 ? r6 :
+      asel == 0b111 ? r7 : r0;
+
+    b = bsel == 0b001 ? r1 :
+      bsel == 0b010 ? r2 :
+      bsel == 0b011 ? r3 :
+      bsel == 0b100 ? r4 :
+      bsel == 0b101 ? r5 :
+      bsel == 0b110 ? r6 :
+      bsel == 0b111 ? r7 : r0;
+
+    r1 = storeenable ? (storesel == 0b001 ? storedata : r1) : r1;
+    r2 = storeenable ? (storesel == 0b010 ? storedata : r2) : r2;
+    r3 = storeenable ? (storesel == 0b011 ? storedata : r3) : r3;
+    r4 = storeenable ? (storesel == 0b100 ? storedata : r4) : r4;
+    r5 = storeenable ? (storesel == 0b101 ? storedata : r5) : r5;
+    r6 = storeenable ? (storesel == 0b110 ? storedata : r6) : r6;
+    r7 = storeenable ? (storesel == 0b111 ? storedata : r7) : r7;
+  }
+}
+
+dp And(in a, b : ns(1);
+  out result : ns(1)) {
+  always {
+    result = (a & b) ? 0b1 : 0b0;
+  }
+}
+
+dp AndBNEG(in a, b : ns(1);
+  out result : ns(1)) {
+  always {
+    result = (a & b) ? 0b1 : 0b0;
+  }
+}
+
+dp Or(in a, b : ns(1);
+  out result : ns(1)) {
+  always {
+    result = (a | b) ? 0b1 : 0b0;
+  }
+}
+
+dp OrB : Or
+
+dp PC(in jump_target : ns(6);
+  in sel : ns(1);
+  out pc_out : ns(6)){
+  reg PCr : ns(6);
+  always {
+    PCr = sel ? jump_target : PCr +1;
+    pc_out = PCr;
+  }
+}
+
+
+dp CPU(){
+
+  sig pcOut : ns(6);
+  sig jmpTarget : ns(6);
+  sig jmp : ns(1);
+  sig jmpResult : ns(1);
+  sig insOut : ns(32);
+  sig branch : ns(1);
+  sig bneg : ns(1);
+  sig bzero : ns(1);
+  //sig memSelect : ns(1);
+  sig addImmediate : ns(1);
+  sig aluSelect : ns(4);
+  sig storeSelect : ns(3);
+  sig storeEnable : ns(1);
+  sig storeData : tc(32);
+  sig aluOut : tc(32);
+  sig aluNeg : ns(1);
+  sig aluZero : ns(1);
+  sig regA, regB, aluB, insB : tc(32);
+  sig aSel, bSel : ns(3);
+  sig andNeg, andZero, orJmp : ns(1);
+
+
+  use PC(jmpTarget, jmp, pcOut);
+  use InsMem(pcOut, insOut);
+  use Control(insOut, branch, bneg, bzero, aluSelect, addImmediate, storeEnable, storeSelect, aSel, bSel);
+  use Register(aSel, bSel, storeSelect, storeEnable, storeData, regA, regB);
+  use Multiplex(insB, regB, addImmediate, aluB);
+  use ALU(regA, aluB, aluSelect, aluOut, aluNeg, aluZero);
+  use And(aluZero, bzero, andZero);
+  use AndBNEG(aluNeg,bneg, andNeg);
+  use OrB(andZero, andNeg, orJmp);
+  use Or(branch, orJmp, jmpResult);
+
+
+  always{
+      jmpTarget = insOut[27:22];
+      insB = insOut[21:0];
+      storeData = aluOut;
+
+      //$display($bin, "instruc: ", insOut[31:28]);
+      $display($dec, "aludas: ", aluOut);
+      //$display($dec, "pcOut: ", pcOut);
+      
+  }
+
+  sfg initization{jmp = 0;}
+  sfg run {jmp = jmpResult;}
+}
+
+fsm ftCPU(CPU) {
+  initial s0;
+  state s1;
+
+  @s0(initization) -> s1;
+  @s1(run) -> s1;
+}
+
+system CPUSystem {
+  CPU;
+}
+
+
+
+
+
