@@ -256,7 +256,7 @@ dp CPU(
                   (extStore) ? 0b0010100 # insOut[24:0] :
                   (extSensor) ? 0b0001000 # insOut[24:0] : 
                   (extLCD) ? 0b0011000 # insOut[24:0]
-                  (extSCMD) ? 0b0100 # insOut[27:0] : 0b00000000000000000000000000000000;
+                  (extSCMD) ? 0b0100 # insOut[24:0] # 0b000 : 0b00000000000000000000000000000000;
           M_datainrdy = (extStore | extLoad | extLCD | extSensor | extSCMD) ? 0b1 : 0b0;
        }       
 }
@@ -305,11 +305,22 @@ dp bus(
         in dataRdyOutput : ns(1); 
         in dataoutOutput : ns(32); // data from output to CPU
         out waitOutput : ns(1);
+
+        //CoProc interface
+        out reqCoProc : ns(1);
+        out cmdCoProc : ns(32);
+        out datainCoProc : ns(32);
+        in ackCoProc : ns(1);
+
+        in dataRdyCoProc : ns(1);
+        in dataoutCoProc : ns(32);
+        out waitCoProc : ns(1);
         
         // IDs
         in ID_Sensor : ns(4);
         in ID_DataMem : ns(4);
-        in ID_Output : ns(4)
+        in ID_Output : ns(4);
+        in ID_CoProc : ns(4)
     
         ){
         
@@ -345,8 +356,8 @@ dp bus(
         $trace(waitCPU, "traces/waitCPU.seq");
         
         always{
-          ackCPU = (cmdCPU[28:31] == ID_DataMem & ackDataMem) | (cmdCPU[28:31] == ID_Sensor & ackSensor) | (cmdCPU[28:31] == ID_Output & ackOutput); // "OR" all slaves ack signals here
-          dataRdyCPU = dataRdyDataMem | dataRdySensor | dataRdyOutput; // Only one slave can access the bus at any one time (only the slave which responds to the cmd)
+          ackCPU = (cmdCPU[28:31] == ID_DataMem & ackDataMem) | (cmdCPU[28:31] == ID_Sensor & ackSensor) | (cmdCPU[28:31] == ID_Output & ackOutput) | (cmdCPU[28:31] == ID_CoProc & ackCoProc); // "OR" all slaves ack signals here
+          dataRdyCPU = dataRdyDataMem | dataRdySensor | dataRdyOutput | dataRdyCoProc; // Only one slave can access the bus at any one time (only the slave which responds to the cmd)
           
           reqDataMem = reqCPU;
           cmdDataMem = (reqCPU) ? cmdCPU : 0;
@@ -364,10 +375,17 @@ dp bus(
           datainCPU = (dataRdyDataMem) ? dataoutDataMem : 
                       (dataRdySensor) ? dataoutSensor : 
                       (dataRdyOutput) ? dataoutOutput :
+                      (dataRdyCoProc) ? dataoutCoProc :
                       0; // arbitrate here when multiple slaves
           waitDataMem = waitCPU;
           
           NotUsed1 = 0;
+
+          // CoProc request, cmd, wait signal and data
+          reqCoProc = reqCPU;
+          cmdCoProc = (reqCPU) ? cmdCPU : 0;
+          waitCoProc = waitCPU;
+          datainCoProc = (reqCPU) ? dataoutCPU : 0;
         }       
 }
 
@@ -635,7 +653,7 @@ dp bus_toplevel(
            out CP_stall : ns(1)
            ){
            
-           sig reqCPU,reqDataMem,reqSensor,reqOutput, regCoProc,ackCPU,ackDataMem,ackSensor,ackOutput, ackCoProc,dataRdyCPU,dataRdyDataMem,dataRdySensor,dataRdyOutput, dataRdyCoProc, waitCPU,waitDataMem,waitSensor,waitOutput, waitCoProc: ns(1);
+           sig reqCPU,reqDataMem,reqSensor,reqOutput, reqCoProc,ackCPU,ackDataMem,ackSensor,ackOutput, ackCoProc,dataRdyCPU,dataRdyDataMem,dataRdySensor,dataRdyOutput, dataRdyCoProc, waitCPU,waitDataMem,waitSensor,waitOutput, waitCoProc: ns(1);
            sig cmdCPU,cmdDataMem,cmdSensor,cmdOutput, cmdCoProc,dataoutCPU,datainDataMem,datainSensor,datainOutput,datainCPU,dataoutDataMem,dataoutSensor,dataoutOutput, datainCoProc, dataoutCoProc : ns(32);
            reg ID_DataMem : ns(4);
            reg ID_Sensor : ns(4);
@@ -659,12 +677,19 @@ dp bus_toplevel(
            $trace(OP_dataout, "traces/OP_dataout.seq");
            $trace(OP_cmdout, "traces/OP_cmdout.seq");
            $trace(OP_dataoutrdy, "traces/OP_dataoutrdy.seq");
+
+           $trace(CP_datain, "traces/CP_datain.seq");
+           $trace(CP_datainrdy, "traces/CP_datainrdy.seq");
+           $trace(CP_dataout, "traces/CP_dataout.seq");
+           $trace(CP_cmdout, "traces/CP_cmdout.seq");
+           $trace(CP_dataoutrdy, "traces/CP_dataoutrdy.seq");
            
            use bus(reqCPU,cmdCPU,dataoutCPU,ackCPU,dataRdyCPU,datainCPU,waitCPU, // master
                    reqDataMem,cmdDataMem,datainDataMem,ackDataMem,dataRdyDataMem,dataoutDataMem,waitDataMem, // Data memory (slave)
                    reqSensor,cmdSensor,datainSensor,ackSensor,dataRdySensor,dataoutSensor,waitSensor,
                    reqOutput,cmdOutput,datainOutput,ackOutput,dataRdyOutput,dataoutOutput,waitOutput,// Sensor (slave)
-                   ID_Sensor,ID_DataMem,ID_Output); 
+                   reqCoProc,cmdCoProc,datainCoProc,ackCoProc,dataRdyCoProc,dataoutCoProc,waitCoProc,
+                   ID_Sensor,ID_DataMem,ID_Output,ID_CoProc); 
            
            use masterbusinterface(reqCPU,cmdCPU,dataoutCPU,ackCPU,dataRdyCPU,datainCPU,waitCPU, // Bus interface
                                   //CPUdatain,CPUcmd,CPUdatainrdy,CPUdataout,CPUdataoutrdy
@@ -682,7 +707,7 @@ dp bus_toplevel(
                               //OPDatain,OPDatainrdy,OPDataout,OPCmdout,OPDataoutrdy,
                               OP_datain,OP_datainrdy,OP_dataout,OP_cmdout,OP_dataoutrdy,ID_Output,OP_stall);
 
-           use slavebusinterface4(regCoProc, cmdCoProc, datainCoProc, ackCoProc, dataRdyCoProc, dataoutCoProc, waitCoProc, // Bus interface (CoProc)
+           use slavebusinterface4(reqCoProc, cmdCoProc, datainCoProc, ackCoProc, dataRdyCoProc, dataoutCoProc, waitCoProc, // Bus interface (CoProc)
                               CP_datain,CP_datainrdy,CP_dataout,CP_cmdout,CP_dataoutrdy,ID_CoProc,CP_stall);
            
            always{
