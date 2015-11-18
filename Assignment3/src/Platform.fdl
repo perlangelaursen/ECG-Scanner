@@ -686,25 +686,21 @@ dp bus_toplevel(
            
            use bus(reqCPU,cmdCPU,dataoutCPU,ackCPU,dataRdyCPU,datainCPU,waitCPU, // master
                    reqDataMem,cmdDataMem,datainDataMem,ackDataMem,dataRdyDataMem,dataoutDataMem,waitDataMem, // Data memory (slave)
-                   reqSensor,cmdSensor,datainSensor,ackSensor,dataRdySensor,dataoutSensor,waitSensor,
-                   reqOutput,cmdOutput,datainOutput,ackOutput,dataRdyOutput,dataoutOutput,waitOutput,// Sensor (slave)
-                   reqCoProc,cmdCoProc,datainCoProc,ackCoProc,dataRdyCoProc,dataoutCoProc,waitCoProc,
+                   reqSensor,cmdSensor,datainSensor,ackSensor,dataRdySensor,dataoutSensor,waitSensor, // Sensor (slave)
+                   reqOutput,cmdOutput,datainOutput,ackOutput,dataRdyOutput,dataoutOutput,waitOutput,// Output (slave)
+                   reqCoProc,cmdCoProc,datainCoProc,ackCoProc,dataRdyCoProc,dataoutCoProc,waitCoProc, // CoProc (slave)
                    ID_Sensor,ID_DataMem,ID_Output,ID_CoProc); 
            
            use masterbusinterface(reqCPU,cmdCPU,dataoutCPU,ackCPU,dataRdyCPU,datainCPU,waitCPU, // Bus interface
-                                  //CPUdatain,CPUcmd,CPUdatainrdy,CPUdataout,CPUdataoutrdy
                                   M_datain,M_cmd,M_datainrdy,M_dataout,M_dataoutrdy);
 
            use slavebusinterface(reqDataMem,cmdDataMem,datainDataMem,ackDataMem,dataRdyDataMem,dataoutDataMem,waitDataMem, // Bus interface (data memory)
-                             //DMDatain,DMDatainrdy,DMDataout,DMCmdout,DMDataoutrdy,
                              DM_datain,DM_datainrdy,DM_dataout,DM_cmdout,DM_dataoutrdy,ID_DataMem,DM_stall);
                              
            use slavebusinterface2(reqSensor,cmdSensor,datainSensor,ackSensor,dataRdySensor,dataoutSensor,waitSensor, // Bus interface (Sensor)
-                              //SensorDatain,SensorDatainrdy,NotUsed2,SensorCmdout,SensorDataoutrdy,
                               SS_datain,SS_datainrdy,SS_dataout,SS_cmdout,SS_dataoutrdy,ID_Sensor,SS_stall);
                               
            use slavebusinterface3(reqOutput,cmdOutput,datainOutput,ackOutput,dataRdyOutput,dataoutOutput,waitOutput, // Bus interface (output)
-                              //OPDatain,OPDatainrdy,OPDataout,OPCmdout,OPDataoutrdy,
                               OP_datain,OP_datainrdy,OP_dataout,OP_cmdout,OP_dataoutrdy,ID_Output,OP_stall);
 
            use slavebusinterface4(reqCoProc, cmdCoProc, datainCoProc, ackCoProc, dataRdyCoProc, dataoutCoProc, waitCoProc, // Bus interface (CoProc)
@@ -989,13 +985,9 @@ dp CoProc(in datain : ns(32);
    reg reg21, reg22, reg23, reg24, reg25, reg26, reg27, reg28, reg29, reg30 : tc(32);
    reg reg31, reg32 : tc(32);
 
-   sig sum12, sum34, sum56, sum78, sum910, sum1112, sum1314, sum1516 : tc(32);
-   sig sum1718, sum1920, sum2122, sum2324, sum2526, sum2728, sum2930 : tc(32);
-   sig sum3132, sum1234, sum5678, sum9101112, sum13141516 : tc(32);
-   sig sum17181920, sum21222324, sum25262728, sum29303132 : tc(32);
-   sig sum12345678, sum910111213141516, sum1718192021222324 : tc(32);
-   sig sum2526272829303132, sum12345678910111213141516 : tc(32);
-   sig sum17181920212223242526272829303132, totalsum : tc(32);
+   sig sum1, sum2, sum3, sum4, sum5, sum6, sum7, sum8 sum9, sum10, sum11 : tc(32);
+   sig sum12, sum13, sum14, sum15, sum16, sum17, sum18, sum19, sum20, sum21 : tc(32);
+   sig sum22, sum23, sum24, sum25, sum26, sum27, sum28, sum29, sum30, totalsum : tc(32);
 
    always {
       stallr = stall;
@@ -1042,37 +1034,37 @@ dp CoProc(in datain : ns(32);
    }
 
    sfg executeCalc {
-      sum12 = reg1 + reg2;
-      sum34 = reg3 + reg4;
-      sum56 = reg5 + reg6;
-      sum78 = reg7 + reg8;
-      sum910 = reg9 + reg10;
-      sum1112 = reg11 + reg12;
-      sum1314 = reg13 + reg14;
-      sum1516 = reg15 + reg16;
-      sum1718 = reg17 + reg18;
-      sum1920 = reg19 + reg20;
-      sum2122 = reg21 + reg22;
-      sum2324 = reg23 + reg24;
-      sum2526 = reg25 + reg26;
-      sum2728 = reg27 + reg28;
-      sum2930 = reg29 + reg30;
-      sum3132 = reg31 + reg32;
-      sum1234 =  sum12 + sum34;
-      sum5678 = sum56 + sum78;
-      sum9101112 = sum910 + sum1112;
-      sum13141516 = sum1314 + sum1516;
-      sum17181920 = sum1718 + sum1920;
-      sum21222324 = sum2122 + sum2324;
-      sum25262728 = sum2526 + sum2728;
-      sum29303132 = sum2930 + sum3132;
-      sum12345678 = sum1234 + sum5678;
-      sum910111213141516 = sum9101112 + sum13141516;
-      sum1718192021222324 = sum17181920 + sum21222324;
-      sum2526272829303132 = sum25262728 + sum29303132;
-      sum12345678910111213141516 = sum12345678 + sum910111213141516;
-      sum17181920212223242526272829303132 = sum1718192021222324 + sum2526272829303132;
-      totalsum = sum12345678910111213141516 + sum17181920212223242526272829303132;
+      sum1 = reg1 + reg2;
+      sum2 = reg3 + reg4;
+      sum3 = reg5 + reg6;
+      sum4 = reg7 + reg8;
+      sum5 = reg9 + reg10;
+      sum6 = reg11 + reg12;
+      sum7 = reg13 + reg14;
+      sum8 = reg15 + reg16;
+      sum9 = reg17 + reg18;
+      sum10 = reg19 + reg20;
+      sum11 = reg21 + reg22;
+      sum12 = reg23 + reg24;
+      sum13 = reg25 + reg26;
+      sum14 = reg27 + reg28;
+      sum15 = reg29 + reg30;
+      sum16 = reg31 + reg32;
+      sum17 =  sum1 + sum2;
+      sum18 = sum3 + sum4;
+      sum19 = sum5 + sum6;
+      sum20 = sum7 + sum8;
+      sum21 = sum9 + sum10;
+      sum22 = sum11 + sum12;
+      sum23 = sum13 + sum14;
+      sum24 = sum15 + sum16;
+      sum25 = sum17 + sum18;
+      sum26 = sum19 + sum20;
+      sum27 = sum21 + sum22;
+      sum28 = sum23 + sum24;
+      sum29 = sum25 + sum26;
+      sum30 = sum27 + sum28;
+      totalsum = sum29 + sum30;
       dataout = totalsum >> 5; 
       dataoutrdy = 1;
 
