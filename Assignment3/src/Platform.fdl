@@ -248,13 +248,13 @@ dp CPU(
 
           $display($dec, aluOut);
 
-       		M_datain = (extStore | extLCD) ? regA : 
+          M_datain = (extStore | extLCD) ? regA : 
                       (extLoad) ? (insOut[24:0]) : 0b00000000000000000000000000000000;
-       		M_cmd = (extLoad) ? 0b0010000 # regA[24:0] : 
+          M_cmd = (extLoad) ? 0b0010000 # regA[24:0] : 
                   (extStore) ? 0b0010100 # insOut[24:0] :
                   (extSensor) ? 0b0001000 # insOut[24:0] : 
                   (extLCD) ? 0b0011000 # insOut[24:0] : 0b00000000000000000000000000000000;
-       		M_datainrdy = (extStore | extLoad | extLCD | extSensor) ? 0b1 : 0b0;
+          M_datainrdy = (extStore | extLoad | extLCD | extSensor) ? 0b1 : 0b0;
        }       
 }
 
@@ -307,7 +307,7 @@ dp bus(
         in ID_Sensor : ns(4);
         in ID_DataMem : ns(4);
         in ID_Output : ns(4)
-		
+    
         ){
         
         $trace(reqDataMem, "traces/reqDataMem.seq");
@@ -476,6 +476,7 @@ fsm slavebusinterface_cntrl(slavebusinterface){
 
 dp slavebusinterface2 : slavebusinterface
 dp slavebusinterface3 : slavebusinterface
+dp slavebusinterface4 : slavebusinterface
 
 dp masterbusinterface(
           // Bus ports
@@ -620,14 +621,23 @@ dp bus_toplevel(
            out OP_dataout : ns(32); // data port not used in sensor
            out OP_cmdout : ns(32);
            out OP_dataoutrdy : ns(1);
-           out OP_stall : ns(1)
+           out OP_stall : ns(1);
+
+           // Slave interface (CoProc)
+           in CP_datain : ns(32);
+           in CP_datainrdy : ns(1);
+           out CP_dataout : ns(32);
+           out CP_cmdout : ns(32);
+           out CP_dataoutrdy : ns(1);
+           out CP_stall : ns(1)
            ){
            
-           sig reqCPU,reqDataMem,reqSensor,reqOutput,ackCPU,ackDataMem,ackSensor,ackOutput,dataRdyCPU,dataRdyDataMem,dataRdySensor,dataRdyOutput,waitCPU,waitDataMem,waitSensor,waitOutput: ns(1);
-           sig cmdCPU,cmdDataMem,cmdSensor,cmdOutput,dataoutCPU,datainDataMem,datainSensor,datainOutput,datainCPU,dataoutDataMem,dataoutSensor,dataoutOutput : ns(32);
+           sig reqCPU,reqDataMem,reqSensor,reqOutput, regCoProc,ackCPU,ackDataMem,ackSensor,ackOutput, ackCoProc,dataRdyCPU,dataRdyDataMem,dataRdySensor,dataRdyOutput, dataRdyCoProc, waitCPU,waitDataMem,waitSensor,waitOutput, waitCoProc: ns(1);
+           sig cmdCPU,cmdDataMem,cmdSensor,cmdOutput, cmdCoProc,dataoutCPU,datainDataMem,datainSensor,datainOutput,datainCPU,dataoutDataMem,dataoutSensor,dataoutOutput, datainCoProc, dataoutCoProc : ns(32);
            reg ID_DataMem : ns(4);
            reg ID_Sensor : ns(4);
            reg ID_Output : ns(4);
+           reg ID_CoProc : ns(4);
            
            $trace(DM_datain, "traces/DM_datain.seq");
            $trace(DM_datainrdy, "traces/DM_datainrdy.seq");
@@ -665,14 +675,18 @@ dp bus_toplevel(
                               //SensorDatain,SensorDatainrdy,NotUsed2,SensorCmdout,SensorDataoutrdy,
                               SS_datain,SS_datainrdy,SS_dataout,SS_cmdout,SS_dataoutrdy,ID_Sensor,SS_stall);
                               
-           use slavebusinterface3(reqOutput,cmdOutput,datainOutput,ackOutput,dataRdyOutput,dataoutOutput,waitOutput, // Bus interface (data memory)
+           use slavebusinterface3(reqOutput,cmdOutput,datainOutput,ackOutput,dataRdyOutput,dataoutOutput,waitOutput, // Bus interface (output)
                               //OPDatain,OPDatainrdy,OPDataout,OPCmdout,OPDataoutrdy,
                               OP_datain,OP_datainrdy,OP_dataout,OP_cmdout,OP_dataoutrdy,ID_Output,OP_stall);
+
+           use slavebusinterface4(regCoProc, cmdCoProc, datainCoProc, ackCoProc, dataRdyCoProc, dataoutCoProc, waitCoProc, // Bus interface (CoProc)
+                              CP_datain,CP_datainrdy,CP_dataout,CP_cmdout,CP_dataoutrdy,ID_CoProc,CP_stall);
            
            always{
               ID_Sensor = 0x1;
               ID_DataMem = 0x2;
               ID_Output = 0x3;
+              ID_CoProc = 0x4;
            }
 }
 
@@ -724,7 +738,7 @@ dp DataMem(
        address = (cmdr[27] == 0) ? datainr : 0b00000 # cmdr[0:26]; // if Store Word instruction, use cmd[0:26] as address. If Load Word instruction use datain as address
        idata = (cmdr[27] == 0) ? 0 : datainr; // if store word use datain as data to be stored, if load word, just set idata to 0
        //$display($dec, "Cycle: ", $cycle);
-   	   //$display($dec, "   address: ", address);
+       //$display($dec, "   address: ", address);
    }
    
    sfg captureData{
@@ -788,30 +802,30 @@ dp Sensor(
     
     use sensordata(address,wr,rd,idata,odata);
 
-   	reg c : ns(10);
-   	reg reset : ns(1);
-   	reg addr : ns(8);
-   	reg LIMIT : ns(10); // How many cycles to wait before it "acquires" the next datapoint (simulated sampling rate)
-   	reg stallr : ns(1);
-   	reg datainrdyr : ns(1);
-   	
-   	$trace(odata, "traces/SS_data.seq");
-   	$trace(c, "traces/SS_c.seq");
-   	
-   	always{
-   		wr = 0;
-   		idata = 0;
-   		LIMIT = 9; // 0 means 1 cycles => Pick new point each cycle TODO: Set proper sampling rate
-   		address = addr;
-   		
-   		dataout = odata;
-   		//dataoutrdy = 0;
-   		stallr = stall;
-   		//$display($dec, "Cycle: ", $cycle);
-   		//$display($dec, "   data: ", odata);
-   		//$display($dec, "   address: ", address);
-   	}
-   	
+    reg c : ns(10);
+    reg reset : ns(1);
+    reg addr : ns(8);
+    reg LIMIT : ns(10); // How many cycles to wait before it "acquires" the next datapoint (simulated sampling rate)
+    reg stallr : ns(1);
+    reg datainrdyr : ns(1);
+    
+    $trace(odata, "traces/SS_data.seq");
+    $trace(c, "traces/SS_c.seq");
+    
+    always{
+      wr = 0;
+      idata = 0;
+      LIMIT = 9; // 0 means 1 cycles => Pick new point each cycle TODO: Set proper sampling rate
+      address = addr;
+      
+      dataout = odata;
+      //dataoutrdy = 0;
+      stallr = stall;
+      //$display($dec, "Cycle: ", $cycle);
+      //$display($dec, "   data: ", odata);
+      //$display($dec, "   address: ", address);
+    }
+    
    sfg captureData{  
        dataoutrdy = 0; 
        datainrdyr = datainrdy;
@@ -831,16 +845,16 @@ dp Sensor(
        dataoutrdy = 0; 
    }
 
-	sfg count{
-    	c = c + 1;
-    	rd = 0;
-	}
-   	
-   	sfg addressUpdate{
-   	   addr = addr + 1;
-   	   rd = 1;
-   	   c = 0;
-   	}
+  sfg count{
+      c = c + 1;
+      rd = 0;
+  }
+    
+    sfg addressUpdate{
+       addr = addr + 1;
+       rd = 1;
+       c = 0;
+    }
 
 }
 
@@ -932,6 +946,136 @@ fsm Output_cntrl(Output){
        
 }
 
+dp CoProc(in datain : ns(32);
+   in cmd : ns(32);
+   in datainrdy : ns(1);
+   out dataout : ns(32);
+   out dataoutrdy : ns(1);
+   in stall : ns(1) // true if the slave is currently busy (with handshaking) and cannot receive new data.)
+   ) {
+   reg datainrdyr : ns(1);
+   reg cmdr : ns(32);
+   reg stallr, loadData, execute : ns(1);
+   reg reg1, reg2, reg 3, reg4, reg5, reg6, reg 7, reg 8, reg9, reg10 : tc(32);
+   reg reg11, reg12, reg13, reg14, reg15, reg16, reg17, reg18, reg19, reg20 : tc(32);
+   reg reg21, reg22, reg23, reg24, reg25, reg26, reg27, reg28, reg29, reg30 : tc(32);
+   reg reg31, reg32 : tc(32);
+
+   sig sum12, sum34, sum56, sum78, sum910, sum1112, sum1314, sum1516 : tc(32);
+   sig sum1718, sum1920, sum2122, sum2324, sum2526, sum2728, sum2930 : tc(32);
+   sig sum3132, sum1234, sum5678, sum9101112, sum13141516 : tc(32);
+   sig sum17181920, sum21222324, sum25262728, sum29303132 : tc(32);
+   sig sum12345678, sum910111213141516, sum1718192021222324 : tc(32);
+   sig sum2526272829303132, sum12345678910111213141516 : tc(32);
+   sig sum17181920212223242526272829303132, totalsum : tc(32);
+
+   always {
+      stallr = stall;
+      loadData = (cmdr[27] == 0);
+      execute = (cmdr[27] == 1);
+   }
+
+   sfg load{
+      dataoutrdy = 0;
+      datainrdyr = datainrdy;
+      reg1 = datain;
+      reg2 = reg1;
+      reg3 = reg2;
+      reg4 = reg3;
+      reg5 = reg4;
+      reg6 = reg5;
+      reg7 = reg6;
+      reg8 = reg7;
+      reg9 = reg8;
+      reg10 = reg9;
+      reg11 = reg10;
+      reg12 = reg11;
+      reg13 = reg12;
+      reg14 = reg13;
+      reg15 = reg14;
+      reg16 = reg15;
+      reg17 = reg16;
+      reg18 = reg17;
+      reg19 = reg18;
+      reg20 = reg19;
+      reg21 = reg20;
+      reg22 = reg21;
+      reg23 = reg22;
+      reg24 = reg23;
+      reg25 = reg24;
+      reg26 = reg25;
+      reg27 = reg26;
+      reg28 = reg27;
+      reg29 = reg28;
+      reg30 = reg29;
+      reg31 = reg30;
+      reg32 = reg31;
+   }
+
+   sfg executeCalc {
+      sum12 = reg1 + reg2;
+      sum34 = reg3 + reg4;
+      sum56 = reg5 + reg6;
+      sum78 = reg7 + reg8;
+      sum910 = reg9 + reg10;
+      sum1112 = reg11 + reg12;
+      sum1314 = reg13 + reg14;
+      sum1516 = reg15 + reg16;
+      sum1718 = reg17 + reg18;
+      sum1920 = reg19 + reg20;
+      sum2122 = reg21 + reg22;
+      sum2324 = reg23 + reg24;
+      sum2526 = reg25 + reg26;
+      sum2728 = reg27 + reg28;
+      sum2930 = reg29 + reg30;
+      sum3132 = reg31 + reg32;
+      sum1234 =  sum12 + sum34;
+      sum5678 = sum56 + sum78;
+      sum9101112 = sum910 + sum1112;
+      sum13141516 = sum1314 + sum1516;
+      sum17181920 = sum1718 + sum1920;
+      sum21222324 = sum2122 + sum2324;
+      sum25262728 = sum2526 + sum2728;
+      sum29303132 = sum2930 + sum3132;
+      sum12345678 = sum1234 + sum5678;
+      sum910111213141516 = sum9101112 + sum13141516;
+      sum1718192021222324 = sum17181920 + sum21222324;
+    sum2526272829303132 = sum25262728 + sum29303132;
+    sum12345678910111213141516 = sum12345678 + sum910111213141516;
+    sum17181920212223242526272829303132 = sum1718192021222324 + sum2526272829303132;
+    totalsum = sum12345678910111213141516 + sum17181920212223242526272829303132;
+    dataout = totalsum >> 5; 
+    dataoutrdy = 0b1;
+
+   }
+
+   sfg awaithandshake{
+      dataoutrdy = 0;
+   }
+   
+   sfg resetAndSignalRdy{
+     dataoutrdy = 1;
+     datainrdyr = 0;
+   }
+   
+   sfg nothing{
+       dataoutrdy = 0; 
+   }
+}
+
+fsm CoProc_cntrl(CoProc){
+   initial s0;
+   state s1;
+   
+   @s0 if (datainrdyr == 1 & stallr == 0) then (resetAndSignalRdy) -> s0;
+       else if (datainrdyr == 1 & stallr == 1) then (nothing) -> s1;
+       else if (loadData == 0 & execute == 1) then (executeCalc) -> s1;
+       else (load) -> s0;
+   @s1 if (stallr == 0) then (resetAndSignalRdy) -> s0;
+       else (awaithandshake) -> s1;
+       
+}
+
 ////////////////////////////
 // System connections
 ////////////////////////////
@@ -942,9 +1086,11 @@ system CPUsystem{
    bus_toplevel(CPUdatain,CPUcmd,CPUdatainrdy,CPUdataout,CPUdataoutrdy, // master unit
            DMDatain,DMDatainrdy,DMDataout,DMCmdout,DMDataoutrdy,DMStall, // slave (data memory)
            SensorDatain,SensorDatainrdy,SensorDataout,SensorCmdout,SensorDataoutrdy,SensorStall,  // slave (sensor)
-           OPDatain,OPDatainrdy,OPDataout,OPCmdout,OPDataoutrdy,OPStall); // slave (Output)
+           OPDatain,OPDatainrdy,OPDataout,OPCmdout,OPDataoutrdy,OPStall, // slave (Output)
+           CPDatain,CPDatainrdy,CPDataout,CPCmdout,CPDataoutrdy,CPStall); // slave (CoProc)
            
    DataMem(DMDataout,DMCmdout,DMDataoutrdy,DMDatain,DMDatainrdy,DMStall); // Data Memory Unit
    Sensor(SensorDataout,SensorCmdout,SensorDataoutrdy,SensorDatain,SensorDatainrdy,SensorStall);
    Output(OPDataout,OPCmdout,OPDataoutrdy,OPDatain,OPDatainrdy,OPStall,FilterOut);
+   CoProc(CPDataout,CPCmdout,CPDataoutrdy,CPDatain,CPDatainrdy,CPStall); // 
 }
