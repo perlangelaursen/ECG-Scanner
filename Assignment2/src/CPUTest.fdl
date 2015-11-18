@@ -89,6 +89,8 @@ dp Control (
     storesel   = savelocation;
     A = source1;
     B = source2;
+    extLoad = (operation == 0b1101) ? 0b1 : 0b0;
+    extStore = (operation == 0b1110) ? 0b1 : 0b0;
   }
 }
 
@@ -204,6 +206,7 @@ dp CPU(){
   sig regA, regB, aluB, insB : tc(32);
   sig aSel, bSel : ns(3);
   sig andNeg, andZero, orJmp : ns(1);
+  sig ut : tc(32);
 
 
   use PC(jmpTarget, jmp, pcOut);
@@ -223,8 +226,10 @@ dp CPU(){
       insB = insOut[21:0];
       storeData = aluOut;
 
+      ut = ()
+
       //$display($bin, "instruc: ", insOut[31:28]);
-      $display($dec, "aludas: ", aluOut);
+      $display($dec, "aludas: ", ut);
       //$display($dec, "pcOut: ", pcOut);
       
   }

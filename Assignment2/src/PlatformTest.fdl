@@ -262,7 +262,7 @@ dp CPU(
           use Register(aSel, bSel, storeSelect, storeEnable, aluOut, regA, regB);
           use Multiplex(insB, regB, addImmediate, aluB);
           use ALU(regA, aluB, aluSelect, aluOut, aluNeg, aluZero);
-          use DMMultiplex(M_dataout,aluOut, M_dataoutrdy);
+          use DMMultiplex(M_dataout, aluOut, M_dataoutrdy);
           use And(aluZero, bzero, andZero);
           use AndBNEG(aluNeg,bneg, andNeg);
           use OrB(andZero, andNeg, orJmp);
