@@ -69,6 +69,12 @@ dp Control (
   sig source1 : ns(3);
   sig source2 : ns(3);
 
+
+$trace(operation, "traces/opcode.seq");
+$trace(savelocation, "traces/savee.seq");
+$trace(source1, "traces/src1.seq");
+$trace(source2, "traces/src2.seq");
+
   always {
     operation = instruction[31:28];
     savelocation = instruction[27:25];
@@ -110,7 +116,7 @@ dp Control (
     extSensor = (operation == 0b1100) ? 0b1 : 0b0;
     extLCD = (operation == 0b1111) ? 0b1 : 0b0;
 
-    stall = (operation == 0b1101 | operation == 0b1100) ? 0b1 : 0b0;
+    stall = (operation == 0b1101 | operation == 0b1110) ? 0b1 : 0b0;
   }
 }
 
@@ -120,6 +126,11 @@ dp ALU(
   out R : tc(32);
   out N, Z : ns(1)
   ) {
+
+
+$trace(A, "traces/ALUA.seq");
+$trace(B, "traces/BALU.seq");
+$trace(Select, "traces/ALUSasdel.seq");
 
   always {
     R = (Select == 0b0001) ? A + B :
@@ -178,13 +189,13 @@ dp Register(
     r6 = storeenable ? (storesel == 0b110 ? storedata : r6) : r6;
     r7 = storeenable ? (storesel == 0b111 ? storedata : r7) : r7;
 
-    $display($dec, "reg1: ", r1);
-    $display($dec, "reg2: ", r2);
-    $display($dec, "reg3: ", r3);
-    $display($dec, "reg4: ", r4);
-    $display($dec, "reg5: ", r5);
-    $display($dec, "reg6: ", r6);
-    $display($dec, "reg7: ", r7);
+    //$display($dec, "reg1: ", r1);
+    //$display($dec, "reg2: ", r2);
+    //$display($dec, "reg3: ", r3);
+    //$display($dec, "reg4: ", r4);
+    //$display($dec, "reg5: ", r5);
+    //$display($dec, "reg6: ", r6);
+    //$display($dec, "reg7: ", r7);
 
 
   }
@@ -215,11 +226,13 @@ dp PC(in jump_target : ns(6);
   reg PCr : ns(6);
 
 $trace(PCr, "traces/pc.seq");
+$trace(pc_out, "traces/pc_out.seq");
 $trace(jump_target, "traces/jmpT.seq");
+$trace(sel, "traces/PCSel.seq");
 
   always {
-    pc_out = (stall_cpu == 0b1) ? PCr : ((sel == 0b1) ? jump_target : PCr +1);
-    PCr = (stall_cpu == 0b1) ? PCr : ((sel == 0b1) ? jump_target : PCr +1);
+    pc_out = (stall_cpu == 0b1) ? PCr : ((sel == 0b1) ? jump_target : PCr + 1 );
+    PCr = (stall_cpu == 0b1) ? PCr : ((sel == 0b1) ? jump_target : PCr + 1);
   }
 }
 
@@ -248,21 +261,21 @@ dp CPU(
           sig storeEnable : ns(1);
           sig storeData : tc(32);
           sig aluOut : tc(32);
-          sig aluNeg : ns(1);
-          sig aluZero : ns(1);
+          reg aluNeg : ns(1);
+          reg aluZero : ns(1);
           sig regA, regB, aluB, insB, outStore : tc(32);
           sig aSel, bSel : ns(3);
           sig andNeg, andZero, orJmp, extLoad, extStore, extSensor, extLCD, sys_stall : ns(1);
 
-          reg stall : ns(1);
+          sig stall : ns(1);
 
-          use PC(jmpTarget, jmp, stall, pcOut);
           use InsMem(pcOut, insOut);
           use Control(insOut, branch, bneg, bzero, aluSelect, addImmediate, storeEnable, storeSelect, aSel, bSel, extLoad, extStore, extSensor, extLCD, sys_stall);
-          use Register(aSel, bSel, storeSelect, storeEnable, aluOut, regA, regB);
+          use PC(jmpTarget, jmp, stall, pcOut);
+          use Register(aSel, bSel, storeSelect, storeEnable, storeData, regA, regB);
           use Multiplex(insB, regB, addImmediate, aluB);
           use ALU(regA, aluB, aluSelect, aluOut, aluNeg, aluZero);
-          use DMMultiplex(M_dataout, aluOut, M_dataoutrdy);
+          use DMMultiplex(M_dataout, aluOut, M_dataoutrdy, storeData);
           use And(aluZero, bzero, andZero);
           use AndBNEG(aluNeg,bneg, andNeg);
           use OrB(andZero, andNeg, orJmp);
@@ -288,6 +301,8 @@ dp CPU(
           $trace(sys_stall, "traces/stall.seq");
           $trace(M_datain, "traces/M_datain.seq");
           $trace(M_cmd, "traces/M_cmd.seq");
+          $trace(M_dataout, "traces/M_dataout.seq");
+          $trace(M_dataoutrdy, "traces/M_dataoutrdy.seq");
 
 
        always{
@@ -303,10 +318,10 @@ dp CPU(
           //$display($hex, "ins: ",insOut);
           //$display($dec, "jmp: ",bzero & aluZero);
           //$display($dec, ": ",jmpTarget);
-          $display($dec,"dataininin: ", M_datain);
-          $display($dec,"pd: ", pcOut);
-          $display($dec,"bro: ", branch);
-          //$display($dec,"out: ", outStore);
+          //$display($dec,"dataininin: ", M_datain);
+          //$display($dec,"pd: ", pcOut);
+          //$display($dec,"bro: ", branch);
+          $display($dec,"out: ", outStore);
 
        	  M_datain = (extStore | extLCD | extLoad) ? regA : 0b00000000000000000000000000000000;
        		M_cmd = (extLoad) ? 0b0010000 # regA[24:0] : 
