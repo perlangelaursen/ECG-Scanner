@@ -13,7 +13,8 @@ ipblock instmem(in address : ns(6);
   //ipparm "file=program.txt";
   //ipparm "file=insthex.txt";
   //ipparm "file=32divhex.txt";
-  ipparm "file=CoProcInstV1Hex.txt";
+  //ipparm "file=CoProcInstV1Hex.txt";
+  ipparm "file=32divhax.txt";
 }
 
 dp InsMem(in address : ns(6);
@@ -24,6 +25,7 @@ dp InsMem(in address : ns(6);
   sig odata : ns(32);
   use instmem(address, wr, rd, idata, odata);
 
+$trace(instruction, "traces/instruction.seq");
   always {
     wr = 0;
     rd = 1;
@@ -64,10 +66,13 @@ dp Control (
   out extSCMD     : ns(1);
   out stall       : ns(1)
 ){
-  sig operation : ns(4);
+  sig operation : ns(5);
   sig savelocation : ns(3);
   sig source1 : ns(3);
   sig source2 : ns(3);
+
+  $trace(operation, "traces/operation.seq");
+
 
   always {
     operation = instruction[31:27];
@@ -129,7 +134,7 @@ dp ALU(
       (Select == 0b1000) ? A >> B:
       (Select == 0b1001) ? A & B:
       (Select == 0b1010) ? A | B:
-      0;
+      1;
     N = R[31];
     Z = (R == 0);
   }
@@ -143,6 +148,14 @@ dp Register(
   ) {
 
   reg r0, r1, r2, r3, r4, r5, r6, r7 : tc(32);
+
+  $trace(r1, "traces/r1.seq");
+  $trace(r2, "traces/r2.seq");
+  $trace(r4, "traces/r4.seq");
+  $trace(r3, "traces/r3.seq");
+  $trace(r5, "traces/r5.seq");
+  $trace(r6, "traces/r6.seq");
+  $trace(r7, "traces/r7.seq");
 
   always {
     a = asel == 0b001 ? r1 :
@@ -231,17 +244,17 @@ dp CPU(
           sig storeEnable : ns(1);
           sig storeData : tc(32);
           sig aluOut : tc(32);
-          sig aluNeg : ns(1);
-          sig aluZero : ns(1);
+          reg aluNeg : ns(1);
+          reg aluZero : ns(1);
           sig regA, regB, aluB, insB : tc(32);
           sig aSel, bSel : ns(3);
           sig andNeg, andZero, orJmp, extLoad, extStore, extSensor, extLCD, extSCMD, sys_stall : ns(1);
 
-          reg stall : ns(1);
+          sig stall : ns(1);
 
-          use PC(jmpTarget, jmp, stall, pcOut);
           use InsMem(pcOut, insOut);
           use Control(insOut, branch, bneg, bzero, aluSelect, addImmediate, storeEnable, storeSelect, aSel, bSel, extLoad, extStore, extSensor, extLCD, extSCMD, sys_stall);
+          use PC(jmpTarget, jmp, stall, pcOut);
           use Register(aSel, bSel, storeSelect, storeEnable, storeData, regA, regB);
           use Multiplex(insB, regB, addImmediate, aluB);
           use ALU(regA, aluB, aluSelect, aluOut, aluNeg, aluZero);
@@ -249,7 +262,16 @@ dp CPU(
           use And(aluZero, bzero, andZero);
           use AndBNEG(aluNeg,bneg, andNeg);
           use OrB(andZero, andNeg, orJmp);
-          use Or(branch, orJmp, jmp);       
+          use Or(branch, orJmp, jmp); 
+
+          $trace(extSCMD, "traces/extSCMD.seq");
+          $trace(M_cmd, "traces/M_cmd.seq");  
+          $trace(extLoad, "traces/extLCD.seq");
+          $trace(stall, "traces/stall.seq");
+          $trace(M_dataoutrdy, "traces/M_dataoutrdy.seq");
+          $trace(M_dataout, "traces/M_dataout.seq");
+          
+
        always{
           stall = (M_dataoutrdy == 0b1) ? 0b0 : sys_stall;
           jmpTarget = insOut[26:21];
@@ -352,6 +374,14 @@ dp bus(
         $trace(dataRdyOutput, "traces/dataRdyOutput.seq");
         $trace(dataoutOutput, "traces/dataoutOutput.seq");
         $trace(waitOutput, "traces/waitOutput.seq");
+
+        $trace(reqCoProc, "traces/reqCoProc.seq");
+        $trace(cmdCoProc, "traces/cmdCoProc.seq");
+        $trace(datainCoProc, "traces/datainCoProc.seq");
+        $trace(ackCoProc, "traces/ackCoProc.seq");
+        $trace(dataRdyCoProc, "traces/dataRdyCoProc.seq");
+        $trace(dataoutCoProc, "traces/dataoutCoProc.seq");
+        $trace(waitCoProc, "traces/waitCoProc.seq");
         
         $trace(reqCPU, "traces/reqCPU.seq");
         $trace(cmdCPU, "traces/cmdCPU.seq");
@@ -532,11 +562,11 @@ dp masterbusinterface(
 //          $trace(bus_datain, "traces/M_bus_datain.seq");
 //          $trace(bus_wait, "traces/M_bus_wait.seq");
           
-//          $trace(datain, "traces/M_datain_int.seq");
-//          $trace(cmd, "traces/M_cmd_int.seq");
-//          $trace(datainrdy, "traces/M_datainrdy_int.seq");
-//          $trace(dataout, "traces/M_dataout_int.seq");
-//          $trace(dataoutrdy, "traces/M_dataoutrdy_int.seq");
+          $trace(datain, "traces/M_datain_int.seq");
+          $trace(cmd, "traces/M_cmd_int.seq");
+          $trace(datainrdy, "traces/M_datainrdy_int.seq");
+          $trace(dataout, "traces/M_dataout_int.seq");
+          $trace(dataoutrdy, "traces/M_dataoutrdy_int.seq");
           
           reg bus_ackr : ns(1);
           reg bus_rdyr : ns(1);
@@ -689,6 +719,9 @@ dp bus_toplevel(
            $trace(CP_dataout, "traces/CP_dataout.seq");
            $trace(CP_cmdout, "traces/CP_cmdout.seq");
            $trace(CP_dataoutrdy, "traces/CP_dataoutrdy.seq");
+
+           $trace(M_datain, "traces/M_datain.seq");
+           $trace(M_dataout, "traces/M_dataout.seq");
            
            use bus(reqCPU,cmdCPU,dataoutCPU,ackCPU,dataRdyCPU,datainCPU,waitCPU, // master
                    reqDataMem,cmdDataMem,datainDataMem,ackDataMem,dataRdyDataMem,dataoutDataMem,waitDataMem, // Data memory (slave)
@@ -994,6 +1027,13 @@ dp CoProc(in datain : ns(32);
    sig sum1, sum2, sum3, sum4, sum5, sum6, sum7, sum8, sum9, sum10, sum11 : tc(32);
    sig sum12, sum13, sum14, sum15, sum16, sum17, sum18, sum19, sum20, sum21 : tc(32);
    sig sum22, sum23, sum24, sum25, sum26, sum27, sum28, sum29, sum30, totalsum : tc(32);
+
+   $trace(dataout, "traces/CoProcDataOut.seq");
+   $trace(dataoutrdy, "traces/dataoutrdyCoProc.seq");
+   $trace(loadData, "traces/loadData.seq");
+   $trace(execute, "traces/execute.seq");
+   $trace(cmd, "traces/cmdCPIN.seq");
+   $trace(cmdr, "traces/cmdr.seq");
 
    always {
       stallr = stall;
