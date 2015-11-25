@@ -11,8 +11,9 @@ ipblock instmem(in address : ns(6);
   ipparm "size=64";
   ipparm "wl=32";
   //ipparm "file=program.txt";
-  ipparm "file=insthex.txt";
+  //ipparm "file=insthex.txt";
   //ipparm "file=32divhex.txt";
+  ipparm "file=CoProcInstV1Hex.txt";
 }
 
 dp InsMem(in address : ns(6);
@@ -238,7 +239,7 @@ dp CPU(
           use Register(aSel, bSel, storeSelect, storeEnable, aluOut, regA, regB);
           use Multiplex(insB, regB, addImmediate, aluB);
           use ALU(regA, aluB, aluSelect, aluOut, aluNeg, aluZero);
-          use DMMultiplex(M_dataout, aluOut, M_dataoutrdy);
+          use DMMultiplex(M_dataout, aluOut, M_dataoutrdy, storedata);
           use And(aluZero, bzero, andZero);
           use AndBNEG(aluNeg,bneg, andNeg);
           use OrB(andZero, andNeg, orJmp);
@@ -250,13 +251,12 @@ dp CPU(
 
           $display($dec, aluOut);
 
-          M_datain = (extStore | extLCD | extSCMD) ? regA : 
-                      (extLoad) ? (insOut[24:0]) : 0b00000000000000000000000000000000;
+          M_datain = (extStore | extLCD | extSCMD | extLoad) ? regA : 0b00000000000000000000000000000000;
           M_cmd = (extLoad) ? 0b0010000 # regA[24:0] : 
                   (extStore) ? 0b0010100 # insOut[24:0] :
                   (extSensor) ? 0b0001000 # insOut[24:0] : 
                   (extLCD) ? 0b0011000 # insOut[24:0]
-                  (extSCMD) ? 0b0100 # insOut[24:0] # 0b000 : 0b00000000000000000000000000000000;
+                  (extSCMD) ? 0b0100 # insOut[20:0] # 0b0000000 : 0b00000000000000000000000000000000;
           M_datainrdy = (extStore | extLoad | extLCD | extSensor | extSCMD) ? 0b1 : 0b0;
        }       
 }
