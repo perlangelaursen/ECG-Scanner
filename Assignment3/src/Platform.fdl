@@ -13,8 +13,8 @@ ipblock instmem(in address : ns(6);
   //ipparm "file=program.txt";
   //ipparm "file=insthex.txt";
   //ipparm "file=32divhex.txt";
-  //ipparm "file=CoProcInstV1Hex.txt";
-  ipparm "file=32divhax.txt";
+  ipparm "file=CoProcInstV1Hex.txt";
+  //ipparm "file=32divhax.txt";
 }
 
 dp InsMem(in address : ns(6);
@@ -74,6 +74,7 @@ dp Control (
   $trace(operation, "traces/operation.seq");
 
 
+
   always {
     operation = instruction[31:27];
     savelocation = instruction[26:24];
@@ -104,7 +105,8 @@ dp Control (
                 (operation == 0b01101) ? 0b1 : 
                 (operation == 0b01110) ? 0b1 :
                 (operation == 0b01100) ? 0b1 :
-                (operation == 0b01111) ? 0b1 : 0b0;
+                (operation == 0b01111) ? 0b1 : 
+                (operation == 0b10000) ? 0b1 : 0b0;
 
     storesel   = savelocation;
     A = source1;
@@ -263,13 +265,13 @@ dp CPU(
           use AndBNEG(aluNeg,bneg, andNeg);
           use OrB(andZero, andNeg, orJmp);
           use Or(branch, orJmp, jmp); 
-
+          
           $trace(extSCMD, "traces/extSCMD.seq");
           $trace(M_cmd, "traces/M_cmd.seq");  
           $trace(extLoad, "traces/extLCD.seq");
           $trace(stall, "traces/stall.seq");
           $trace(M_dataoutrdy, "traces/M_dataoutrdy.seq");
-          $trace(M_dataout, "traces/M_dataout.seq");
+          //$trace(M_dataout, "traces/M_dataoutCPU.seq");
           
 
        always{
@@ -284,7 +286,7 @@ dp CPU(
                   (extStore) ? 0b0010100 # insOut[24:0] :
                   (extSensor) ? 0b0001000 # insOut[24:0] : 
                   (extLCD) ? 0b0011000 # insOut[24:0] :
-                  (extSCMD) ? 0b0100 # insOut[20:0] # 0b0000000 : 0b00000000000000000000000000000000;
+                  (extSCMD) ? 0b0100 # (insOut[20:0] # 0b00000000) : 0;
           M_datainrdy = (extStore | extLoad | extLCD | extSensor | extSCMD) ? 0b1 : 0b0;
        }       
 }
