@@ -194,9 +194,15 @@ dp PC(in jump_target : ns(6);
   in stall_cpu : ns(1);
   out pc_out : ns(6)){
   reg PCr : ns(6);
+
+$trace(PCr, "traces/pc.seq");
+$trace(pc_out, "traces/pc_out.seq");
+$trace(jump_target, "traces/jmpT.seq");
+$trace(sel, "traces/PCSel.seq");
+
   always {
-    PCr = (stall_cpu == 0b1) ? PCr : ((sel == 0b1) ? jump_target : PCr +1);
-    pc_out = (stall_cpu == 0b1) ? PCr : ((sel == 0b1) ? jump_target : PCr +1);;
+    pc_out = (stall_cpu == 0b1) ? PCr : ((sel == 0b1) ? jump_target : PCr + 1 );
+    PCr = (stall_cpu == 0b1) ? PCr : ((sel == 0b1) ? jump_target : PCr + 1);
   }
 }
 
@@ -236,10 +242,10 @@ dp CPU(
           use PC(jmpTarget, jmp, stall, pcOut);
           use InsMem(pcOut, insOut);
           use Control(insOut, branch, bneg, bzero, aluSelect, addImmediate, storeEnable, storeSelect, aSel, bSel, extLoad, extStore, extSensor, extLCD, extSCMD, sys_stall);
-          use Register(aSel, bSel, storeSelect, storeEnable, aluOut, regA, regB);
+          use Register(aSel, bSel, storeSelect, storeEnable, storeData, regA, regB);
           use Multiplex(insB, regB, addImmediate, aluB);
           use ALU(regA, aluB, aluSelect, aluOut, aluNeg, aluZero);
-          use DMMultiplex(M_dataout, aluOut, M_dataoutrdy, storedata);
+          use DMMultiplex(M_dataout, aluOut, M_dataoutrdy, storeData);
           use And(aluZero, bzero, andZero);
           use AndBNEG(aluNeg,bneg, andNeg);
           use OrB(andZero, andNeg, orJmp);
@@ -255,7 +261,7 @@ dp CPU(
           M_cmd = (extLoad) ? 0b0010000 # regA[24:0] : 
                   (extStore) ? 0b0010100 # insOut[24:0] :
                   (extSensor) ? 0b0001000 # insOut[24:0] : 
-                  (extLCD) ? 0b0011000 # insOut[24:0]
+                  (extLCD) ? 0b0011000 # insOut[24:0] :
                   (extSCMD) ? 0b0100 # insOut[20:0] # 0b0000000 : 0b00000000000000000000000000000000;
           M_datainrdy = (extStore | extLoad | extLCD | extSensor | extSCMD) ? 0b1 : 0b0;
        }       
@@ -980,12 +986,12 @@ dp CoProc(in datain : ns(32);
    reg datainrdyr : ns(1);
    reg cmdr : ns(32);
    reg stallr, loadData, execute : ns(1);
-   reg reg1, reg2, reg 3, reg4, reg5, reg6, reg 7, reg 8, reg9, reg10 : tc(32);
+   reg reg1, reg2, reg3, reg4, reg5, reg6, reg7, reg8, reg9, reg10 : tc(32);
    reg reg11, reg12, reg13, reg14, reg15, reg16, reg17, reg18, reg19, reg20 : tc(32);
    reg reg21, reg22, reg23, reg24, reg25, reg26, reg27, reg28, reg29, reg30 : tc(32);
    reg reg31, reg32 : tc(32);
 
-   sig sum1, sum2, sum3, sum4, sum5, sum6, sum7, sum8 sum9, sum10, sum11 : tc(32);
+   sig sum1, sum2, sum3, sum4, sum5, sum6, sum7, sum8, sum9, sum10, sum11 : tc(32);
    sig sum12, sum13, sum14, sum15, sum16, sum17, sum18, sum19, sum20, sum21 : tc(32);
    sig sum22, sum23, sum24, sum25, sum26, sum27, sum28, sum29, sum30, totalsum : tc(32);
 
@@ -998,6 +1004,7 @@ dp CoProc(in datain : ns(32);
 
    sfg load{
       dataoutrdy = 0;
+      dataout = 0;
       datainrdyr = datainrdy;
       reg1 = datain;
       reg2 = reg1;
