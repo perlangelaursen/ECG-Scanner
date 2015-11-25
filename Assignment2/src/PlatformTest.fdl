@@ -11,9 +11,10 @@ ipblock instmem(in address : ns(5);
   ipparm "size=64";
   ipparm "wl=32";
   //ipparm "file=program.txt";
-  //ipparm "file=inst.txt";
-  ipparm "file=32divhex.txt";
+  //ipparm "file=inst.txt";cccccccccc
   //ipparm "file=32divbin.txt";
+  ipparm "file=32divhex.txt";
+  //ipparm "file=insthex.txt";
 }
 
 dp InsMem(in address : ns(5);
@@ -68,6 +69,12 @@ dp Control (
   sig source1 : ns(3);
   sig source2 : ns(3);
 
+
+$trace(operation, "traces/opcode.seq");
+$trace(savelocation, "traces/savee.seq");
+$trace(source1, "traces/src1.seq");
+$trace(source2, "traces/src2.seq");
+
   always {
     operation = instruction[31:28];
     savelocation = instruction[27:25];
@@ -109,7 +116,7 @@ dp Control (
     extSensor = (operation == 0b1100) ? 0b1 : 0b0;
     extLCD = (operation == 0b1111) ? 0b1 : 0b0;
 
-    stall = (operation == 0b1101 | operation == 0b1100) ? 0b1 : 0b0;
+    stall = (operation == 0b1101 | operation == 0b1110) ? 0b1 : 0b0;
   }
 }
 
@@ -120,6 +127,11 @@ dp ALU(
   out N, Z : ns(1)
   ) {
 
+
+$trace(A, "traces/ALUA.seq");
+$trace(B, "traces/BALU.seq");
+$trace(Select, "traces/ALUSasdel.seq");
+
   always {
     R = (Select == 0b0001) ? A + B :
       (Select == 0b0010) ? A - B :
@@ -127,7 +139,7 @@ dp ALU(
       (Select == 0b1000) ? A >> B:
       (Select == 0b1001) ? A & B:
       (Select == 0b1010) ? A | B:
-      0;
+      1;
     N = R[31];
     Z = (R == 0);
   }
@@ -141,6 +153,16 @@ dp Register(
   ) {
 
   reg r0, r1, r2, r3, r4, r5, r6, r7 : tc(32);
+
+          $trace(r1, "traces/reg1.seq"); 
+          $trace(r2, "traces/reg2.seq"); 
+          $trace(r3, "traces/reg3.seq"); 
+          $trace(r4, "traces/reg4.seq"); 
+          $trace(r5, "traces/reg5.seq"); 
+          $trace(r6, "traces/reg6.seq"); 
+          $trace(r7, "traces/reg7.seq"); 
+          $trace(a, "traces/regA.seq"); 
+          $trace(b, "traces/regB.seq"); 
 
   always {
     a = asel == 0b001 ? r1 :
@@ -166,6 +188,16 @@ dp Register(
     r5 = storeenable ? (storesel == 0b101 ? storedata : r5) : r5;
     r6 = storeenable ? (storesel == 0b110 ? storedata : r6) : r6;
     r7 = storeenable ? (storesel == 0b111 ? storedata : r7) : r7;
+
+    //$display($dec, "reg1: ", r1);
+    //$display($dec, "reg2: ", r2);
+    //$display($dec, "reg3: ", r3);
+    //$display($dec, "reg4: ", r4);
+    //$display($dec, "reg5: ", r5);
+    //$display($dec, "reg6: ", r6);
+    //$display($dec, "reg7: ", r7);
+
+
   }
 }
 
@@ -187,14 +219,20 @@ dp Or(in a, b : ns(1);
 
 dp OrB : Or
 
-dp PC(in jump_target : ns(5);
+dp PC(in jump_target : ns(6);
   in sel : ns(1);
   in stall_cpu : ns(1);
-  out pc_out : ns(5)){
-  reg PCr : ns(5);
+  out pc_out : ns(6)){
+  reg PCr : ns(6);
+
+$trace(PCr, "traces/pc.seq");
+$trace(pc_out, "traces/pc_out.seq");
+$trace(jump_target, "traces/jmpT.seq");
+$trace(sel, "traces/PCSel.seq");
+
   always {
-    PCr = (stall_cpu == 0b1) ? PCr : ((sel == 0b1) ? jump_target : PCr +1);
-    pc_out = PCr;
+    pc_out = (stall_cpu == 0b1) ? PCr : ((sel == 0b1) ? jump_target : PCr + 1 );
+    PCr = (stall_cpu == 0b1) ? PCr : ((sel == 0b1) ? jump_target : PCr + 1);
   }
 }
 
@@ -223,28 +261,30 @@ dp CPU(
           sig storeEnable : ns(1);
           sig storeData : tc(32);
           sig aluOut : tc(32);
-          sig aluNeg : ns(1);
-          sig aluZero : ns(1);
+          reg aluNeg : ns(1);
+          reg aluZero : ns(1);
           sig regA, regB, aluB, insB, outStore : tc(32);
           sig aSel, bSel : ns(3);
           sig andNeg, andZero, orJmp, extLoad, extStore, extSensor, extLCD, sys_stall : ns(1);
 
-          reg addr : ns(8);
-          reg updateAddr : ns(1);
-          reg stall : ns(1);
+          sig stall : ns(1);
 
-          use PC(jmpTarget, jmp, stall, pcOut);
           use InsMem(pcOut, insOut);
           use Control(insOut, branch, bneg, bzero, aluSelect, addImmediate, storeEnable, storeSelect, aSel, bSel, extLoad, extStore, extSensor, extLCD, sys_stall);
-          use Register(aSel, bSel, storeSelect, storeEnable, aluOut, regA, regB);
+          use PC(jmpTarget, jmp, stall, pcOut);
+          use Register(aSel, bSel, storeSelect, storeEnable, storeData, regA, regB);
           use Multiplex(insB, regB, addImmediate, aluB);
           use ALU(regA, aluB, aluSelect, aluOut, aluNeg, aluZero);
-          use DMMultiplex(aluOut, M_dataout, M_dataoutrdy);
+          use DMMultiplex(M_dataout, aluOut, M_dataoutrdy, storeData);
           use And(aluZero, bzero, andZero);
           use AndBNEG(aluNeg,bneg, andNeg);
           use OrB(andZero, andNeg, orJmp);
           use Or(branch, orJmp, jmp);      
 
+
+          $trace(aluOut, "traces/aluOut.seq"); 
+          $trace(aluZero, "traces/aluZero.seq");   
+          $trace(aluNeg, "traces/aluN.seq");
           $trace(branch, "traces/branch.seq");   
           $trace(bneg, "traces/bneg.seq");
           $trace(bzero, "traces/bzero.seq");
@@ -259,27 +299,36 @@ dp CPU(
           $trace(extSensor, "traces/extSensor.seq");
           $trace(extLCD, "traces/extLCD.seq");
           $trace(sys_stall, "traces/stall.seq");
+          $trace(M_datain, "traces/M_datain.seq");
+          $trace(M_cmd, "traces/M_cmd.seq");
+          $trace(M_dataout, "traces/M_dataout.seq");
+          $trace(M_dataoutrdy, "traces/M_dataoutrdy.seq");
+
 
        always{
           stall = (M_dataoutrdy == 0b1) ? 0b0 : sys_stall;
-          jmpTarget = insOut[27:23];
+          jmpTarget = insOut[27:22];
           insB = insOut[21:0];
 
 
 
           outStore = extStore ? regA : 0b10000000000000000000000000000000;
 
-          $display($dec, outStore);
+          //$display($dec, regA);
+          //$display($hex, "ins: ",insOut);
+          //$display($dec, "jmp: ",bzero & aluZero);
+          //$display($dec, ": ",jmpTarget);
+          //$display($dec,"dataininin: ", M_datain);
+          //$display($dec,"pd: ", pcOut);
+          //$display($dec,"bro: ", branch);
+          $display($dec,"out: ", outStore);
 
-       		M_datain = (extStore | extLCD) ? regA : 
-                      (extLoad) ? (insOut[24:0]) : 0b00000000000000000000000000000000;
+       	  M_datain = (extStore | extLCD | extLoad) ? regA : 0b00000000000000000000000000000000;
        		M_cmd = (extLoad) ? 0b0010000 # regA[24:0] : 
-                  (extStore) ? 0b0010100 # insOut[24:0] + addr :
+                  (extStore) ? 0b0010100 # insOut[24:0]:
                   (extSensor) ? 0b0001000 # insOut[24:0] : 
                   (extLCD) ? 0b0011000 # insOut[24:0] : 0b00000000000000000000000000000000;
        		M_datainrdy = (extStore | extLoad | extLCD | extSensor) ? 0b1 : 0b0;
-          addr = (extLoad | extStore) ? ((updateAddr) ? (addr + 1) : addr)  : addr;
-          updateAddr = (updateAddr == 0b1) ? 0b0 : 0b1;
        }       
 }
 

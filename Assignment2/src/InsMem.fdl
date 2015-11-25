@@ -1,4 +1,4 @@
-ipblock instmem(in address : ns(5);
+ipblock instmem(in address : ns(6);
 				in wr, rd : ns(1);
 				in idata : ns(32);
 				out odata : ns(32)) 
@@ -9,7 +9,7 @@ ipblock instmem(in address : ns(5);
 	ipparm "file=program.txt";
 }
 
-dp InsMem(in address : ns(5);
+dp InsMem(in address : ns(6);
 		  out instruction : ns(32)) 
 {
 	sig wr, rd : ns(1);
@@ -26,7 +26,7 @@ dp InsMem(in address : ns(5);
 }
 
 
-dp testInsMem(out address: ns(5);
+dp testInsMem(out address: ns(6);
 			  in instruction : ns(32)) {
 	always {
 		$display($dec, "Cycle: ", $cycle, " Address: ", address, " Instruction: ", $bin, instruction); // Prints the instruction in binary format
