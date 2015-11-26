@@ -11,6 +11,10 @@ dp CoProc(in datain : ns(32);
    reg reg21, reg22, reg23, reg24, reg25, reg26, reg27, reg28, reg29, reg30 : tc(32);
    reg reg31, reg32 : tc(32);
 
+   $trace(dataout, "traces/CoProcDataOut.seq");
+   $trace(dataoutrdy, "traces/dataoutrdyCoProc.seq");
+   $trace(cmd, "traces/cmdCPIN.seq");
+
    always {
          reg1 = (stall == 0 & cmd[27] == 0) ? datain : reg1;
          reg2 = (stall == 0 & cmd[27] == 0) ? reg1 : reg2;
