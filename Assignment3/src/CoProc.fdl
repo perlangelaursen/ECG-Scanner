@@ -14,42 +14,44 @@ dp CoProc(in datain : ns(32);
    $trace(dataout, "traces/CoProcDataOut.seq");
    $trace(dataoutrdy, "traces/dataoutrdyCoProc.seq");
    $trace(cmd, "traces/cmdCPIN.seq");
+   $trace(reg1, "traces/CPreg1.seq");
+   $trace(datain, "traces/CPdatain.seq");
 
    always {
-         reg1 = (stall == 0 & cmd[27] == 0) ? datain : reg1;
-         reg2 = (stall == 0 & cmd[27] == 0) ? reg1 : reg2;
-         reg3 = (stall == 0 & cmd[27] == 0) ? reg2 : reg3;
-         reg4 = (stall == 0 & cmd[27] == 0) ? reg3 : reg4;
-         reg5 = (stall == 0 & cmd[27] == 0) ? reg4 : reg5;
-         reg6 = (stall == 0 & cmd[27] == 0) ? reg5 : reg6;
-         reg7 = (stall == 0 & cmd[27] == 0) ? reg6 : reg7;
-         reg8 = (stall == 0 & cmd[27] == 0) ? reg7 : reg8;
-         reg9 = (stall == 0 & cmd[27] == 0) ? reg8 : reg9;
-         reg10 = (stall == 0 & cmd[27] == 0) ? reg9 : reg10;
-         reg11 = (stall == 0 & cmd[27] == 0) ? reg10 : reg11;
-         reg12 = (stall == 0 & cmd[27] == 0) ? reg11 : reg12;
-         reg13 = (stall == 0 & cmd[27] == 0) ? reg12 : reg13;
-         reg14 = (stall == 0 & cmd[27] == 0) ? reg13 : reg14;
-         reg15 = (stall == 0 & cmd[27] == 0) ? reg14 : reg15;
-         reg16 = (stall == 0 & cmd[27] == 0) ? reg15 : reg16;
-         reg17 = (stall == 0 & cmd[27] == 0) ? reg16 : reg17;
-         reg18 = (stall == 0 & cmd[27] == 0) ? reg17 : reg18;
-         reg19 = (stall == 0 & cmd[27] == 0) ? reg18 : reg19;
-         reg20 = (stall == 0 & cmd[27] == 0) ? reg19 : reg20;
-         reg21 = (stall == 0 & cmd[27] == 0) ? reg20 : reg21;
-         reg22 = (stall == 0 & cmd[27] == 0) ? reg21 : reg22;
-         reg23 = (stall == 0 & cmd[27] == 0) ? reg22 : reg23;
-         reg24 = (stall == 0 & cmd[27] == 0) ? reg23 : reg24;
-         reg25 = (stall == 0 & cmd[27] == 0) ? reg24 : reg25;
-         reg26 = (stall == 0 & cmd[27] == 0) ? reg25 : reg26;
-         reg27 = (stall == 0 & cmd[27] == 0) ? reg26 : reg27;
-         reg28 = (stall == 0 & cmd[27] == 0) ? reg27 : reg28;
-         reg29 = (stall == 0 & cmd[27] == 0) ? reg28 : reg29;
-         reg30 = (stall == 0 & cmd[27] == 0) ? reg29 : reg30;
-         reg31 = (stall == 0 & cmd[27] == 0) ? reg30 : reg31;
-         reg32 = (stall == 0 & cmd[27] == 0) ? reg31 : reg32;
+         reg1 = (datainrdy == 1 & stall == 0 & cmd[27] == 0) ? datain : reg1;
+         reg2 = (datainrdy == 1 & stall == 0 & cmd[27] == 0) ? reg1 : reg2;
+         reg3 = (datainrdy == 1 & stall == 0 & cmd[27] == 0) ? reg2 : reg3;
+         reg4 = (datainrdy == 1 & stall == 0 & cmd[27] == 0) ? reg3 : reg4;
+         reg5 = (datainrdy == 1 & stall == 0 & cmd[27] == 0) ? reg4 : reg5;
+         reg6 = (datainrdy == 1 & stall == 0 & cmd[27] == 0) ? reg5 : reg6;
+         reg7 = (datainrdy == 1 & stall == 0 & cmd[27] == 0) ? reg6 : reg7;
+         reg8 = (datainrdy == 1 & stall == 0 & cmd[27] == 0) ? reg7 : reg8;
+         reg9 = (datainrdy == 1 & stall == 0 & cmd[27] == 0) ? reg8 : reg9;
+         reg10 = (datainrdy == 1 & stall == 0 & cmd[27] == 0) ? reg9 : reg10;
+         reg11 = (datainrdy == 1 & stall == 0 & cmd[27] == 0) ? reg10 : reg11;
+         reg12 = (datainrdy == 1 & stall == 0 & cmd[27] == 0) ? reg11 : reg12;
+         reg13 = (datainrdy == 1 & stall == 0 & cmd[27] == 0) ? reg12 : reg13;
+         reg14 = (datainrdy == 1 & stall == 0 & cmd[27] == 0) ? reg13 : reg14;
+         reg15 = (datainrdy == 1 & stall == 0 & cmd[27] == 0) ? reg14 : reg15;
+         reg16 = (datainrdy == 1 & stall == 0 & cmd[27] == 0) ? reg15 : reg16;
+         reg17 = (datainrdy == 1 & stall == 0 & cmd[27] == 0) ? reg16 : reg17;
+         reg18 = (datainrdy == 1 & stall == 0 & cmd[27] == 0) ? reg17 : reg18;
+         reg19 = (datainrdy == 1 & stall == 0 & cmd[27] == 0) ? reg18 : reg19;
+         reg20 = (datainrdy == 1 & stall == 0 & cmd[27] == 0) ? reg19 : reg20;
+         reg21 = (datainrdy == 1 & stall == 0 & cmd[27] == 0) ? reg20 : reg21;
+         reg22 = (datainrdy == 1 & stall == 0 & cmd[27] == 0) ? reg21 : reg22;
+         reg23 = (datainrdy == 1 & stall == 0 & cmd[27] == 0) ? reg22 : reg23;
+         reg24 = (datainrdy == 1 & stall == 0 & cmd[27] == 0) ? reg23 : reg24;
+         reg25 = (datainrdy == 1 & stall == 0 & cmd[27] == 0) ? reg24 : reg25;
+         reg26 = (datainrdy == 1 & stall == 0 & cmd[27] == 0) ? reg25 : reg26;
+         reg27 = (datainrdy == 1 & stall == 0 & cmd[27] == 0) ? reg26 : reg27;
+         reg28 = (datainrdy == 1 & stall == 0 & cmd[27] == 0) ? reg27 : reg28;
+         reg29 = (datainrdy == 1 & stall == 0 & cmd[27] == 0) ? reg28 : reg29;
+         reg30 = (datainrdy == 1 & stall == 0 & cmd[27] == 0) ? reg29 : reg30;
+         reg31 = (datainrdy == 1 & stall == 0 & cmd[27] == 0) ? reg30 : reg31;
+         reg32 = (datainrdy == 1 & stall == 0 & cmd[27] == 0) ? reg31 : reg32;
 
-         dataout = (stall == 0 & cmd[27] == 1) ? ((reg1 + reg2 + reg3 + reg4 + reg5 + 
+         dataout = (datainrdy == 1 & stall == 0 & cmd[27] == 1) ? ((reg1 + reg2 + reg3 + reg4 + reg5 + 
                                                    reg6 + reg6 + reg7 + reg8 + reg9 + 
                                                    reg10 + reg11 + reg12 + reg13 + reg14 +
                                                    reg15 + reg16 + reg17 + reg18 + reg19 +
@@ -57,7 +59,7 @@ dp CoProc(in datain : ns(32);
                                                    reg25 + reg26 + reg27 + reg28 + reg29 +
                                                    reg30 + reg31 + reg32) >> 5) : 0;
 
-         dataoutrdy = (stall == 0 & cmd[27] == 1) ? 0b1 : 0b0;
+         dataoutrdy = (datainrdy == 1 & stall == 0 & (cmd[27] == 0 | cmd[27] == 1)) ? 0b1 : 0b0;
    }
 }
 

@@ -272,6 +272,7 @@ dp CPU(
           use Or(branch, orJmp, jmp); 
           
           $trace(extSCMD, "traces/extSCMD.seq");
+          $trace(extExec, "traces/extExec.seq");
           $trace(M_cmd, "traces/M_cmd.seq");  
           $trace(extLoad, "traces/extLCD.seq");
           $trace(stall, "traces/stall.seq");
@@ -289,7 +290,7 @@ dp CPU(
                   (extStore) ? 0b0010100 # insOut[24:0] :
                   (extSensor) ? 0b0001000 # insOut[24:0] : 
                   (extLCD) ? 0b0011000 # insOut[24:0] :
-                  (extSCMD) ? 0b0100000 # insOut[24:0] : 
+                  (extSCMD) ? 0b01000000000000000000000000000000 : 
                   (extExec) ? 0b0100100 # insOut[24:0] : 0;
           M_datainrdy = (extStore | extLoad | extLCD | extSensor | extSCMD) ? 0b1 : 0b0;
        }       
@@ -1032,23 +1033,16 @@ dp CoProc(in datain : ns(32);
    reg reg21, reg22, reg23, reg24, reg25, reg26, reg27, reg28, reg29, reg30 : tc(32);
    reg reg31, reg32 : tc(32);
 
-   $trace(dataout, "traces/CoProcDataOut.seq");
-   $trace(dataoutrdy, "traces/dataoutrdyCoProc.seq");
-   $trace(cmd, "traces/cmdCPIN.seq");
-   $trace(reg1, "traces/CPreg1.seq");
-   $trace(datain, "traces/CPdatain.seq");
-
    always {
          stallr = stall;
-         //cmdr = cmd;
+         cmdr = cmd;
    }
 
    sfg captureData{
-       dataoutrdy = 0; 
+       dataoutrdy = 1; 
        dataout = 0;
        datainrdyr = datainrdy;
        datainr = datain;
-       cmdr = cmd;
    }
 
    sfg Load{
@@ -1084,8 +1078,8 @@ dp CoProc(in datain : ns(32);
       reg30 = reg29;
       reg31 = reg30;
       reg32 = reg31;
-      dataoutrdy = 0;
       dataout = 0;
+      dataoutrdy = 1;
    } 
 
    sfg MWI {
@@ -1094,7 +1088,6 @@ dp CoProc(in datain : ns(32);
                   reg20 + reg21 + reg22 + reg23 + reg24 + reg25 + reg26 + reg27 + reg28 + reg29 +
                   reg30 + reg31 + reg32) >> 5);
       dataoutrdy = 1;
-      cmdr = cmd;
    }
    
    sfg awaithandshake{
