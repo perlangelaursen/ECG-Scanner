@@ -1087,7 +1087,6 @@ dp CoProc(in datain : ns(32);
                   reg10 + reg11 + reg12 + reg13 + reg14 + reg15 + reg16 + reg17 + reg18 + reg19 +
                   reg20 + reg21 + reg22 + reg23 + reg24 + reg25 + reg26 + reg27 + reg28 + reg29 +
                   reg30 + reg31 + reg32) >> 5);
-      dataoutrdy = 1;
    }
    
    sfg awaithandshake{
@@ -1098,7 +1097,6 @@ dp CoProc(in datain : ns(32);
    sfg resetAndSignalRdy{
      dataoutrdy = 1;
      datainrdyr = 0;
-     dataout = 0;
    }
    
    sfg nothing{
@@ -1113,7 +1111,7 @@ fsm CoProcCntrl(CoProc) {
   initial s0;
   state s1;
    
-  @s0 if (datainrdyr == 1 & stallr == 0 & cmdr[27] == 1) then (MWI) -> s0;
+  @s0 if (datainrdyr == 1 & stallr == 0 & cmdr[27] == 1) then (MWI, resetAndSignalRdy) -> s0;
       else if (datainrdyr == 1 & stallr == 0 & cmdr[27] == 0) then (Load) -> s0;
       else if (datainrdyr == 1 & stallr == 1) then (nothing) -> s1;
       else (captureData) -> s0;
