@@ -1017,123 +1017,107 @@ fsm Output_cntrl(Output){
 }
 
 
-dp CoProc(in datain : ns(32);
+dp CoProc(
+   in datain : ns(32);
    in cmd : ns(32);
    in datainrdy : ns(1);
    out dataout : ns(32);
    out dataoutrdy : ns(1);
-   in stall : ns(1) // true if the slave is currently busy (with handshaking) and cannot receive new data.)
-   ) {
-   reg stallr : ns(1);
+   in stall : ns(1) // true if the slave is currently busy (with handshaking) and cannot receive new data.
+   ){
+   
+   reg datainrdyr : ns(1);
    reg cmdr : ns(32);
-   reg datainrdyr, send : ns(1);
-   reg dataoutr, datainr : ns(32);
+   reg datainr : ns(32);
+   reg dataoutr : ns(32);
+   reg stallr : ns(1);
    reg reg1, reg2, reg3, reg4, reg5, reg6, reg7, reg8, reg9, reg10 : tc(32);
    reg reg11, reg12, reg13, reg14, reg15, reg16, reg17, reg18, reg19, reg20 : tc(32);
    reg reg21, reg22, reg23, reg24, reg25, reg26, reg27, reg28, reg29, reg30 : tc(32);
    reg reg31, reg32 : tc(32);
 
-   always {
-         stallr = stall;
-         //cmdr = cmd;
+   $trace(stallr, "traces/CPStallr.seq");
+   $trace(datainrdyr, "traces/CPdatainrdyr.seq");
+   $trace(cmdr, "traces/CPcmdr.seq");
+   $trace(reg1, "traces/CPreg1.seq");
+   $trace(dataout, "traces/CPdataout.seq");
+   
+   always{
+       stallr = stall;
+       reg1 = (datainrdyr == 1 & stallr == 0 & cmdr[27] == 0) ? datainr : reg1;
+       reg2 = (datainrdyr == 1 & stallr == 0 & cmdr[27] == 0) ? reg1 : reg2;
+       reg3 = (datainrdyr == 1 & stallr == 0 & cmdr[27] == 0) ? reg2 : reg3;
+       reg4 = (datainrdyr == 1 & stallr == 0 & cmdr[27] == 0) ? reg3 : reg4;
+       reg5 = (datainrdyr == 1 & stallr == 0 & cmdr[27] == 0) ? reg4 : reg5;
+       reg6 = (datainrdyr == 1 & stallr == 0 & cmdr[27] == 0) ? reg5 : reg6;
+       reg7 = (datainrdyr == 1 & stallr == 0 & cmdr[27] == 0) ? reg6 : reg7;
+       reg8 = (datainrdyr == 1 & stallr == 0 & cmdr[27] == 0) ? reg7 : reg8;
+       reg9 = (datainrdyr == 1 & stallr == 0 & cmdr[27] == 0) ? reg8 : reg9;
+       reg10 = (datainrdyr == 1 & stallr == 0 & cmdr[27] == 0) ? reg9 : reg10;
+       reg11 = (datainrdyr == 1 & stallr == 0 & cmdr[27] == 0) ? reg10 : reg11;
+       reg12 = (datainrdyr == 1 & stallr == 0 & cmdr[27] == 0) ? reg11 : reg12;
+       reg13 = (datainrdyr == 1 & stallr == 0 & cmdr[27] == 0) ? reg12 : reg13;
+       reg14 = (datainrdyr == 1 & stallr == 0 & cmdr[27] == 0) ? reg13 : reg14;
+       reg15 = (datainrdyr == 1 & stallr == 0 & cmdr[27] == 0) ? reg14 : reg15;
+       reg16 = (datainrdyr == 1 & stallr == 0 & cmdr[27] == 0) ? reg15 : reg16;
+       reg17 = (datainrdyr == 1 & stallr == 0 & cmdr[27] == 0) ? reg16 : reg17;
+       reg18 = (datainrdyr == 1 & stallr == 0 & cmdr[27] == 0) ? reg17 : reg18;
+       reg19 = (datainrdyr == 1 & stallr == 0 & cmdr[27] == 0) ? reg18 : reg19;
+       reg20 = (datainrdyr == 1 & stallr == 0 & cmdr[27] == 0) ? reg19 : reg20;
+       reg21 = (datainrdyr == 1 & stallr == 0 & cmdr[27] == 0) ? reg20 : reg21;
+       reg22 = (datainrdyr == 1 & stallr == 0 & cmdr[27] == 0) ? reg21 : reg22;
+       reg23 = (datainrdyr == 1 & stallr == 0 & cmdr[27] == 0) ? reg22 : reg23;
+       reg24 = (datainrdyr == 1 & stallr == 0 & cmdr[27] == 0) ? reg23 : reg24;
+       reg25 = (datainrdyr == 1 & stallr == 0 & cmdr[27] == 0) ? reg24 : reg25;
+       reg26 = (datainrdyr == 1 & stallr == 0 & cmdr[27] == 0) ? reg25 : reg26;
+       reg27 = (datainrdyr == 1 & stallr == 0 & cmdr[27] == 0) ? reg26 : reg27;
+       reg28 = (datainrdyr == 1 & stallr == 0 & cmdr[27] == 0) ? reg27 : reg28;
+       reg29 = (datainrdyr == 1 & stallr == 0 & cmdr[27] == 0) ? reg28 : reg29;
+       reg30 = (datainrdyr == 1 & stallr == 0 & cmdr[27] == 0) ? reg29 : reg30;
+       reg31 = (datainrdyr == 1 & stallr == 0 & cmdr[27] == 0) ? reg30 : reg31;
+       reg32 = (datainrdyr == 1 & stallr == 0 & cmdr[27] == 0) ? reg31 : reg32;
+       dataoutr = (datainrdyr == 1 & stallr == 0 & cmdr[27] == 1) ? ((reg1 + reg2 + reg3 + reg4 + reg5 + 
+                                                   reg6 + reg6 + reg7 + reg8 + reg9 + 
+                                                   reg10 + reg11 + reg12 + reg13 + reg14 +
+                                                   reg15 + reg16 + reg17 + reg18 + reg19 +
+                                                   reg20 + reg21 + reg22 + reg23 + reg24 +
+                                                   reg25 + reg26 + reg27 + reg28 + reg29 +
+                                                   reg30 + reg31 + reg32) >> 5) : dataoutr;
+       dataout = dataoutr;
    }
-
+   
    sfg captureData{
-       dataoutrdy = 1; 
-       dataout = 0;
+       dataoutrdy = 0; 
        datainrdyr = datainrdy;
        datainr = datain;
        cmdr = cmd;
    }
-
-   sfg Load{
-      reg1 = datainr;
-      reg2 = reg1;
-      reg3 = reg2;
-      reg4 = reg3;
-      reg5 = reg4;
-      reg6 = reg5;
-      reg7 = reg6;
-      reg8 = reg7;
-      reg9 = reg8;
-      reg10 = reg9;
-      reg11 = reg10;
-      reg12 = reg11;
-      reg13 = reg12;
-      reg14 = reg13;
-      reg15 = reg14;
-      reg16 = reg15;
-      reg17 = reg16;
-      reg18 = reg17;
-      reg19 = reg18;
-      reg20 = reg19;
-      reg21 = reg20;
-      reg22 = reg21;
-      reg23 = reg22;
-      reg24 = reg23;
-      reg25 = reg24;
-      reg26 = reg25;
-      reg27 = reg26;
-      reg28 = reg27;
-      reg29 = reg28;
-      reg30 = reg29;
-      reg31 = reg30;
-      reg32 = reg31;
-      dataout = 0;
-      dataoutrdy = 1;
-      send = 0;
-   } 
-
-   sfg MWI {
-      dataoutr = ((reg1 + reg2 + reg3 + reg4 + reg5 + reg6 + reg6 + reg7 + reg8 + reg9 + 
-                  reg10 + reg11 + reg12 + reg13 + reg14 + reg15 + reg16 + reg17 + reg18 + reg19 +
-                  reg20 + reg21 + reg22 + reg23 + reg24 + reg25 + reg26 + reg27 + reg28 + reg29 +
-                  reg30 + reg31 + reg32) >> 5);
-      dataoutrdy = 0;
-      datainrdyr = 0;
-      send = 1;
-   }
-
-   sfg Send {
-      dataout = dataoutr;
-      dataoutrdy = 1;
-      send = 0;
-   }
    
    sfg awaithandshake{
       dataoutrdy = 0;
-      dataout = 0;
-      send = 0;
    }
    
    sfg resetAndSignalRdy{
      dataoutrdy = 1;
      datainrdyr = 0;
-     dataout = dataoutr;
-     send = 0;
    }
    
    sfg nothing{
        dataoutrdy = 0; 
-       dataout = 0;
-       send = 0;
    }
-
-
+   
 }
 
-fsm CoProcCntrl(CoProc) {
-  initial s0;
-  state s1;
+fsm CoProc_cntrl(CoProc){
+   initial s0;
+   state s1;
    
-  @s0 if (datainrdyr == 1 & stallr == 0 & cmdr[27] == 1) then (MWI) -> s0;
-      else if (datainrdyr == 1 & stallr == 0 & cmdr[27] == 0) then (Load) -> s0;
-      else if (send == 1) then (Send) -> s0;
-      else if (datainrdyr == 1 & stallr == 1) then (nothing) -> s1;
-      else (captureData) -> s0;
-  @s1 if (stallr == 0) then (resetAndSignalRdy) -> s0;
-      else (awaithandshake) -> s1;
-
+   @s0 if (datainrdyr == 1 & stallr == 0) then (resetAndSignalRdy) -> s0;
+       else if (datainrdyr == 1 & stallr == 1) then (nothing) -> s1;
+       else (captureData) -> s0;
+   @s1 if (stallr == 0) then (resetAndSignalRdy) -> s0;
+       else (awaithandshake) -> s1;
+       
 }
 
 ////////////////////////////
