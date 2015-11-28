@@ -139,7 +139,7 @@ dp ALU(
       (Select == 0b1000) ? A >> B:
       (Select == 0b1001) ? A & B:
       (Select == 0b1010) ? A | B:
-      1;
+      2;
     N = R[31];
     Z = (R == 0);
   }
@@ -292,7 +292,7 @@ dp CPU(
                   (extLCD) ? 0b0011000 # insOut[24:0] :
                   (extSCMD) ? 0b01000000000000000000000000000000 : 
                   (extExec) ? 0b0100100 # insOut[24:0] : 0;
-          M_datainrdy = (extStore | extLoad | extLCD | extSensor | extSCMD) ? 0b1 : 0b0;
+          M_datainrdy = (extStore | extLoad | extLCD | extSensor | extSCMD | extExec) ? 0b1 : 0b0;
        }       
 }
 
@@ -1026,7 +1026,7 @@ dp CoProc(in datain : ns(32);
    ) {
    reg stallr : ns(1);
    reg cmdr : ns(32);
-   reg datainrdyr : ns(1);
+   reg datainrdyr, send : ns(1);
    reg dataoutr, datainr : ns(32);
    reg reg1, reg2, reg3, reg4, reg5, reg6, reg7, reg8, reg9, reg10 : tc(32);
    reg reg11, reg12, reg13, reg14, reg15, reg16, reg17, reg18, reg19, reg20 : tc(32);
@@ -1035,7 +1035,7 @@ dp CoProc(in datain : ns(32);
 
    always {
          stallr = stall;
-         cmdr = cmd;
+         //cmdr = cmd;
    }
 
    sfg captureData{
@@ -1043,6 +1043,7 @@ dp CoProc(in datain : ns(32);
        dataout = 0;
        datainrdyr = datainrdy;
        datainr = datain;
+       cmdr = cmd;
    }
 
    sfg Load{
@@ -1080,30 +1081,42 @@ dp CoProc(in datain : ns(32);
       reg32 = reg31;
       dataout = 0;
       dataoutrdy = 1;
+      send = 0;
    } 
 
    sfg MWI {
-      dataout = ((reg1 + reg2 + reg3 + reg4 + reg5 + reg6 + reg6 + reg7 + reg8 + reg9 + 
+      dataoutr = ((reg1 + reg2 + reg3 + reg4 + reg5 + reg6 + reg6 + reg7 + reg8 + reg9 + 
                   reg10 + reg11 + reg12 + reg13 + reg14 + reg15 + reg16 + reg17 + reg18 + reg19 +
                   reg20 + reg21 + reg22 + reg23 + reg24 + reg25 + reg26 + reg27 + reg28 + reg29 +
                   reg30 + reg31 + reg32) >> 5);
+      dataoutrdy = 0;
+      datainrdyr = 0;
+      send = 1;
+   }
+
+   sfg Send {
+      dataout = dataoutr;
       dataoutrdy = 1;
+      send = 0;
    }
    
    sfg awaithandshake{
       dataoutrdy = 0;
       dataout = 0;
+      send = 0;
    }
    
    sfg resetAndSignalRdy{
      dataoutrdy = 1;
      datainrdyr = 0;
-     dataout = 0;
+     dataout = dataoutr;
+     send = 0;
    }
    
    sfg nothing{
        dataoutrdy = 0; 
        dataout = 0;
+       send = 0;
    }
 
 
@@ -1115,6 +1128,7 @@ fsm CoProcCntrl(CoProc) {
    
   @s0 if (datainrdyr == 1 & stallr == 0 & cmdr[27] == 1) then (MWI) -> s0;
       else if (datainrdyr == 1 & stallr == 0 & cmdr[27] == 0) then (Load) -> s0;
+      else if (send == 1) then (Send) -> s0;
       else if (datainrdyr == 1 & stallr == 1) then (nothing) -> s1;
       else (captureData) -> s0;
   @s1 if (stallr == 0) then (resetAndSignalRdy) -> s0;
